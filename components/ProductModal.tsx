@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Plus, Minus, Info } from 'lucide-react';
 import { Product } from '../types';
 import { Button } from './ui/Button';
@@ -13,13 +14,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
   const [qty, setQty] = useState(1);
   const { addToCart } = useCart();
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   const handleAdd = () => {
     addToCart(product, qty);
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div 
         className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
@@ -34,7 +43,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
         </button>
 
         {/* Image Side */}
-        <div className="w-full md:w-1/2 h-64 md:h-full bg-[#F2D0B6] relative">
+        <div className="w-full md:w-1/2 h-64 md:h-full bg-[#F2D0B6] relative shrink-0">
            <img 
             src={product.images[0]} 
             alt={product.name} 
@@ -103,6 +112,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
