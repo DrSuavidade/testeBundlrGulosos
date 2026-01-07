@@ -33,7 +33,7 @@ export const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-[#4A3B32] text-lg">Endereço</h4>
-                  <p className="text-[#4A3B32]/70 text-lg">Rua dos Doces, 123<br/>Jardins, São Paulo - SP</p>
+                  <p className="text-[#4A3B32]/70 text-lg">Rua dos Doces, 123<br/>Chiado, Lisboa - PT</p>
                 </div>
               </div>
 
@@ -53,7 +53,7 @@ export const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-[#4A3B32] text-lg">Email</h4>
-                  <p className="text-[#4A3B32]/70 text-lg">oi@cenariosgulosos.com.br</p>
+                  <p className="text-[#4A3B32]/70 text-lg">oi@cenariosgulosos.pt</p>
                 </div>
               </div>
 
