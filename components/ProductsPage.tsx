@@ -90,7 +90,7 @@ export const ProductsPage: React.FC = () => {
         </div>
 
         {/* Filters & Search - Search Bar in its own row */}
-        <div className="sticky top-20 sm:top-24 z-30 bg-white/95 backdrop-blur-md p-4 sm:p-6 mb-8 sm:mb-10 border border-[#BFDBFE] shadow-lg rounded-3xl transition-all space-y-4">
+        <div id="products-section" className="sticky top-20 sm:top-24 z-30 bg-white/95 backdrop-blur-md p-4 sm:p-6 mb-8 sm:mb-10 border border-[#BFDBFE] shadow-lg rounded-3xl transition-all space-y-4">
            
            {/* Row 1: Search Bar in dedicated full-width line */}
            <div className="relative w-full">

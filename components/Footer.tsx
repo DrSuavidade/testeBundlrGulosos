@@ -4,16 +4,16 @@ import { WavyDivider } from './ui/WavyDivider';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#1E293B] text-[#BFDBFE] relative pt-32 sm:pt-40">
+    <footer className="bg-[#1E293B] text-[#BFDBFE] relative pt-16 sm:pt-24">
       {/* Top Divider */}
       <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#1E293B" variant="flow" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           
           <div className="space-y-4 sm:space-y-6">
-            <h2 className="font-pacifico text-3xl sm:text-4xl text-white">Pedra Mania</h2>
-            <p className="text-sm sm:text-base opacity-90 font-lato leading-relaxed">
+            <h2 className="font-pacifico text-2xl sm:text-3xl text-white">Pedra Mania</h2>
+            <p className="text-xs sm:text-sm opacity-80 font-lato leading-relaxed">
               O seu armarinho de referência no Espírito Santo. Insumos para crochê, tricô, bijuterias, miçangas e artes manuais com carinho e qualidade.
             </p>
             <div className="flex space-x-4 pt-2">
@@ -23,8 +23,8 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Explorar</h3>
-            <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base opacity-80">
+            <h3 className="font-nunito font-bold text-sm text-white mb-3 border-b-2 border-[#2563EB] inline-block pb-1">Explorar</h3>
+            <ul className="space-y-2.5 text-xs opacity-75">
               <li><a href="#about" className="hover:text-white hover:pl-2 transition-all block">Nossa História & Encontros</a></li>
               <li><a href="#products" className="hover:text-white hover:pl-2 transition-all block">Linhas & Kits de Crochê</a></li>
               <li><a href="#how-to" className="hover:text-white hover:pl-2 transition-all block">Como Fazer Pedidos</a></li>
@@ -33,8 +33,8 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Contato ES</h3>
-            <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base opacity-80">
+            <h3 className="font-nunito font-bold text-sm text-white mb-3 border-b-2 border-[#2563EB] inline-block pb-1">Contato ES</h3>
+            <ul className="space-y-2.5 text-xs opacity-75">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="mt-1 flex-shrink-0 text-[#2563EB]" />
                 <span>Av. Beira Mar, 450 - Centro<br/>Vitória, Espírito Santo - BR</span>
@@ -51,8 +51,8 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Horários Loja Física</h3>
-            <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm opacity-80 bg-white/5 p-5 sm:p-6 rounded-2xl">
+            <h3 className="font-nunito font-bold text-sm text-white mb-3 border-b-2 border-[#2563EB] inline-block pb-1">Horários Loja Física</h3>
+            <ul className="space-y-2 text-xs opacity-75 bg-white/5 p-4 rounded-xl">
               <li className="flex justify-between border-b border-white/10 pb-2">
                 <span>Seg - Sex</span>
                 <span>08:30 - 18:30</span>
@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-12 sm:mt-16 pt-6 sm:pt-8 text-center text-xs sm:text-sm opacity-60 font-lato">
+        <div className="border-t border-white/10 mt-8 sm:mt-10 pt-5 sm:pt-6 text-center text-[11px] opacity-50 font-lato">
           <p>© 2026 Pedra Mania Armarinho & Artesanato. Todos os direitos reservados. Espírito Santo - Brasil.</p>
         </div>
       </div>

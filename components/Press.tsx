@@ -13,7 +13,7 @@ export const Press: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative bg-[#93C5FD] py-24 md:py-32 flex flex-col lg:flex-row items-stretch overflow-hidden">
+    <section className="relative bg-[#93C5FD] py-14 md:py-20 flex flex-col lg:flex-row items-stretch overflow-hidden">
       {/* Top Divider */}
       <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#BFDBFE" variant="flow" />
 
@@ -24,8 +24,8 @@ export const Press: React.FC = () => {
               <Instagram size={16} className="text-[#2563EB]" />
               <span>@pedramaniaoficial</span>
            </div>
-           <h2 className="font-pacifico text-4xl sm:text-5xl md:text-6xl text-[#2563EB] mb-3 drop-shadow-sm leading-tight">Direto do <br/>Instagram</h2>
-           <p className="text-[#1E293B] font-extrabold text-sm sm:text-lg border-l-4 border-[#2563EB] pl-3 sm:pl-4">
+           <h2 className="font-pacifico text-3xl sm:text-4xl text-[#2563EB] mb-2.5 drop-shadow-sm leading-tight">Direto do <br/>Instagram</h2>
+           <p className="text-[#1E293B] font-semibold text-xs sm:text-sm border-l-4 border-[#2563EB] pl-3">
              Acompanhe nossas dicas, novidades de produtos e encontros presenciais no ES
            </p>
         </div>

@@ -1,68 +1,81 @@
 import React from 'react';
 import { Button } from './ui/Button';
-import { MapPin, Mail, Phone, Clock } from 'lucide-react';
+import { MapPin, Mail, Phone, Clock, MessageCircle } from 'lucide-react';
 import { WavyDivider } from './ui/WavyDivider';
 
 export const Contact: React.FC = () => {
   return (
-    <section className="relative bg-[#F0F7FF] pt-28 md:pt-32 pb-16 md:pb-20">
+    <section className="relative bg-[#F0F7FF] pt-16 md:pt-22 pb-12 md:pb-16">
       {/* Decorative Wave */}
       <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#F0F7FF" variant="flow" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-        
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+
         {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-4xl sm:text-6xl font-pacifico text-[#2563EB] mb-3 sm:mb-4 drop-shadow-sm leading-tight">Fale Conosco</h2>
-          <p className="text-sm sm:text-lg text-[#1E293B]/70 font-lato max-w-2xl mx-auto px-2 sm:px-0">
-            Tem dúvidas sobre qual fio de algodão escolher, quer montar um kit personalizado de bijuterias ou participar do nosso próximo encontro no Espírito Santo? Fale com a equipe da Pedra Mania!
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-pacifico text-[#2563EB] mb-2 drop-shadow-sm leading-tight">Fale Conosco</h2>
+          <p className="text-xs sm:text-sm text-[#1E293B]/65 font-lato max-w-xl mx-auto">
+            Dúvidas sobre fios, kits personalizados ou o próximo encontro no ES? A equipe Pedra Mania está à disposição!
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
-          
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
+
           {/* Info Card */}
-          <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-xl border-t-[10px] sm:border-t-[12px] border-[#93C5FD]">
-            <h3 className="text-2xl sm:text-3xl font-nunito font-extrabold text-[#1E293B] mb-6 sm:mb-8">Informações da Loja</h3>
-            
-            <div className="space-y-6 sm:space-y-8">
-              <div className="flex items-start gap-4 sm:gap-6 group">
-                <div className="bg-[#F0F7FF] p-3 sm:p-4 rounded-full text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white transition-colors shadow-sm shrink-0">
-                  <MapPin size={24} className="sm:w-7 sm:h-7" />
-                </div>
+          <div className="bg-white rounded-2xl p-5 sm:p-7 shadow-md border-t-4 border-[#93C5FD]">
+            <h3 className="text-lg sm:text-xl font-nunito font-extrabold text-[#1E293B] mb-5">Informações da Loja</h3>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 group">
+                <MapPin size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#1E293B] text-base sm:text-lg">Endereço</h4>
-                  <p className="text-[#1E293B]/70 text-xs sm:text-base">Av. Beira Mar, 450 - Centro<br/>Vitória, Espírito Santo - BR</p>
+                  <h4 className="font-semibold text-[#1E293B] text-sm">Endereço</h4>
+                  <p className="text-[#1E293B]/60 text-xs mt-0.5">Av. Beira Mar, 450 - Centro<br/>Vitória, Espírito Santo - BR</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 sm:gap-6 group">
-                <div className="bg-[#F0F7FF] p-3 sm:p-4 rounded-full text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white transition-colors shadow-sm shrink-0">
-                  <Phone size={24} className="sm:w-7 sm:h-7" />
-                </div>
+              <div className="flex items-start gap-3 group">
+                <Phone size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#1E293B] text-base sm:text-lg">Telefone / WhatsApp</h4>
-                  <p className="text-[#1E293B]/70 text-xs sm:text-base">(27) 99604-3041</p>
+                  <h4 className="font-semibold text-[#1E293B] text-sm">Telefone / WhatsApp</h4>
+                  <a
+                    href="https://api.whatsapp.com/send?phone=5527996043041"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#1E293B]/60 text-xs mt-0.5 hover:text-[#2563EB] transition-colors inline-flex items-center gap-1 group/wa"
+                  >
+                    (27) 99604-3041
+                    <MessageCircle size={11} className="opacity-0 group-hover/wa:opacity-100 transition-opacity" />
+                  </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 sm:gap-6 group">
-                <div className="bg-[#F0F7FF] p-3 sm:p-4 rounded-full text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white transition-colors shadow-sm shrink-0">
-                  <Mail size={24} className="sm:w-7 sm:h-7" />
-                </div>
+              <div className="flex items-start gap-3 group">
+                <Mail size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#1E293B] text-base sm:text-lg">Email</h4>
-                  <p className="text-[#1E293B]/70 text-xs sm:text-base">contato@pedramania.com.br</p>
+                  <h4 className="font-semibold text-[#1E293B] text-sm">Email</h4>
+                  <p className="text-[#1E293B]/60 text-xs mt-0.5">contato@pedramania.com.br</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 sm:gap-6 group">
-                 <div className="bg-[#F0F7FF] p-3 sm:p-4 rounded-full text-[#2563EB] group-hover:bg-[#2563EB] group-hover:text-white transition-colors shadow-sm shrink-0">
-                  <Clock size={24} className="sm:w-7 sm:h-7" />
-                </div>
+              <div className="flex items-start gap-3 group">
+                <Clock size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#1E293B] text-base sm:text-lg">Horários de Atendimento</h4>
-                  <p className="text-[#1E293B]/70 text-xs sm:text-base">Seg - Sex: 08:30 - 18:30<br/>Sáb: 09:00 - 14:00<br/>Dom: Fechado</p>
+                  <h4 className="font-semibold text-[#1E293B] text-sm">Horários de Atendimento</h4>
+                  <div className="mt-1.5 space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#1E293B]/60">Seg – Sex</span>
+                      <span className="font-medium text-[#1E293B]">08:30 – 18:30</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#1E293B]/60">Sábado</span>
+                      <span className="font-medium text-[#1E293B]">09:00 – 14:00</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#1E293B]/60">Domingo</span>
+                      <span className="font-medium text-red-400">Fechado</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -70,29 +83,42 @@ export const Contact: React.FC = () => {
 
           {/* Form */}
           <div className="relative">
-             {/* Background Decoration */}
-             <div className="absolute -top-10 -right-10 w-48 sm:w-60 h-48 sm:h-60 bg-[#93C5FD] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-             <div className="absolute -bottom-10 -left-10 w-36 sm:w-40 h-36 sm:h-40 bg-[#BFDBFE] rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            {/* Subtle background blobs */}
+            <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#93C5FD] rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob"></div>
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[#BFDBFE] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
-             <form className="space-y-4 sm:space-y-6 bg-white/70 backdrop-blur-md p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] border border-white shadow-lg relative z-10">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#1E293B] mb-2">Envie uma mensagem</h3>
-                <div>
-                  <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5 sm:mb-2 uppercase tracking-wide">Seu Nome</label>
-                  <input type="text" className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl border-2 border-white bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-4 focus:ring-[#93C5FD]/20 transition-all shadow-inner text-sm" placeholder="Maria Santos" />
-                </div>
-                
-                <div>
-                  <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5 sm:mb-2 uppercase tracking-wide">Seu Email</label>
-                  <input type="email" className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl border-2 border-white bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-4 focus:ring-[#93C5FD]/20 transition-all shadow-inner text-sm" placeholder="maria@email.com" />
-                </div>
+            <form className="space-y-3.5 bg-white/75 backdrop-blur-md p-5 sm:p-7 rounded-2xl border border-white shadow-md relative z-10">
+              <h3 className="text-base sm:text-lg font-bold text-[#1E293B] mb-3">Envie uma mensagem</h3>
 
-                <div>
-                  <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5 sm:mb-2 uppercase tracking-wide">Mensagem</label>
-                  <textarea rows={4} className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl border-2 border-white bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-4 focus:ring-[#93C5FD]/20 transition-all resize-none shadow-inner text-sm" placeholder="Gostaria de saber mais sobre os fios de algodão e o próximo encontro de artesanato..."></textarea>
-                </div>
+              <div>
+                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Seu Nome</label>
+                <input
+                  type="text"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all text-sm"
+                  placeholder="Maria Santos"
+                />
+              </div>
 
-                <Button fullWidth size="lg" className="py-3.5 sm:py-4 text-base sm:text-lg shadow-xl">Enviar Mensagem</Button>
-             </form>
+              <div>
+                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Seu Email</label>
+                <input
+                  type="email"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all text-sm"
+                  placeholder="maria@email.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Mensagem</label>
+                <textarea
+                  rows={4}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all resize-none text-sm"
+                  placeholder="Gostaria de saber mais sobre os fios de algodão e o próximo encontro de artesanato..."
+                ></textarea>
+              </div>
+
+              <Button fullWidth className="shadow-md">Enviar Mensagem</Button>
+            </form>
           </div>
         </div>
       </div>

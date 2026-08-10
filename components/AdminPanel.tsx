@@ -292,95 +292,103 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     <div className="min-h-screen bg-[#F4F8FC] text-[#1E293B] flex flex-col md:flex-row">
       
       {/* Mobile Top Header */}
-      <div className="md:hidden bg-[#1E293B] text-white p-4 flex justify-between items-center sticky top-0 z-40 shadow-md">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 bg-white/10 rounded-lg">
-            {isSidebarOpen ? <X size={22} /> : <Menu size={22} />}
+      <div className="md:hidden bg-[#1E293B] text-white px-4 py-3 flex justify-between items-center sticky top-0 z-40 shadow-lg">
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors relative"
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            {/* Badge on hamburger when orders pending */}
+            {(newOrdersCount + preparingOrdersCount) > 0 && !isSidebarOpen && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center">
+                {newOrdersCount + preparingOrdersCount}
+              </span>
+            )}
           </button>
-          <span className="font-pacifico text-xl text-[#93C5FD]">Pedra Mania Admin</span>
+          <span className="font-pacifico text-lg text-[#93C5FD] leading-none">Pedra Mania</span>
+          <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold hidden sm:inline">Admin</span>
         </div>
-        <button onClick={onBack} className="text-xs bg-[#2563EB] px-3 py-1.5 rounded-full font-bold">
-          Sair
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={loadData} className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+            <RefreshCw size={16} />
+          </button>
+          <button onClick={onBack} className="text-[11px] bg-[#2563EB] hover:bg-[#1D4ED8] px-3 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1">
+            <Eye size={13} /> Loja
+          </button>
+        </div>
       </div>
 
       {/* SIDEBAR NAVIGATION */}
-      <aside 
-        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 bg-[#1E293B] text-white flex flex-col justify-between p-6 transition-transform duration-300 ease-in-out shrink-0 ${
+      <aside
+        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-56 bg-[#1E293B] text-white flex flex-col justify-between transition-transform duration-300 ease-in-out shrink-0 ${
           isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div>
-          {/* Sidebar Brand Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
-            <div>
-              <h2 className="font-pacifico text-2xl text-[#93C5FD]">Pedra Mania</h2>
-              <p className="text-[0.7rem] text-gray-400 font-bold uppercase tracking-wider">Painel de Controle • ES</p>
-            </div>
-            <button className="md:hidden text-gray-400" onClick={() => setIsSidebarOpen(false)}>
-              <X size={20} />
-            </button>
+        {/* Brand header */}
+        <div className="px-4 pt-5 pb-4 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <h2 className="font-pacifico text-lg text-[#93C5FD] leading-none">Pedra Mania</h2>
+            <p className="text-[0.6rem] text-gray-500 font-bold uppercase tracking-widest mt-0.5">Painel Admin · ES</p>
           </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id as any);
-                    setIsSidebarOpen(false);
-                  }}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
-                    isActive 
-                      ? 'bg-[#2563EB] text-white shadow-lg shadow-[#2563EB]/30 translate-x-1' 
-                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon size={18} className={isActive ? 'text-white' : 'text-[#93C5FD]'} />
-                    <span>{item.label}</span>
-                  </div>
-                  {item.badge ? (
-                    <span className="text-[10px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full">
-                      {item.badge}
-                    </span>
-                  ) : item.count !== undefined ? (
-                    <span className="text-xs bg-white/15 px-2 py-0.5 rounded-md font-bold text-gray-300">
-                      {item.count}
-                    </span>
-                  ) : null}
-                </button>
-              );
-            })}
-          </nav>
+          <button className="md:hidden text-gray-500 hover:text-white p-1 transition-colors" onClick={() => setIsSidebarOpen(false)}>
+            <X size={18} />
+          </button>
         </div>
 
-        {/* Sidebar Footer */}
-        <div className="border-t border-white/10 pt-4 space-y-2">
-          <button 
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id as any);
+                  setIsSidebarOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  isActive
+                    ? 'bg-[#2563EB] text-white shadow-md shadow-[#2563EB]/40'
+                    : 'text-gray-400 hover:bg-white/8 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Icon size={15} className={isActive ? 'text-white shrink-0' : 'text-[#93C5FD] shrink-0'} />
+                  <span className="truncate">{item.label}</span>
+                </div>
+                {item.badge ? (
+                  <span className="ml-1.5 shrink-0 min-w-[1.25rem] h-5 px-1.5 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center">
+                    {item.badge.split(' ')[0]}
+                  </span>
+                ) : item.count !== undefined ? (
+                  <span className="ml-1.5 shrink-0 min-w-[1.25rem] h-5 px-1.5 bg-white/10 text-gray-400 text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {item.count}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="px-3 pb-4 pt-3 border-t border-white/10 space-y-1.5">
+          <button
             onClick={onBack}
-            className="w-full flex items-center justify-between px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 bg-white/8 hover:bg-white/15 rounded-xl text-[11px] font-semibold text-gray-300 hover:text-white transition-colors"
           >
-            <span className="flex items-center gap-2">
-              <ArrowLeft size={16} /> Voltar para a Loja
-            </span>
-            <ChevronRight size={14} />
+            <ArrowLeft size={14} className="shrink-0" />
+            <span>Voltar à Loja</span>
           </button>
-
-          <button 
+          <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 rounded-xl text-xs font-bold transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 hover:text-rose-300 rounded-xl text-[11px] font-semibold transition-colors"
           >
-            <LogOut size={16} /> Sair (Logout)
+            <LogOut size={14} className="shrink-0" />
+            <span>Terminar Sessão</span>
           </button>
-
-          <div className="text-[11px] text-gray-400 text-center font-lato pt-1">
-            Pedra Mania v2.4 • Espírito Santo
-          </div>
+          <p className="text-[10px] text-gray-600 text-center pt-0.5">v2.4 · Pedra Mania ES</p>
         </div>
       </aside>
 
