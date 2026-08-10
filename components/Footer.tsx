@@ -4,74 +4,70 @@ import { WavyDivider } from './ui/WavyDivider';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#4A3B32] text-[#F2D0B6] relative pt-40">
-      {/* Top Divider: Reaching up into MeetTheBaker (Cream) */}
-      <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#4A3B32" variant="flow" />
+    <footer className="bg-[#1E293B] text-[#BFDBFE] relative pt-32 sm:pt-40">
+      {/* Top Divider */}
+      <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#1E293B" variant="flow" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           
-          <div className="space-y-6">
-            <h2 className="font-pacifico text-4xl text-white">Cenários Gulosos</h2>
-            <p className="text-base opacity-80 font-lato leading-relaxed">
-              A trazer doçura e afeto para a sua vida através da confeitaria artesanal desde 2012.
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="font-pacifico text-3xl sm:text-4xl text-white">Pedra Mania</h2>
+            <p className="text-sm sm:text-base opacity-90 font-lato leading-relaxed">
+              O seu armarinho de referência no Espírito Santo. Insumos para crochê, tricô, bijuterias, miçangas e artes manuais com carinho e qualidade.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-white/10 p-3 rounded-full hover:bg-[#D87085] hover:text-white transition-all transform hover:scale-110"><Instagram size={24} /></a>
-              <a href="#" className="bg-white/10 p-3 rounded-full hover:bg-[#D87085] hover:text-white transition-all transform hover:scale-110"><Facebook size={24} /></a>
+            <div className="flex space-x-4 pt-2">
+              <a href="https://www.instagram.com/pedramaniaoficial/" target="_blank" rel="noreferrer" className="bg-white/10 p-3 rounded-full hover:bg-[#2563EB] hover:text-white transition-all transform hover:scale-110"><Instagram size={22} /></a>
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="bg-white/10 p-3 rounded-full hover:bg-[#2563EB] hover:text-white transition-all transform hover:scale-110"><Facebook size={22} /></a>
             </div>
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-xl text-white mb-6 border-b-2 border-[#D87085] inline-block pb-1">Explorar</h3>
-            <ul className="space-y-4 text-base opacity-80">
-              <li><a href="#" className="hover:text-white hover:pl-2 transition-all">Nossa História</a></li>
-              <li><a href="#" className="hover:text-white hover:pl-2 transition-all">Produtos</a></li>
-              <li><a href="#" className="hover:text-white hover:pl-2 transition-all">Blog</a></li>
-              <li><a href="#" className="hover:text-white hover:pl-2 transition-all">Carreiras</a></li>
+            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Explorar</h3>
+            <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base opacity-80">
+              <li><a href="#about" className="hover:text-white hover:pl-2 transition-all block">Nossa História & Encontros</a></li>
+              <li><a href="#products" className="hover:text-white hover:pl-2 transition-all block">Linhas & Kits de Crochê</a></li>
+              <li><a href="#how-to" className="hover:text-white hover:pl-2 transition-all block">Como Fazer Pedidos</a></li>
+              <li><a href="https://www.instagram.com/pedramaniaoficial/" target="_blank" rel="noreferrer" className="hover:text-white hover:pl-2 transition-all block">Instagram @pedramaniaoficial</a></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-xl text-white mb-6 border-b-2 border-[#D87085] inline-block pb-1">Contato</h3>
-            <ul className="space-y-4 text-base opacity-80">
+            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Contato ES</h3>
+            <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base opacity-80">
               <li className="flex items-start gap-3">
-                <MapPin size={20} className="mt-1 flex-shrink-0 text-[#D87085]" />
-                <span>Rua dos Doces, 123<br/>Chiado, Lisboa - PT</span>
+                <MapPin size={18} className="mt-1 flex-shrink-0 text-[#2563EB]" />
+                <span>Av. Beira Mar, 450 - Centro<br/>Vitória, Espírito Santo - BR</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone size={20} className="text-[#D87085]" />
-                <span>(11) 99999-9999</span>
+                <Phone size={18} className="text-[#2563EB] flex-shrink-0" />
+                <span>(27) 99604-3041</span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail size={20} className="text-[#D87085]" />
-                <span>oi@cenariosgulosos.pt</span>
+                <Mail size={18} className="text-[#2563EB] flex-shrink-0" />
+                <span>contato@pedramania.com.br</span>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-nunito font-bold text-xl text-white mb-6 border-b-2 border-[#D87085] inline-block pb-1">Horários</h3>
-            <ul className="space-y-3 text-base opacity-80 bg-white/5 p-6 rounded-2xl">
+            <h3 className="font-nunito font-bold text-lg sm:text-xl text-white mb-4 sm:mb-6 border-b-2 border-[#2563EB] inline-block pb-1">Horários Loja Física</h3>
+            <ul className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm opacity-80 bg-white/5 p-5 sm:p-6 rounded-2xl">
               <li className="flex justify-between border-b border-white/10 pb-2">
-                <span>Ter - Sex</span>
-                <span>09:00 - 19:00</span>
+                <span>Seg - Sex</span>
+                <span>08:30 - 18:30</span>
               </li>
               <li className="flex justify-between border-b border-white/10 pb-2">
                 <span>Sáb</span>
-                <span>09:00 - 18:00</span>
+                <span>09:00 - 14:00</span>
               </li>
-              <li className="flex justify-between">
-                <span>Dom</span>
-                <span>09:00 - 13:00</span>
-              </li>
-              <li className="text-[#D87085] mt-4 font-bold text-center bg-white/10 py-1 rounded-lg">Segunda Fechado</li>
+              <li className="text-[#2563EB] mt-3 font-bold text-center bg-white/10 py-1 rounded-lg">Domingo Fechado</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-sm opacity-50 font-lato">
-          <p>© 2026 Cenários Gulosos. Todos os direitos reservados. Feito com amor e açúcar.</p>
+        <div className="border-t border-white/10 mt-12 sm:mt-16 pt-6 sm:pt-8 text-center text-xs sm:text-sm opacity-60 font-lato">
+          <p>© 2026 Pedra Mania Armarinho & Artesanato. Todos os direitos reservados. Espírito Santo - Brasil.</p>
         </div>
       </div>
     </footer>

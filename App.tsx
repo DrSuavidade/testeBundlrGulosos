@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ProductGrid } from './components/ProductGrid';
@@ -11,23 +11,64 @@ import { CartDrawer } from './components/CartDrawer';
 import { Checkout } from './components/Checkout';
 import { Contact } from './components/Contact';
 import { ProductsPage } from './components/ProductsPage';
+import { AdminPanel } from './components/AdminPanel';
 import { CartProvider } from './context/CartContext';
+import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
-type ViewState = 'home' | 'about' | 'products' | 'orders' | 'contact' | 'checkout';
+import { ShopeeMigrationBanner } from './components/ShopeeMigrationBanner';
+
+type ViewState = 'home' | 'about' | 'products' | 'orders' | 'contact' | 'checkout' | 'admin';
 
 const App: React.FC = () => {
-  const [view, setView] = useState<ViewState>('home');
+  const [view, setView] = useState<ViewState>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/admin' || hash === '#admin') {
+        return 'admin';
+      }
+    }
+    return 'home';
+  });
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/admin' || hash === '#admin') {
+        setView('admin');
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
 
   const handleNavigate = (page: string) => {
-    setView(page as ViewState);
+    const newView = page as ViewState;
+    setView(newView);
+    
+    if (typeof window !== 'undefined') {
+      if (newView === 'admin') {
+        window.history.pushState({}, '', '/admin');
+      } else if (window.location.pathname === '/admin') {
+        window.history.pushState({}, '', '/');
+      }
+    }
   };
 
   return (
     <CartProvider>
-      <div className="min-h-screen bg-[#FFF6F1] font-lato selection:bg-[#F6B9C3] selection:text-[#4A3B32]">
+      <div className="min-h-screen bg-[#F0F7FF] font-lato selection:bg-[#93C5FD] selection:text-[#1E293B]">
         
-        {view === 'checkout' ? (
-          <Checkout onBack={() => setView('home')} />
+        {view === 'admin' ? (
+          <AdminPanel onBack={() => handleNavigate('home')} />
+        ) : view === 'checkout' ? (
+          <Checkout onBack={() => handleNavigate('home')} />
         ) : (
           <>
             <Navbar onNavigate={handleNavigate} />
@@ -80,6 +121,7 @@ const App: React.FC = () => {
           </>
         )}
         
+        <FloatingWhatsApp />
       </div>
     </CartProvider>
   );

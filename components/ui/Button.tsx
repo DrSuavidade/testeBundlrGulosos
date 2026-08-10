@@ -17,10 +17,10 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = "rounded-full font-nunito font-bold transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0";
   
   const variants = {
-    primary: "bg-[#D87085] text-white hover:bg-[#c25e73] shadow-md hover:shadow-lg",
-    secondary: "bg-[#F2D0B6] text-[#4A3B32] hover:bg-[#eac0a0] shadow-sm",
-    outline: "border-2 border-[#D87085] text-[#D87085] hover:bg-[#D87085] hover:text-white",
-    ghost: "text-[#D87085] hover:bg-[#F6B9C3]/20"
+    primary: "bg-[#2563EB] text-white hover:bg-[#1D4ED8] shadow-md hover:shadow-lg",
+    secondary: "bg-[#BFDBFE] text-[#1E293B] hover:bg-[#93C5FD] shadow-sm",
+    outline: "border-2 border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB] hover:text-white",
+    ghost: "text-[#2563EB] hover:bg-[#93C5FD]/20"
   };
 
   const sizes = {

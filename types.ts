@@ -1,4 +1,4 @@
-export type Category = 'pães' | 'bolos' | 'doces' | 'salgados' | 'kits';
+export type Category = 'linhas-fios' | 'kits' | 'bijuterias-pecas' | 'materias-primas' | 'decor-ferramentas';
 
 export interface Product {
   id: string;
@@ -6,12 +6,22 @@ export interface Product {
   slug: string;
   description: string;
   price: number;
+  stock: number;
   images: string[];
   tags: string[];
   category: Category;
-  allergens: string[];
+  allergens: string[]; // Especificações / características dos materiais (ex: Algodão 100%, Fio 4/6, etc)
   active: boolean;
   featured: boolean;
+}
+
+export interface InstaPost {
+  id: string;
+  title: string;
+  image: string;
+  likes: string;
+  comments: string;
+  tag: string;
 }
 
 export interface CartItem extends Product {
@@ -34,6 +44,30 @@ export interface Event {
   description: string;
 }
 
+export type OrderStatus = 'new' | 'preparing' | 'ready' | 'delivered';
+
+export interface OrderItemDetail {
+  product_id: string;
+  product_name: string;
+  product_image: string;
+  qty: number;
+  price: number;
+}
+
+export interface StoredOrder {
+  id: string;
+  customer_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  scheduled_date: string;
+  notes?: string;
+  total: number;
+  status: OrderStatus;
+  created_at: string;
+  items: OrderItemDetail[];
+}
+
 export interface OrderInput {
   customer_name: string;
   email: string;
@@ -48,5 +82,5 @@ export interface OrderInput {
 export interface OrderResult {
   id: string;
   total: number;
-  status: 'new' | 'confirmed';
+  status: OrderStatus;
 }
