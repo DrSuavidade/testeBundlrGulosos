@@ -8,8 +8,13 @@ import { useCart } from '../context/CartContext';
 import { WavyDivider } from './ui/WavyDivider';
 
 import { ShopeeMigrationBanner } from './ShopeeMigrationBanner';
+import { ShopByCategory } from './ShopByCategory';
 
-export const ProductsPage: React.FC = () => {
+interface ProductsPageProps {
+  compact?: boolean;
+}
+
+export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -61,13 +66,12 @@ export const ProductsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F0F7FF] pb-20">
       
-      {/* Top Banner with Shopee Proof & Stats */}
-      <ShopeeMigrationBanner />
+      {!compact && <ShopeeMigrationBanner />}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-20 relative z-10">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'mt-0' : 'mt-12 sm:mt-20'} relative z-10`}>
         
         {/* Featured / Suggestions */}
-        <div className="mb-12 sm:mb-16">
+        {!compact && <div className="mb-12 sm:mb-16">
            <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center md:justify-start">
              <div className="bg-[#2563EB] p-2.5 sm:p-3 rounded-full text-white shadow-lg">
                 <Heart size={24} fill="currentColor" className="sm:w-7 sm:h-7" />
@@ -87,17 +91,19 @@ export const ProductsPage: React.FC = () => {
                  </div>
               ))}
            </div>
-        </div>
+        </div>}
+
+        {compact && <ShopByCategory compact onSelect={(category) => setActiveCategory(category)} />}
 
         {/* Filters & Search - Search Bar in its own row */}
-        <div id="products-section" className="sticky top-20 sm:top-24 z-30 bg-white/95 backdrop-blur-md p-4 sm:p-6 mb-8 sm:mb-10 border border-[#BFDBFE] shadow-lg rounded-3xl transition-all space-y-4">
+           <div id="products-section" className="sticky top-20 sm:top-24 z-30 bg-white/95 backdrop-blur-md p-3 sm:p-4 mb-6 sm:mb-8 border border-[#CBD5E1] shadow-md rounded-2xl transition-all space-y-3">
            
            {/* Row 1: Search Bar in dedicated full-width line */}
            <div className="relative w-full">
              <input 
                type="text" 
                placeholder="Buscar por nome do produto, fios, miçangas, agulhas, kits..." 
-               className="w-full pl-12 pr-6 py-3 sm:py-3.5 rounded-2xl border-2 border-[#BFDBFE] focus:border-[#2563EB] focus:ring-4 focus:ring-[#93C5FD]/30 outline-none bg-[#F0F7FF]/60 text-[#1E293B] text-sm sm:text-base font-bold placeholder:font-normal placeholder:text-gray-400 shadow-inner transition-all"
+               className="w-full pl-11 pr-6 py-2.5 sm:py-3 rounded-xl border border-[#CBD5E1] focus:border-[#2563EB] focus:ring-2 focus:ring-[#BFDBFE] outline-none bg-white text-[#1E293B] text-sm sm:text-base font-semibold placeholder:font-normal placeholder:text-[#94A3B8] transition-all"
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
              />
@@ -113,15 +119,15 @@ export const ProductsPage: React.FC = () => {
            </div>
 
            {/* Row 2: Category Pills with Hidden Scrollbar */}
-           <div className="flex items-center overflow-x-auto gap-2 sm:gap-3 py-1 px-1 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+           <div className="flex items-center overflow-x-auto gap-2 py-1 px-0.5 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
              {categories.map(cat => (
                <button
                  key={cat}
                  onClick={() => setActiveCategory(cat)}
-                 className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl font-extrabold whitespace-nowrap transition-all text-xs sm:text-sm tracking-wide cursor-pointer ${
+                 className={`px-3.5 sm:px-4 py-2 rounded-lg font-bold whitespace-nowrap transition-all text-xs sm:text-sm tracking-wide cursor-pointer border ${
                    activeCategory === cat 
-                     ? 'bg-[#2563EB] text-white shadow-lg shadow-[#2563EB]/25 transform scale-105 ring-2 ring-[#BFDBFE]' 
-                     : 'bg-[#F0F7FF] text-[#1E293B] hover:bg-[#BFDBFE]/60 hover:text-[#2563EB]'
+                     ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm' 
+                     : 'bg-white border-[#E2E8F0] text-[#475569] hover:border-[#93C5FD] hover:text-[#2563EB]'
                  }`}
                >
                  {categoryLabels[cat]}
@@ -133,7 +139,7 @@ export const ProductsPage: React.FC = () => {
 
         {/* Product Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 ${compact ? 'gap-3 sm:gap-4' : 'gap-6 sm:gap-8'}`}>
             {[1, 2, 3, 4, 5, 6].map(i => (
               <div key={i} className="bg-white rounded-3xl h-72 sm:h-80 animate-pulse shadow-sm"></div>
             ))}
@@ -149,9 +155,9 @@ export const ProductsPage: React.FC = () => {
             {filteredProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="group bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 flex flex-col justify-between"
+                className={`group bg-white ${compact ? 'rounded-xl' : 'rounded-[2rem]'} overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 flex flex-col justify-between`}
               >
-                <div className="relative h-48 sm:h-56 overflow-hidden bg-gray-100">
+                <div className={`relative ${compact ? 'h-32 sm:h-40' : 'h-48 sm:h-56'} overflow-hidden bg-gray-100`}>
                   <img 
                     src={product.images[0]} 
                     alt={product.name} 
@@ -175,24 +181,24 @@ export const ProductsPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="p-5 sm:p-6 flex flex-col flex-1">
+                <div className={`${compact ? 'p-3 sm:p-4' : 'p-5 sm:p-6'} flex flex-col flex-1`}>
                   <div className="mb-2">
-                     <h3 className="font-nunito font-bold text-lg sm:text-xl text-[#1E293B] leading-tight group-hover:text-[#2563EB] transition-colors">
+                     <h3 className={`font-nunito font-bold ${compact ? 'text-sm sm:text-base' : 'text-lg sm:text-xl'} text-[#1E293B] leading-tight group-hover:text-[#2563EB] transition-colors`}>
                       {product.name}
                     </h3>
                   </div>
-                  <p className="text-gray-500 text-xs sm:text-sm font-lato line-clamp-2 mb-4 sm:mb-6 flex-1">
+                  <p className={`${compact ? 'hidden' : 'block'} text-gray-500 text-xs sm:text-sm font-lato line-clamp-2 mb-4 sm:mb-6 flex-1`}>
                     {product.description}
                   </p>
                   
-                  <div className="flex items-center justify-between mt-auto pt-3 sm:pt-4 border-t border-gray-100">
-                    <span className="text-lg sm:text-xl font-black text-[#2563EB]">
+                  <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-gray-100">
+                    <span className={`${compact ? 'text-sm sm:text-base' : 'text-lg sm:text-xl'} font-black text-[#2563EB]`}>
                       R$ {product.price.toFixed(2).replace('.', ',')}
                     </span>
                     <Button 
                       size="sm" 
                       variant="secondary" 
-                      className="group-hover:bg-[#2563EB] group-hover:text-white text-xs px-4 sm:px-5 py-1.5 sm:py-2"
+                      className="group-hover:bg-[#2563EB] group-hover:text-white text-xs px-3 sm:px-4 py-1.5"
                       onClick={() => addToCart(product)}
                     >
                       + Add

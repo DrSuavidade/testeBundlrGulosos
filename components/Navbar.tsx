@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search, ChevronDown } from 'lucide-react';
 import { Button } from './ui/Button';
 import { useCart } from '../context/CartContext';
 
@@ -36,28 +36,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-[60] transition-all duration-300 ${
           isScrolled
-            ? 'bg-[#93C5FD]/95 backdrop-blur-sm shadow-md py-2'
-            : 'bg-[#93C5FD] py-3'
+            ? 'bg-white/95 backdrop-blur-sm shadow-md'
+            : 'bg-white'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div className="bg-[#1E293B] text-white text-[0.65rem] sm:text-xs font-bold">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-between">
+            <span>Entrega e retirada no Espírito Santo</span>
+            <button onClick={() => handleLinkClick('contact')} className="hidden sm:block hover:text-[#BFDBFE] transition-colors">Atendimento pelo WhatsApp →</button>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex justify-between items-center">
           {/* Logo */}
           <div
             className="flex flex-col items-start cursor-pointer group"
             onClick={() => handleLinkClick('home')}
           >
-            <h1 className="font-pacifico text-xl md:text-2xl text-[#1E293B] group-hover:scale-105 transition-transform leading-none">
+              <h1 className="font-pacifico text-2xl md:text-3xl text-[#1E293B] group-hover:scale-105 transition-transform leading-none">
               Pedra Mania
             </h1>
-            <span className={`text-[0.6rem] font-nunito tracking-widest uppercase text-white font-bold transition-all ${isScrolled ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
+            <span className="text-[0.6rem] font-nunito tracking-widest uppercase text-[#64748B] font-bold">
               armarinho & artesanato · ES
             </span>
           </div>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-5">
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -70,9 +76,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="hidden sm:flex items-center rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] overflow-hidden focus-within:border-[#2563EB] focus-within:ring-2 focus-within:ring-[#BFDBFE] transition-all">
+              <button onClick={() => handleLinkClick('products')} className="flex items-center gap-2 px-3 py-2.5 text-xs lg:text-sm text-[#64748B] hover:text-[#2563EB] transition-colors w-36 lg:w-48 text-left">
+                <Search size={17} /><span>Buscar produtos</span>
+              </button>
+              <div className="h-6 w-px bg-[#CBD5E1]" />
+              <button onClick={() => handleLinkClick('products')} className="flex items-center gap-1.5 px-3 py-2.5 text-xs lg:text-sm font-bold text-[#1E293B] hover:text-[#2563EB] transition-colors"><ChevronDown size={16} /> Categorias</button>
+            </div>
             <button
-              className="hidden md:block p-1.5 text-[#1E293B] hover:text-white transition-colors"
+              className="hidden lg:block p-1.5 text-[#1E293B] hover:text-[#2563EB] transition-colors"
               onClick={() => handleLinkClick('admin')}
               title="Painel de Administração (/admin)"
             >

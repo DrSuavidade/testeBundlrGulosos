@@ -2,13 +2,17 @@ import React from 'react';
 import { Instagram, Facebook, MapPin, Mail, Phone } from 'lucide-react';
 import { WavyDivider } from './ui/WavyDivider';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  behindContact?: boolean;
+}
+
+export const Footer: React.FC<FooterProps> = ({ behindContact = false }) => {
   return (
-    <footer className="bg-[#1E293B] text-[#BFDBFE] relative pt-16 sm:pt-24">
+    <footer className="bg-[#1E293B] text-[#BFDBFE] relative pt-16 sm:pt-24" style={behindContact ? { zIndex: 0, isolation: 'isolate' } : undefined}>
       {/* Top Divider */}
-      <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#1E293B" variant="flow" />
+      {!behindContact && <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#1E293B" variant="flow" />}
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-30">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           
           <div className="space-y-4 sm:space-y-6">

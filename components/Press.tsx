@@ -18,7 +18,7 @@ export const Press: React.FC = () => {
       <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#BFDBFE" variant="flow" />
 
       {/* Left: Instagram Feed Content */}
-      <div className="w-full lg:w-1/2 px-4 sm:px-8 lg:pl-24 flex flex-col justify-center py-8 md:py-12 relative z-10">
+      <div className="w-full lg:w-1/2 px-4 sm:px-8 lg:pl-24 flex flex-col justify-center py-8 md:py-12 relative z-30">
         <div className="mb-8 text-center md:text-left">
            <div className="inline-flex items-center gap-2 bg-white/40 text-[#1E293B] px-3.5 py-1.5 rounded-full text-[0.7rem] sm:text-xs font-extrabold uppercase tracking-wider mb-3 shadow-sm backdrop-blur-sm">
               <Instagram size={16} className="text-[#2563EB]" />
@@ -70,7 +70,7 @@ export const Press: React.FC = () => {
       </div>
 
       {/* Right: Big Image / Reel Showcase */}
-      <div className="w-full lg:w-1/2 relative min-h-[350px] sm:min-h-[450px] lg:min-h-[500px] mt-8 lg:mt-0">
+      <div className="w-full lg:w-1/2 relative z-30 min-h-[350px] sm:min-h-[450px] lg:min-h-[500px] mt-8 lg:mt-0">
          {/* Organic clip path mask */}
          <div className="absolute inset-0 bg-[#F0F7FF] rounded-t-[3rem] lg:rounded-l-[5rem] lg:rounded-tr-none overflow-hidden border-t-4 lg:border-t-0 lg:border-l-8 border-white shadow-2xl">
             <img 

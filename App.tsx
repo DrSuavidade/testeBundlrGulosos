@@ -16,6 +16,7 @@ import { CartProvider } from './context/CartContext';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
 import { ShopeeMigrationBanner } from './components/ShopeeMigrationBanner';
+import { ShopByCategory } from './components/ShopByCategory';
 
 type ViewState = 'home' | 'about' | 'products' | 'orders' | 'contact' | 'checkout' | 'admin';
 
@@ -72,17 +73,14 @@ const App: React.FC = () => {
         ) : (
           <>
             <Navbar onNavigate={handleNavigate} />
-            <main className="pt-20"> {/* Add padding for fixed navbar */}
+            <main className="pt-28"> {/* Add padding for fixed navbar */}
               
               {/* HOME VIEW: Full Landing Page */}
               {view === 'home' && (
-                <div className="-mt-20"> {/* Negate top padding for Hero full height */}
-                  <Hero />
-                  <ProductGrid />
-                  <HowToOrder />
+                <div className="-mt-8">
+                  <ProductsPage compact />
                   <Testimonials />
                   <Press />
-                  <MeetTheBaker />
                 </div>
               )}
 
@@ -116,7 +114,7 @@ const App: React.FC = () => {
               )}
 
             </main>
-            <Footer />
+            <Footer behindContact={view === 'contact'} />
             <CartDrawer onCheckout={() => handleNavigate('checkout')} />
           </>
         )}

@@ -5,11 +5,9 @@ import { WavyDivider } from './ui/WavyDivider';
 
 export const Contact: React.FC = () => {
   return (
-    <section className="relative bg-[#F0F7FF] pt-16 md:pt-22 pb-12 md:pb-16">
-      {/* Decorative Wave */}
-      <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#F0F7FF" variant="flow" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+    <section className="relative bg-[#F0F7FF] pt-6 md:pt-10 pb-12 md:pb-16 overflow-visible" style={{ zIndex: 1000, isolation: 'isolate', transform: 'translateZ(0)' }}>
+      <WavyDivider className="absolute bottom-0 left-0 w-full z-0" color="#1E293B" variant="flow" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[200]" style={{ transform: 'translateZ(0)' }}>
 
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -22,7 +20,7 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
 
           {/* Info Card */}
-          <div className="bg-white rounded-2xl p-5 sm:p-7 shadow-md border-t-4 border-[#93C5FD]">
+          <div className="relative z-[9999] h-full bg-white rounded-2xl p-5 sm:p-7 shadow-md border-t-4 border-[#93C5FD]" style={{ position: 'relative', zIndex: 99999 }}>
             <h3 className="text-lg sm:text-xl font-nunito font-extrabold text-[#1E293B] mb-5">Informações da Loja</h3>
 
             <div className="space-y-4">
@@ -83,11 +81,7 @@ export const Contact: React.FC = () => {
 
           {/* Form */}
           <div className="relative">
-            {/* Subtle background blobs */}
-            <div className="absolute -top-8 -right-8 w-40 h-40 bg-[#93C5FD] rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob"></div>
-            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[#BFDBFE] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-
-            <form className="space-y-3.5 bg-white/75 backdrop-blur-md p-5 sm:p-7 rounded-2xl border border-white shadow-md relative z-10">
+            <form className="space-y-3.5 h-full bg-white p-5 sm:p-7 rounded-2xl border border-white shadow-md relative z-[9999]" style={{ position: 'relative', zIndex: 99999 }}>
               <h3 className="text-base sm:text-lg font-bold text-[#1E293B] mb-3">Envie uma mensagem</h3>
 
               <div>
