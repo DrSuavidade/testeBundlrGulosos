@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Product, Category, InstaPost, StoredOrder, OrderStatus } from '../types';
+import { Product, ProductColor, StoreCategory, Category, InstaPost, StoredOrder, OrderStatus } from '../types';
+import { ProductModal } from './ProductModal';
+import { AdminProductForm } from './AdminProductForm';
 import { api } from '../services/mockApi';
 import { Button } from './ui/Button';
 import { 
@@ -32,7 +34,8 @@ import {
   MapPin,
   Calendar,
   FileText,
-  LogOut
+  LogOut,
+  Palette
 } from 'lucide-react';
 import { AdminLogin } from './AdminLogin';
 
@@ -44,7 +47,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('pedramania_admin_auth') === 'true';
   });
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'kits' | 'insta' | 'orders'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'kits' | 'insta' | 'orders'>('dashboard');
   const [orderFilter, setOrderFilter] = useState<'new' | 'all' | 'preparing' | 'ready' | 'delivered'>('new');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -54,10 +57,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   };
   
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<StoreCategory[]>([]);
   const [instaPosts, setInstaPosts] = useState<InstaPost[]>([]);
   const [orders, setOrders] = useState<StoredOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingCategory, setEditingCategory] = useState<Partial<StoreCategory> | null>(null);
 
   // Picking checklist state (orderId -> set of item product_ids checked)
   const [checkedItems, setCheckedItems] = useState<Record<string, Record<string, boolean>>>({});
@@ -65,18 +70,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   // Modals state
   const [editingProduct, setEditingProduct] = useState<Partial<Product> | null>(null);
   const [editingInstaPost, setEditingInstaPost] = useState<Partial<InstaPost> | null>(null);
+  const [previewProduct, setPreviewProduct] = useState<Product | null>(null);
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const [prods, posts, ords] = await Promise.all([
+      const [prods, posts, ords, cats] = await Promise.all([
         api.getProducts(),
         api.getInstaPosts(),
-        api.getOrders()
+        api.getOrders(),
+        api.getCategories(),
       ]);
       setProducts(prods);
       setInstaPosts(posts);
       setOrders(ords);
+      setCategories(cats);
     } catch (err) {
       console.error('Erro ao carregar dados do admin', err);
     } finally {
@@ -88,27 +96,56 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     loadData();
   }, []);
 
-  // Handlers for Products
-  const handleSaveProduct = async (e: React.FormEvent) => {
+  // Category handlers
+  const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingProduct) return;
-
+    if (!editingCategory) return;
     try {
-      if (editingProduct.id) {
-        await api.updateProduct(editingProduct.id, editingProduct);
+      if (editingCategory.id) {
+        await api.updateCategory(editingCategory.id, editingCategory);
+      } else {
+        await api.addCategory({
+          name: editingCategory.name || 'Nova Categoria',
+          color: editingCategory.color || '#2563EB',
+          image: editingCategory.image || '',
+        });
+      }
+      setEditingCategory(null);
+      loadData();
+    } catch (err) {
+      alert('Erro ao salvar categoria');
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    if (!window.confirm('Apagar esta categoria? Os produtos com esta categoria ficarão sem categoria.')) return;
+    try {
+      await api.deleteCategory(id);
+      loadData();
+    } catch (err) { console.error(err); }
+  };
+
+  // Handlers for Products
+  const handleSaveProduct = async (productData: Partial<Product>) => {
+    try {
+      if (productData.id) {
+        await api.updateProduct(productData.id, productData);
       } else {
         await api.addProduct({
-          name: editingProduct.name || 'Novo Produto',
-          slug: (editingProduct.name || 'novo-produto').toLowerCase().replace(/\s+/g, '-'),
-          description: editingProduct.description || '',
-          price: Number(editingProduct.price) || 0,
-          stock: Number(editingProduct.stock) || 0,
-          images: editingProduct.images?.length ? editingProduct.images : ['https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop'],
-          tags: editingProduct.tags || ['Novo'],
-          category: (editingProduct.category as Category) || 'linhas-fios',
-          allergens: editingProduct.allergens || ['Algodão Premium'],
-          active: editingProduct.active ?? true,
-          featured: editingProduct.featured ?? false,
+          name: productData.name || 'Novo Produto',
+          slug: (productData.name || 'novo-produto').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+          description: productData.description || '',
+          price: Number(productData.price) || 0,
+          stock: Number(productData.stock) || 0,
+          images: productData.images?.length ? productData.images : ['https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop'],
+          colors: productData.colors,
+          weight: productData.weight,
+          composition: productData.composition,
+          tags: productData.tags || ['Novo'],
+          category: (productData.category as Category) || (categories[0]?.id || 'linhas-fios'),
+          allergens: productData.allergens || [],
+          active: productData.active ?? true,
+          featured: productData.featured ?? false,
         });
       }
       setEditingProduct(null);
@@ -270,11 +307,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   ].filter(item => item.product);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard Início', icon: LayoutDashboard },
-    { id: 'products', label: 'Estoque & Produtos', icon: Package, badge: lowStockProducts.length > 0 ? `${lowStockProducts.length} baixos` : undefined },
-    { id: 'kits', label: 'Kits Ativos', icon: Star, count: activeKits.length },
-    { id: 'insta', label: 'Destaques Instagram', icon: Instagram, count: instaPosts.length },
-    { id: 'orders', label: 'Pedidos Recebidos', icon: ShoppingBag, count: orders.length, badge: (newOrdersCount + preparingOrdersCount) > 0 ? `${newOrdersCount + preparingOrdersCount} ativos` : undefined },
+    { id: 'dashboard',  label: 'Dashboard Início',       icon: LayoutDashboard },
+    { id: 'products',   label: 'Estoque & Produtos',      icon: Package, badge: lowStockProducts.length > 0 ? `${lowStockProducts.length} baixos` : undefined },
+    { id: 'categories', label: 'Categorias',              icon: Layers, count: categories.length },
+    { id: 'kits',       label: 'Kits Ativos',             icon: Star, count: activeKits.length },
+    { id: 'insta',      label: 'Destaques Instagram',     icon: Instagram, count: instaPosts.length },
+    { id: 'orders',     label: 'Pedidos Recebidos',       icon: ShoppingBag, count: orders.length, badge: (newOrdersCount + preparingOrdersCount) > 0 ? `${newOrdersCount + preparingOrdersCount} ativos` : undefined },
   ];
 
   const statusBadges: Record<OrderStatus, { label: string; class: string }> = {
@@ -402,13 +440,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
-        
-        {/* TOP BAR / USER INFO */}
-        <header className="hidden md:flex justify-between items-center mb-8 bg-white p-4 sm:px-8 rounded-2xl shadow-sm border border-[#BFDBFE]/60">
+        {editingProduct ? (
+          <AdminProductForm
+            initialProduct={editingProduct}
+            categories={categories}
+            onSave={handleSaveProduct}
+            onCancel={() => setEditingProduct(null)}
+            onDelete={editingProduct.id ? async (id) => {
+              await handleDeleteProduct(id);
+              setEditingProduct(null);
+            } : undefined}
+          />
+        ) : (
+          <>
+            {/* TOP BAR / USER INFO */}
+            <header className="hidden md:flex justify-between items-center mb-8 bg-white p-4 sm:px-8 rounded-2xl shadow-sm border border-[#BFDBFE]/60">
           <div>
             <h1 className="text-2xl font-extrabold text-[#1E293B] font-nunito">
               {activeTab === 'dashboard' && ' Visão Geral & Desempenho'}
               {activeTab === 'products' && ' Gestão de Estoque & Produtos'}
+              {activeTab === 'categories' && ' Gestão de Categorias'}
               {activeTab === 'kits' && ' Kits Ativos & Criatividade'}
               {activeTab === 'insta' && ' Destaques do Instagram'}
               {activeTab === 'orders' && ' Preparação & Separação de Pedidos'}
@@ -692,12 +743,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                   <tbody className="divide-y divide-gray-100 text-sm">
                     {filteredProducts.map(product => (
                       <tr key={product.id} className="hover:bg-gray-50/80 transition-colors">
-                        <td className="py-3.5 px-4 font-bold text-[#1E293B] flex items-center gap-3">
-                          <img src={product.images[0]} alt={product.name} className="w-12 h-12 rounded-xl object-cover border border-gray-200 shrink-0" />
-                          <div>
-                            <span className="block font-bold text-[#1E293B]">{product.name}</span>
-                            <span className="text-xs text-gray-400 font-normal">{product.tags.join(', ')}</span>
-                          </div>
+                        <td className="py-3.5 px-4 font-bold text-[#1E293B]">
+                          <button
+                            onClick={() => setPreviewProduct(product)}
+                            className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity group/preview"
+                            title="Clique para ver detalhes do produto"
+                          >
+                            <div className="relative shrink-0">
+                              <img src={product.images[0]} alt={product.name} className="w-12 h-12 rounded-xl object-cover border border-gray-200 group-hover/preview:ring-2 group-hover/preview:ring-[#2563EB] transition-all" />
+                              {product.colors && product.colors.length > 0 && (
+                                <div className="absolute -bottom-1 -right-1 flex gap-0.5">
+                                  {product.colors.slice(0, 3).map(c => (
+                                    <span key={c.name} className="w-3 h-3 rounded-full border border-white shadow-sm" style={{ backgroundColor: c.hex }} title={c.name} />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <span className="block font-bold text-[#1E293B] group-hover/preview:text-[#2563EB] transition-colors">{product.name}</span>
+                              <span className="text-xs text-gray-400 font-normal">{product.tags.join(', ')}</span>
+                            </div>
+                          </button>
                         </td>
                         <td className="py-3.5 px-4">
                           <span className="bg-[#BFDBFE]/40 text-[#2563EB] text-xs font-bold px-2.5 py-1 rounded-md uppercase">
@@ -759,7 +825,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                             {product.active ? 'Ativo' : 'Inativo'}
                           </button>
                         </td>
-                        <td className="py-3.5 px-4 text-right space-x-2">
+                        <td className="py-3.5 px-4 text-right space-x-1">
+                          <button 
+                            onClick={() => setPreviewProduct(product)} 
+                            className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="Ver produto (como na loja)"
+                          >
+                            <Eye size={18} />
+                          </button>
                           <button 
                             onClick={() => setEditingProduct(product)} 
                             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
@@ -781,6 +854,60 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB: CATEGORIES */}
+        {activeTab === 'categories' && (
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#BFDBFE] animate-fade-in-up">
+            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h3 className="text-xl font-extrabold text-[#1E293B]">Categorias de Produtos</h3>
+                <p className="text-sm text-gray-500">Crie e edite as categorias disponíveis na loja e no formulário de produtos</p>
+              </div>
+              <Button size="sm" onClick={() => setEditingCategory({ name: '', color: '#2563EB', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=500&auto=format&fit=crop' })}>
+                <Plus size={16} className="mr-1" /> Nova Categoria
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map(cat => {
+                const productCount = products.filter(p => p.category === cat.id).length;
+                return (
+                  <div key={cat.id} className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm flex flex-col justify-between group">
+                    <div className="relative h-32 overflow-hidden bg-gray-100">
+                      <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${cat.color}ee 0%, ${cat.color}66 60%, transparent 100%)` }} />
+                      <div className="absolute top-3 left-3 flex items-center gap-2">
+                        <span className="w-4 h-4 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: cat.color }} />
+                        <span className="bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                          slug: {cat.id}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-3 left-3 right-3 text-white">
+                        <h4 className="font-nunito font-extrabold text-lg leading-tight drop-shadow-sm">{cat.name}</h4>
+                        <span className="text-xs opacity-90">{productCount} {productCount === 1 ? 'produto associado' : 'produtos associados'}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-white flex justify-end gap-2 border-t border-gray-100">
+                      <button 
+                        onClick={() => setEditingCategory(cat)} 
+                        className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-blue-100 transition-colors"
+                      >
+                        <Edit3 size={14} /> Editar
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteCategory(cat.id)} 
+                        className="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-rose-100 transition-colors"
+                      >
+                        <Trash2 size={14} /> Apagar
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -1116,126 +1243,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
           </div>
         )}
 
+          </>
+        )}
+
       </main>
-
-      {/* MODAL: CREATE / EDIT PRODUCT */}
-      {editingProduct && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl my-8">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-[#1E293B]">
-                {editingProduct.id ? 'Editar Produto / Insumo' : 'Novo Produto / Kit'}
-              </h3>
-              <button onClick={() => setEditingProduct(null)} className="p-2 hover:bg-gray-100 rounded-full">
-                <X size={20} />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveProduct} className="space-y-4 text-sm">
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">Nome do Produto / Kit</label>
-                <input 
-                  required
-                  type="text" 
-                  value={editingProduct.name || ''} 
-                  onChange={e => setEditingProduct({...editingProduct, name: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  placeholder="Ex: Fio de Algodão Soft Pastel 100g"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Categoria</label>
-                  <select 
-                    value={editingProduct.category || 'linhas-fios'} 
-                    onChange={e => setEditingProduct({...editingProduct, category: e.target.value as Category})}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none bg-white"
-                  >
-                    <option value="linhas-fios">Linhas & Fios</option>
-                    <option value="kits">Kits Criativos</option>
-                    <option value="bijuterias-pecas">Bijuterias & Peças</option>
-                    <option value="materias-primas">Matérias-Primas</option>
-                    <option value="decor-ferramentas">Decor & Ferramentas</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Preço (R$)</label>
-                  <input 
-                    required
-                    type="number" 
-                    step="0.01"
-                    value={editingProduct.price || 0} 
-                    onChange={e => setEditingProduct({...editingProduct, price: parseFloat(e.target.value) || 0})}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">Quantidade em Estoque (Unidades)</label>
-                <input 
-                  required
-                  type="number" 
-                  value={editingProduct.stock || 0} 
-                  onChange={e => setEditingProduct({...editingProduct, stock: parseInt(e.target.value) || 0})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none font-bold text-[#2563EB]"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">URL da Imagem</label>
-                <input 
-                  type="text" 
-                  value={editingProduct.images?.[0] || ''} 
-                  onChange={e => setEditingProduct({...editingProduct, images: [e.target.value]})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs"
-                  placeholder="https://..."
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">Descrição</label>
-                <textarea 
-                  rows={3}
-                  value={editingProduct.description || ''} 
-                  onChange={e => setEditingProduct({...editingProduct, description: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none resize-none"
-                  placeholder="Detalhes sobre o produto, fio ou kit..."
-                />
-              </div>
-
-              <div className="flex items-center gap-6 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer font-bold">
-                  <input 
-                    type="checkbox" 
-                    checked={editingProduct.active ?? true}
-                    onChange={e => setEditingProduct({...editingProduct, active: e.target.checked})}
-                    className="w-4 h-4 text-[#2563EB] rounded"
-                  />
-                  <span>Produto Ativo</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer font-bold">
-                  <input 
-                    type="checkbox" 
-                    checked={editingProduct.featured ?? false}
-                    onChange={e => setEditingProduct({...editingProduct, featured: e.target.checked})}
-                    className="w-4 h-4 text-[#2563EB] rounded"
-                  />
-                  <span>Destaque na Home</span>
-                </label>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button type="button" variant="ghost" onClick={() => setEditingProduct(null)}>Cancelar</Button>
-                <Button type="submit">Salvar Produto</Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* MODAL: CREATE / EDIT INSTAGRAM POST */}
       {editingInstaPost && (
@@ -1313,6 +1324,95 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* MODAL: CREATE / EDIT CATEGORY */}
+      {editingCategory && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[#1E293B]">
+                {editingCategory.id ? 'Editar Categoria' : 'Nova Categoria'}
+              </h3>
+              <button onClick={() => setEditingCategory(null)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCategory} className="space-y-4 text-sm">
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Nome da Categoria</label>
+                <input 
+                  required
+                  type="text" 
+                  value={editingCategory.name || ''} 
+                  onChange={e => setEditingCategory({...editingCategory, name: e.target.value})}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
+                  placeholder="Ex: Fios & Linhas, Matérias-Primas..."
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">Cor do Card / Gradiente</label>
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="color" 
+                    value={editingCategory.color || '#2563EB'} 
+                    onChange={e => setEditingCategory({...editingCategory, color: e.target.value})}
+                    className="w-10 h-10 rounded-lg border-2 border-gray-200 cursor-pointer p-0.5 bg-white"
+                  />
+                  <input 
+                    type="text" 
+                    value={editingCategory.color || '#2563EB'} 
+                    onChange={e => setEditingCategory({...editingCategory, color: e.target.value})}
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs font-mono"
+                    placeholder="#2563EB"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-gray-700 mb-1">URL da Imagem de Fundo</label>
+                <input 
+                  required
+                  type="text" 
+                  value={editingCategory.image || ''} 
+                  onChange={e => setEditingCategory({...editingCategory, image: e.target.value})}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs"
+                  placeholder="https://images.unsplash.com/..."
+                />
+                {editingCategory.image && (
+                  <div className="mt-2 relative h-24 rounded-xl overflow-hidden border border-gray-200">
+                    <img 
+                      src={editingCategory.image} 
+                      alt="preview" 
+                      className="w-full h-full object-cover"
+                      onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                    <div 
+                      className="absolute inset-0 opacity-60" 
+                      style={{ background: `linear-gradient(to top, ${editingCategory.color || '#2563EB'} 0%, transparent 100%)` }} 
+                    />
+                    <span className="absolute bottom-2 left-2 text-white font-bold text-xs">Pré-visualização</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button type="button" variant="ghost" onClick={() => setEditingCategory(null)}>Cancelar</Button>
+                <Button type="submit">Salvar Categoria</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* PRODUCT PREVIEW MODAL (same as store) */}
+      {previewProduct && (
+        <ProductModal
+          product={previewProduct}
+          onClose={() => setPreviewProduct(null)}
+        />
       )}
 
     </div>

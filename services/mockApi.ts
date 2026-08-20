@@ -1,4 +1,12 @@
-import { Product, Testimonial, Event, OrderInput, OrderResult, InstaPost, StoredOrder, OrderStatus } from '../types';
+import { Product, StoreCategory, Testimonial, Event, OrderInput, OrderResult, InstaPost, StoredOrder, OrderStatus } from '../types';
+
+const INITIAL_CATEGORIES: StoreCategory[] = [
+  { id: 'linhas-fios',       name: 'Linhas & Fios',         color: '#2563EB', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=500&auto=format&fit=crop' },
+  { id: 'bijuterias-pecas',  name: 'Miçangas & Bijuterias', color: '#7C3AED', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=500&auto=format&fit=crop' },
+  { id: 'decor-ferramentas', name: 'Ferramentas & Decor',   color: '#D97706', image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=500&auto=format&fit=crop' },
+  { id: 'materias-primas',   name: 'Matérias-primas',       color: '#059669', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=500&auto=format&fit=crop' },
+  { id: 'kits',              name: 'Kits & Achadinhos',     color: '#DB2777', image: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?q=80&w=500&auto=format&fit=crop' },
+];
 
 const INITIAL_PRODUCTS: Product[] = [
   {
@@ -9,6 +17,13 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 48.90,
     stock: 15,
     images: ['https://images.unsplash.com/photo-1584992236310-6edddc08acff?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Bege Natural', hex: '#D4B896', image: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Rosa Pastel', hex: '#F4A8B8', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Azul Bebê', hex: '#93C5FD', image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?q=80&w=800&auto=format&fit=crop' },
+    ],
+    weight: '250g',
+    composition: '100% Algodão Mercerizado',
     tags: ['Mais Vendido', 'Kit Completo'],
     category: 'kits',
     allergens: ['100% Algodão Mercerizado', 'Acompanha Receita Passo a Passo', 'Olhos com Trava de Segurança'],
@@ -23,6 +38,15 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 16.50,
     stock: 45,
     images: ['https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Branco Puro',  hex: '#F8F8F8', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Azul Royal',   hex: '#2563EB', image: 'https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Verde Menta',  hex: '#6EE7B7', image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Amarelo Sol',  hex: '#FCD34D', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Lilás',        hex: '#C4B5FD', image: 'https://images.unsplash.com/photo-1550159930-40066082a4fc?q=80&w=800&auto=format&fit=crop' },
+    ],
+    weight: '100g',
+    composition: '100% Algodão Mercerizado — Tex 394',
     tags: ['Campeão de Vendas', 'Cores Pastéis'],
     category: 'linhas-fios',
     allergens: ['100g / 254 Metros', 'Tex 394', 'Agulha Recomendada: 2.5mm a 3.5mm'],
@@ -37,6 +61,11 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 55.00,
     stock: 20,
     images: ['https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Tons Pastéis', hex: '#FBCFE8', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Multicolor',   hex: '#F59E0B', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Azul & Prata', hex: '#7DD3FC', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Destaque da Semana', 'Criatividade'],
     category: 'kits',
     allergens: ['Livre de Níquel', 'Resistente à Água', 'Fio Elástico Silicone 0.8mm'],
@@ -51,6 +80,11 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 119.90,
     stock: 8,
     images: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Azul Pastel',   hex: '#93C5FD', image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Areia',         hex: '#D4B896', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Branco Off',    hex: '#FAF9F6', image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Edição Especial', 'Moda Artesanal'],
     category: 'kits',
     allergens: ['Algodão Penteado Premium', 'Gráfico Exclusivo Pedra Mania', 'Nível Intermediário'],
@@ -65,6 +99,11 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 89.00,
     stock: 12,
     images: ['https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Sortido',         hex: '#A78BFA', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Pedras Negras',   hex: '#374151', image: 'https://images.unsplash.com/photo-1600703093977-9e85ca22dc71?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Quartzo Rosa',    hex: '#F9A8D4', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Coleção Pedra Mania', 'Qualidade'],
     category: 'materias-primas',
     allergens: ['Pedras Naturais Autênticas', 'Maleta com 24 Divisórias', 'Brilho Intenso'],
@@ -79,6 +118,12 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 29.90,
     stock: 30,
     images: ['https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Cru Natural',   hex: '#E7DCC8', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Cinza Chumbo', hex: '#6B7280', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Verde Oliva',  hex: '#65A30D', image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Terracota',    hex: '#C2410C', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Ecológico', 'Decor'],
     category: 'linhas-fios',
     allergens: ['500g / aprox. 140m', 'Sem Emendas', 'Espessura Uniforme 25mm'],
@@ -107,6 +152,11 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 34.50,
     stock: 50,
     images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Dourado',     hex: '#D97706', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Prateado',    hex: '#9CA3AF', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Rosé Gold',   hex: '#E8A598', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Qualidade Premium', 'Antialérgico'],
     category: 'bijuterias-pecas',
     allergens: ['Verniz de Proteção Duplo', 'Antialérgico (Sem Níquel)', 'Garantia de Brilho'],
@@ -121,6 +171,12 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 19.90,
     stock: 25,
     images: ['https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop'],
+    colors: [
+      { name: 'Azul Pastel',  hex: '#93C5FD', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Preto',        hex: '#111827', image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Vermelho',     hex: '#DC2626', image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?q=80&w=800&auto=format&fit=crop' },
+      { name: 'Caramelo',     hex: '#D97706', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
+    ],
     tags: ['Toque de Seda', 'Azul Pastel'],
     category: 'linhas-fios',
     allergens: ['Espessura 1mm', 'Rolo de 50 Metros', 'Resistência ao Desbotamento'],
@@ -312,9 +368,10 @@ const EVENTS: Event[] = [
 
 // Helper for localStorage persistence
 const STORAGE_KEYS = {
-  PRODUCTS: 'pedramania_products_v5',
-  INSTA_POSTS: 'pedramania_insta_posts_v5',
-  ORDERS: 'pedramania_orders_v5'
+  PRODUCTS: 'pedramania_products_v7',
+  INSTA_POSTS: 'pedramania_insta_posts_v7',
+  ORDERS: 'pedramania_orders_v7',
+  CATEGORIES: 'pedramania_categories_v7',
 };
 
 const getStoredData = <T>(key: string, fallback: T): T => {
@@ -338,6 +395,40 @@ const saveStoredData = <T>(key: string, data: T): void => {
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const api = {
+  // CATEGORIES
+  getCategories: async (): Promise<StoreCategory[]> => {
+    await delay(100);
+    return getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+  },
+
+  addCategory: async (data: Omit<StoreCategory, 'id'>): Promise<StoreCategory> => {
+    await delay(200);
+    const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    const newCat: StoreCategory = {
+      ...data,
+      id: data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    };
+    saveStoredData(STORAGE_KEYS.CATEGORIES, [...cats, newCat]);
+    return newCat;
+  },
+
+  updateCategory: async (id: string, updates: Partial<StoreCategory>): Promise<StoreCategory> => {
+    await delay(200);
+    const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    let updated: StoreCategory | null = null;
+    const next = cats.map(c => { if (c.id === id) { updated = { ...c, ...updates }; return updated; } return c; });
+    saveStoredData(STORAGE_KEYS.CATEGORIES, next);
+    if (!updated) throw new Error('Categoria não encontrada');
+    return updated;
+  },
+
+  deleteCategory: async (id: string): Promise<boolean> => {
+    await delay(200);
+    const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+    saveStoredData(STORAGE_KEYS.CATEGORIES, cats.filter(c => c.id !== id));
+    return true;
+  },
+
   // PRODUCTS & STOCK
   getProducts: async (): Promise<Product[]> => {
     await delay(200);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Plus, Minus, Info } from 'lucide-react';
-import { Product } from '../types';
+import { X, Plus, Minus, Info, Palette } from 'lucide-react';
+import { Product, ProductColor } from '../types';
 import { Button } from './ui/Button';
 import { useCart } from '../context/CartContext';
 
@@ -13,6 +13,15 @@ interface ProductModalProps {
 export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
   const [qty, setQty] = useState(1);
   const { addToCart } = useCart();
+
+  // Determine initial color (first color or null)
+  const hasColors = product.colors && product.colors.length > 0;
+  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(
+    hasColors ? product.colors![0] : null
+  );
+
+  // Active image: color-specific image, or first of images[]
+  const activeImage = selectedColor?.image ?? product.images[0];
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -44,17 +53,28 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
         </button>
 
         {/* Image Side */}
-        <div className="w-full md:w-1/2 h-48 sm:h-64 md:h-full bg-[#BFDBFE] relative shrink-0">
-           <img 
-            src={product.images[0]} 
-            alt={product.name} 
-            className="w-full h-full object-cover"
-           />
-           {product.featured && (
-             <span className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#2563EB] text-white px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold shadow-md">
-               Destaque Pedra Mania
-             </span>
-           )}
+        <div className="w-full md:w-1/2 h-48 sm:h-64 md:h-full bg-[#BFDBFE] relative shrink-0 overflow-hidden">
+          <img 
+            key={activeImage}
+            src={activeImage}
+            alt={selectedColor ? `${product.name} — ${selectedColor.name}` : product.name}
+            className="w-full h-full object-cover transition-opacity duration-300"
+          />
+          {product.featured && (
+            <span className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#2563EB] text-white px-2.5 py-1 rounded-full text-xs sm:text-sm font-bold shadow-md">
+              Destaque Pedra Mania
+            </span>
+          )}
+          {/* Color name badge */}
+          {selectedColor && (
+            <span className="absolute bottom-3 left-3 bg-black/55 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm flex items-center gap-1.5">
+              <span
+                className="w-3 h-3 rounded-full border border-white/60 inline-block shrink-0"
+                style={{ backgroundColor: selectedColor.hex }}
+              />
+              {selectedColor.name}
+            </span>
+          )}
         </div>
 
         {/* Info Side */}
@@ -69,12 +89,64 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
               ))}
             </div>
             
-            <p className="text-xs sm:text-base text-[#1E293B]/80 font-lato leading-relaxed mb-4 sm:mb-6">
+            <p className="text-xs sm:text-base text-[#1E293B]/80 font-lato leading-relaxed mb-4 sm:mb-5">
               {product.description}
             </p>
 
+            {/* COLOR SELECTOR */}
+            {hasColors && (
+              <div className="mb-4 sm:mb-5">
+                <div className="flex items-center gap-2 mb-2.5 text-[#1E293B]">
+                  <Palette size={15} className="text-[#2563EB]" />
+                  <span className="font-bold text-xs sm:text-sm">
+                    Cor disponível: <span className="text-[#2563EB]">{selectedColor?.name}</span>
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {product.colors!.map((color) => {
+                    const isSelected = selectedColor?.name === color.name;
+                    return (
+                      <button
+                        key={color.name}
+                        title={color.name}
+                        onClick={() => setSelectedColor(color)}
+                        className={`relative w-9 h-9 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563EB] ${
+                          isSelected
+                            ? 'border-[#2563EB] scale-110 shadow-md shadow-[#2563EB]/30'
+                            : 'border-white shadow hover:scale-105 hover:border-gray-300'
+                        }`}
+                        style={{ backgroundColor: color.hex }}
+                        aria-label={`Cor: ${color.name}`}
+                        aria-pressed={isSelected}
+                      >
+                        {isSelected && (
+                          <span className="absolute inset-0 rounded-full border-2 border-white/70 scale-75" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Weight & Composition */}
+            {(product.weight || product.composition) && (
+              <div className="mb-4 sm:mb-5 flex flex-wrap gap-2">
+                {product.weight && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#F0F7FF] border border-[#BFDBFE] text-[#2563EB] text-xs font-bold px-3 py-1.5 rounded-full">
+                    ⚖️ {product.weight}
+                  </span>
+                )}
+                {product.composition && (
+                  <span className="inline-flex items-center gap-1.5 bg-[#F0F7FF] border border-[#BFDBFE] text-[#2563EB] text-xs font-bold px-3 py-1.5 rounded-full">
+                    🧵 {product.composition}
+                  </span>
+                )}
+              </div>
+            )}
+
             {product.allergens.length > 0 && (
-              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-[#F0F7FF] rounded-xl border border-[#BFDBFE]">
+              <div className="mb-4 sm:mb-5 p-3 sm:p-4 bg-[#F0F7FF] rounded-xl border border-[#BFDBFE]">
                 <div className="flex items-center gap-2 mb-1.5 sm:mb-2 text-[#2563EB]">
                   <Info size={16} />
                   <span className="font-bold text-xs sm:text-sm">Especificações do Material</span>
@@ -86,6 +158,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                 </ul>
               </div>
             )}
+
           </div>
 
           <div className="mt-2 sm:mt-4 pt-4 sm:pt-6 border-t border-gray-100 shrink-0">
@@ -112,7 +185,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             </div>
 
             <Button fullWidth size="lg" onClick={handleAdd} className="py-3 sm:py-3.5 text-sm sm:text-lg">
-              Adicionar ao Pedido - R$ {(product.price * qty).toFixed(2).replace('.', ',')}
+              Adicionar ao Pedido — R$ {(product.price * qty).toFixed(2).replace('.', ',')}
             </Button>
           </div>
         </div>

@@ -1,4 +1,17 @@
-export type Category = 'linhas-fios' | 'kits' | 'bijuterias-pecas' | 'materias-primas' | 'decor-ferramentas';
+export type Category = string; // slug da categoria, ex: 'linhas-fios'
+
+export interface StoreCategory {
+  id: string;   // slug único, ex: 'linhas-fios'
+  name: string; // nome visível, ex: 'Linhas & Fios'
+  color: string; // cor do gradiente, ex: '#2563EB'
+  image: string; // URL da imagem de fundo do card
+}
+
+export interface ProductColor {
+  name: string;  // Ex: "Vermelho", "Azul Royal", "Natural"
+  hex: string;   // Ex: "#E63946"
+  image: string; // URL da imagem para esta cor específica
+}
 
 export interface Product {
   id: string;
@@ -8,9 +21,12 @@ export interface Product {
   price: number;
   stock: number;
   images: string[];
+  colors?: ProductColor[]; // Opcional — cores disponíveis, cada uma com imagem própria
+  weight?: string;       // Ex: "100g", "500g", "Rolo 50m"
+  composition?: string;  // Ex: "100% Algodão Mercerizado", "Aço Carbono"
   tags: string[];
   category: Category;
-  allergens: string[]; // Especificações / características dos materiais (ex: Algodão 100%, Fio 4/6, etc)
+  allergens: string[]; // Especificações / características dos materiais
   active: boolean;
   featured: boolean;
 }
