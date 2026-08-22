@@ -70,8 +70,11 @@ export const Footer: React.FC<FooterProps> = ({ behindContact = false }) => {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-8 sm:mt-10 pt-5 sm:pt-6 text-center text-[11px] opacity-50 font-lato">
+        <div className="border-t border-white/10 mt-8 sm:mt-10 pt-5 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-[11px] opacity-60 font-lato">
           <p>© 2026 Pedra Mania Armarinho & Artesanato. Todos os direitos reservados. Espírito Santo - Brasil.</p>
+          <a href="/admin" className="hover:text-white transition-colors text-[10px] font-mono opacity-60 hover:opacity-100">
+            🔐 Acesso Restrito / Admin
+          </a>
         </div>
       </div>
     </footer>

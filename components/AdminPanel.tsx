@@ -35,9 +35,16 @@ import {
   Calendar,
   FileText,
   LogOut,
-  Palette
+  Palette,
+  Image as ImageIcon,
+  Copy,
+  Check as CheckIcon
 } from 'lucide-react';
 import { AdminLogin } from './AdminLogin';
+import { ImageUploader } from './ImageUploader';
+import { PhotoRepositoryModal } from './PhotoRepositoryModal';
+import { AdminKitManager } from './AdminKitManager';
+import { formatFileSize } from '../services/imageUtils';
 
 interface AdminPanelProps {
   onBack: () => void;
@@ -47,9 +54,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('pedramania_admin_auth') === 'true';
   });
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'kits' | 'insta' | 'orders'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'kits' | 'insta' | 'orders' | 'gallery'>('dashboard');
   const [orderFilter, setOrderFilter] = useState<'new' | 'all' | 'preparing' | 'ready' | 'delivered'>('new');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<{ filename: string; url: string; sizeBytes: number }[]>([]);
+  const [isCategoryGalleryOpen, setIsCategoryGalleryOpen] = useState(false);
 
   const handleLogout = () => {
     sessionStorage.removeItem('pedramania_admin_auth');
@@ -72,6 +82,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [editingInstaPost, setEditingInstaPost] = useState<Partial<InstaPost> | null>(null);
   const [previewProduct, setPreviewProduct] = useState<Product | null>(null);
 
+  const loadUploads = async () => {
+    try {
+      const res = await fetch('/api/upload');
+      if (res.ok) {
+        const data = await res.json();
+        setUploadedImages(data);
+      }
+    } catch (e) {
+      console.warn('Repositório de uploads offline');
+    }
+  };
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -85,6 +107,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
       setInstaPosts(posts);
       setOrders(ords);
       setCategories(cats);
+      await loadUploads();
     } catch (err) {
       console.error('Erro ao carregar dados do admin', err);
     } finally {
@@ -216,15 +239,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     });
   };
 
+  const [generatingLabelId, setGeneratingLabelId] = useState<string | null>(null);
+
+  const handleGenerateLabel = async (orderId: string) => {
+    setGeneratingLabelId(orderId);
+    try {
+      const updated = await api.generateOrderLabel(orderId);
+      setOrders(prev => prev.map(o => o.id === orderId ? updated : o));
+    } catch (err: any) {
+      alert(err.message || 'Erro ao gerar etiqueta no Melhor Envio');
+    } finally {
+      setGeneratingLabelId(null);
+    }
+  };
+
   const sendWhatsAppNotification = (order: StoredOrder) => {
     const statusText = 
       order.status === 'new' ? 'recebido e está em fila para separação' :
       order.status === 'preparing' ? 'sendo preparado com carinho pela nossa equipe' :
       order.status === 'ready' ? 'pronto para entrega / retirada' : 'concluído e entregue';
 
+    let trackingMsg = '';
+    if (order.tracking_code) {
+      trackingMsg = `\n📦 Código de Rastreio: ${order.tracking_code}`;
+    }
+
     const text = encodeURIComponent(
-      `Olá ${order.customer_name}! 🧶✨ Seu pedido #${order.id} da Pedra Mania está ${statusText}. ` +
-      `Total: R$ ${order.total.toFixed(2).replace('.', ',')}. Qualquer dúvida estamos à disposição!`
+      `Olá ${order.customer_name}! 🧶✨ Seu pedido #${order.id} da Pedra Mania está ${statusText}.${trackingMsg} ` +
+      `\nTotal: R$ ${order.total.toFixed(2).replace('.', ',')}. Qualquer dúvida estamos à disposição!`
     );
 
     const cleanPhone = order.phone.replace(/\D/g, '');
@@ -243,16 +285,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
       } else {
         await api.addInstaPost({
           title: editingInstaPost.title || 'Novo Post',
-          image: editingInstaPost.image || 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop',
-          likes: editingInstaPost.likes || '100',
-          comments: editingInstaPost.comments || '10',
+          description: editingInstaPost.description || '',
+          url: editingInstaPost.url || 'https://www.instagram.com/pedramaniaoficial/',
           tag: editingInstaPost.tag || 'NOVIDADE'
         });
       }
       setEditingInstaPost(null);
       loadData();
     } catch (err) {
-      alert('Erro ao salvar post');
+      alert('Erro ao salvar post do Instagram');
     }
   };
 
@@ -282,29 +323,69 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
   const newOrdersCount = orders.filter(o => o.status === 'new').length;
   const preparingOrdersCount = orders.filter(o => o.status === 'preparing').length;
+  
+  // Dynamic Real-time Calculations from Database / Orders
+  const totalRevenue = orders.reduce((acc, o) => acc + (o.total || 0), 0);
+  const totalOrders = orders.length;
+  const averageTicket = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
 
-  // Mock Sales Data for Monthly Chart
-  const monthlySales = [
-    { month: 'Jan', revenue: 8400, sales: 92 },
-    { month: 'Fev', revenue: 9800, sales: 110 },
-    { month: 'Mar', revenue: 11200, sales: 128 },
-    { month: 'Abr', revenue: 10500, sales: 115 },
-    { month: 'Mai', revenue: 13400, sales: 146 },
-    { month: 'Jun', revenue: 15200, sales: 168 },
-    { month: 'Jul', revenue: 14100, sales: 155 },
-    { month: 'Ago', revenue: 16850, sales: 184 },
-  ];
+  // Real Top Selling Items Ranking from orders
+  const productSalesMap: Record<string, { product: Product; salesCount: number; revenue: number }> = {};
+  
+  orders.forEach(order => {
+    order.items?.forEach(item => {
+      const prod = products.find(p => p.id === item.product_id) || {
+        id: item.product_id,
+        name: item.product_name,
+        price: item.price,
+        images: [item.product_image || 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800'],
+        category: 'geral',
+        tags: [],
+        stock: 0,
+        slug: '',
+        description: '',
+        allergens: [],
+        active: true,
+        featured: false
+      };
 
-  const maxRevenue = Math.max(...monthlySales.map(s => s.revenue));
+      if (!productSalesMap[item.product_id]) {
+        productSalesMap[item.product_id] = {
+          product: prod,
+          salesCount: 0,
+          revenue: 0
+        };
+      }
+      productSalesMap[item.product_id].salesCount += item.qty;
+      productSalesMap[item.product_id].revenue += item.price * item.qty;
+    });
+  });
 
-  // Top Selling Items Ranking
-  const topSellers = [
-    { product: products[1] || products[0], salesCount: 142, revenue: 2343.00 },
-    { product: products[0] || products[1], salesCount: 118, revenue: 5770.20 },
-    { product: products[2] || products[0], salesCount: 94, revenue: 5170.00 },
-    { product: products[5] || products[0], salesCount: 86, revenue: 2571.40 },
-    { product: products[3] || products[0], salesCount: 62, revenue: 7433.80 },
-  ].filter(item => item.product);
+  const topSellers = Object.values(productSalesMap).length > 0
+    ? Object.values(productSalesMap).sort((a, b) => b.revenue - a.revenue).slice(0, 5)
+    : products.slice(0, 4).map(p => ({ product: p, salesCount: 0, revenue: 0 }));
+
+  // Monthly Sales Aggregation from actual order history
+  const monthlyMap: Record<string, { month: string; revenue: number; sales: number }> = {};
+  orders.forEach(order => {
+    if (order.created_at) {
+      const d = new Date(order.created_at);
+      const monthKey = d.toLocaleDateString('pt-BR', { month: 'short' });
+      if (!monthlyMap[monthKey]) {
+        monthlyMap[monthKey] = { month: monthKey.toUpperCase(), revenue: 0, sales: 0 };
+      }
+      monthlyMap[monthKey].revenue += order.total;
+      monthlyMap[monthKey].sales += 1;
+    }
+  });
+
+  const monthlySales = Object.values(monthlyMap).length > 0
+    ? Object.values(monthlyMap)
+    : [
+        { month: 'Atual', revenue: totalRevenue, sales: totalOrders }
+      ];
+
+  const maxRevenue = Math.max(1, ...monthlySales.map(s => s.revenue));
 
   const navItems = [
     { id: 'dashboard',  label: 'Dashboard Início',       icon: LayoutDashboard },
@@ -313,6 +394,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     { id: 'kits',       label: 'Kits Ativos',             icon: Star, count: activeKits.length },
     { id: 'insta',      label: 'Destaques Instagram',     icon: Instagram, count: instaPosts.length },
     { id: 'orders',     label: 'Pedidos Recebidos',       icon: ShoppingBag, count: orders.length, badge: (newOrdersCount + preparingOrdersCount) > 0 ? `${newOrdersCount + preparingOrdersCount} ativos` : undefined },
+    { id: 'gallery',    label: 'Repositório de Fotos',    icon: ImageIcon },
   ];
 
   const statusBadges: Record<OrderStatus, { label: string; class: string }> = {
@@ -492,15 +574,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white/10 rounded-full blur-xl group-hover:scale-125 transition-transform"></div>
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs uppercase font-extrabold tracking-wider bg-white/20 px-3 py-1 rounded-full backdrop-blur-md">
-                    Faturamento Mês
+                    Faturamento Real
                   </span>
                   <div className="p-2 bg-white/20 rounded-xl">
                     <DollarSign size={22} />
                   </div>
                 </div>
-                <h3 className="text-3xl font-black mb-1">R$ 16.850,00</h3>
+                <h3 className="text-3xl font-black mb-1">R$ {totalRevenue.toFixed(2).replace('.', ',')}</h3>
                 <p className="text-xs text-blue-100 flex items-center gap-1 font-bold">
-                  <TrendingUp size={14} className="text-emerald-300" /> +18,4% em relação a Julho
+                  <TrendingUp size={14} className="text-emerald-300" /> Ticket Médio: R$ {averageTicket.toFixed(2).replace('.', ',')}
                 </p>
               </div>
 
@@ -508,16 +590,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#BFDBFE] flex flex-col justify-between">
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-gray-500">
-                    Vendas no Mês
+                    Total de Pedidos
                   </span>
                   <div className="p-2 bg-blue-50 text-[#2563EB] rounded-xl">
                     <ShoppingCart size={22} />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black text-[#1E293B]">184 Pedidos</h3>
+                  <h3 className="text-3xl font-black text-[#1E293B]">{totalOrders} {totalOrders === 1 ? 'Pedido' : 'Pedidos'}</h3>
                   <p className="text-xs text-emerald-600 font-bold mt-1 flex items-center gap-1">
-                    <CheckCircle2 size={14} /> 96% de entregas no ES concluídas
+                    <CheckCircle2 size={14} /> {orders.filter(o => o.status === 'delivered').length} concluídos · {newOrdersCount} novos
                   </p>
                 </div>
               </div>
@@ -554,16 +636,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#BFDBFE] flex flex-col justify-between">
                 <div className="flex justify-between items-start mb-4">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-gray-500">
-                    Kits em Alta
+                    Catálogo de Produtos
                   </span>
                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                     <Sparkles size={22} />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black text-[#1E293B]">{activeKits.length} Kits</h3>
+                  <h3 className="text-3xl font-black text-[#1E293B]">{products.length} Insumos</h3>
                   <p className="text-xs text-indigo-600 font-bold mt-1">
-                    Amigurumi e Miçangas lideram vendas
+                    {categories.length} categorias cadastradas
                   </p>
                 </div>
               </div>
@@ -578,12 +660,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-8">
                   <div>
                     <h3 className="text-xl font-extrabold text-[#1E293B] font-nunito flex items-center gap-2">
-                      <TrendingUp size={22} className="text-[#2563EB]" /> Gráfico de Vendas por Mês (2026)
+                      <TrendingUp size={22} className="text-[#2563EB]" /> Histórico de Vendas
                     </h3>
                     <p className="text-xs text-gray-500">Faturamento acumulado em R$ no Espírito Santo</p>
                   </div>
                   <span className="bg-[#2563EB]/10 text-[#2563EB] text-xs font-extrabold px-3 py-1.5 rounded-full self-start sm:self-auto">
-                    Média: R$ 12.550/mês
+                    Total: R$ {totalRevenue.toFixed(2).replace('.', ',')}
                   </span>
                 </div>
 
@@ -620,8 +702,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 </div>
 
                 <div className="flex justify-between items-center text-xs text-gray-500 font-bold pt-4">
-                  <span>Janeiro (R$ 8.400)</span>
-                  <span className="text-[#2563EB]">Agosto Atual (R$ 16.850) 🎉</span>
+                  <span>Início ({orders.length} pedidos)</span>
+                  <span className="text-[#2563EB]">Total Faturado: R$ {totalRevenue.toFixed(2).replace('.', ',')}</span>
                 </div>
               </div>
 
@@ -911,101 +993,73 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* TAB 2: ACTIVE KITS */}
+        {/* TAB 2: KITS & COMBOS PROMOCIONAIS */}
         {activeTab === 'kits' && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#BFDBFE] animate-fade-in-up">
-            <div className="mb-6 flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-extrabold text-[#1E293B]">Kits de Artesanato & Criatividade</h3>
-                <p className="text-sm text-gray-500">Gestão dos kits completos (algodão, miçangas, receitas e insumos)</p>
-              </div>
-              <Button size="sm" onClick={() => setEditingProduct({ category: 'kits', active: true, featured: true, price: 50, stock: 10, tags: ['Kit Completo'] })}>
-                <Plus size={16} className="mr-1" /> Criar Novo Kit
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {activeKits.map(kit => (
-                <div key={kit.id} className="border border-gray-200 rounded-2xl p-5 bg-white shadow-sm flex flex-col justify-between">
-                  <div className="flex items-start gap-4 mb-4">
-                    <img src={kit.images[0]} alt={kit.name} className="w-20 h-20 rounded-xl object-cover shadow-sm shrink-0" />
-                    <div>
-                      <span className="bg-[#2563EB] text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Kit</span>
-                      <h4 className="font-bold text-[#1E293B] text-lg leading-snug mt-1">{kit.name}</h4>
-                      <p className="text-[#2563EB] font-black text-lg">R$ {kit.price.toFixed(2).replace('.', ',')}</p>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-500">Estoque:</span>
-                      <button onClick={() => handleQuickStockChange(kit, -1)} className="w-6 h-6 bg-gray-100 rounded text-xs font-bold">-</button>
-                      <span className="font-bold text-sm text-[#1E293B]">{kit.stock}</span>
-                      <button onClick={() => handleQuickStockChange(kit, 1)} className="w-6 h-6 bg-gray-100 rounded text-xs font-bold">+</button>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleToggleProductFeatured(kit)}
-                        className={`p-1.5 rounded-lg border text-xs font-bold ${kit.featured ? 'bg-amber-100 text-amber-700 border-amber-300' : 'bg-gray-100 text-gray-400'}`}
-                      >
-                        {kit.featured ? 'Destaque ⭐' : 'Comum'}
-                      </button>
-                      <button onClick={() => setEditingProduct(kit)} className="p-1.5 text-blue-600 bg-blue-50 rounded-lg">
-                        <Edit3 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="animate-fade-in-up">
+            <AdminKitManager products={products} onRefreshProducts={loadData} />
           </div>
         )}
 
         {/* TAB 3: INSTAGRAM POSTS */}
         {activeTab === 'insta' && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#BFDBFE] animate-fade-in-up">
-            <div className="flex justify-between items-center mb-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#BFDBFE] animate-fade-in-up space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
               <div>
-                <h3 className="text-xl font-extrabold text-[#1E293B]">Posts em Destaque do Instagram (@pedramaniaoficial)</h3>
-                <p className="text-sm text-gray-500">Estes posts aparecem diretamente na seção da página inicial do site</p>
+                <h3 className="text-xl font-extrabold text-[#1E293B] font-nunito">Destaques & Links do Instagram (@pedramaniaoficial)</h3>
+                <p className="text-xs text-gray-500">Adicione links diretos para posts, vídeos ou reels do Instagram com título e descrição.</p>
               </div>
-              <Button onClick={() => setEditingInstaPost({ title: '', tag: 'NOVIDADE', likes: '350', comments: '25', image: 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop' })}>
-                <Plus size={18} className="mr-1.5" /> Adicionar Post do Insta
+              <Button onClick={() => setEditingInstaPost({ title: '', description: '', tag: 'NOVIDADE', url: 'https://www.instagram.com/pedramaniaoficial/' })}>
+                <Plus size={16} className="mr-1.5" /> Adicionar Link do Insta
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {instaPosts.map(post => (
-                <div key={post.id} className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between bg-white">
-                  <div className="relative h-48">
-                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-                    <span className="absolute top-3 left-3 bg-[#2563EB] text-white text-xs font-bold px-2.5 py-1 rounded-md uppercase shadow">
-                      {post.tag}
-                    </span>
-                  </div>
-                  
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h4 className="font-bold text-[#1E293B] text-base leading-snug mb-3">{post.title}</h4>
-                      <div className="flex gap-4 text-xs font-bold text-gray-500 mb-4">
-                        <span>❤️ {post.likes} curtidas</span>
-                        <span>💬 {post.comments} comentários</span>
+                <div key={post.id} className="border border-gray-200 rounded-2xl p-5 bg-[#F8FAFC]/60 shadow-xs flex flex-col justify-between hover:border-[#2563EB] transition-all space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <Instagram size={18} />
                       </div>
+                      {post.tag && (
+                        <span className="px-2.5 py-0.5 bg-blue-50 text-[#2563EB] border border-blue-200 text-[10px] font-black rounded-md uppercase">
+                          {post.tag}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="flex justify-end gap-2 border-t border-gray-100 pt-3">
+                    <div>
+                      <h4 className="font-extrabold text-[#1E293B] text-base leading-snug">{post.title}</h4>
+                      {post.description && (
+                        <p className="text-xs text-gray-600 mt-1.5 leading-relaxed">{post.description}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-gray-200/70 flex justify-between items-center text-xs">
+                    <a
+                      href={post.url || 'https://www.instagram.com/pedramaniaoficial/'}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#2563EB] font-bold hover:underline truncate max-w-[150px]"
+                    >
+                      Abrir no Insta ↗
+                    </a>
+
+                    <div className="flex items-center gap-1.5">
                       <button 
                         onClick={() => setEditingInstaPost(post)} 
-                        className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold flex items-center gap-1"
+                        className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors"
+                        title="Editar"
                       >
-                        <Edit3 size={14} /> Editar
+                        <Edit3 size={14} />
                       </button>
                       <button 
                         onClick={() => handleDeleteInstaPost(post.id)} 
-                        className="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1"
+                        className="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg text-xs font-bold transition-colors"
+                        title="Excluir"
                       >
-                        <Trash2 size={14} /> Apagar
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
@@ -1229,6 +1283,53 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                           })}
                         </div>
 
+                        {/* Shipping & Label Bar */}
+                        <div className="mt-4 p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                          <div className="space-y-0.5">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-extrabold text-xs text-[#1E293B] flex items-center gap-1">
+                                📦 {order.shipping_carrier || 'Frete'}: {order.shipping_service_name || (order.fulfillment_type === 'pickup' ? 'Retirada na Loja Física' : 'Entrega Expressa')}
+                              </span>
+                              {order.package_tier && (
+                                <span className="text-[10px] bg-white text-blue-700 font-bold px-2 py-0.5 rounded-md border border-blue-200">
+                                  {order.package_tier}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                              <span>Frete: <strong className="text-gray-700">R$ {(order.shipping_cost || 0).toFixed(2).replace('.', ',')}</strong></span>
+                              {order.tracking_code && (
+                                <span className="font-mono font-bold text-[#2563EB] bg-white px-2 py-0.5 rounded border border-blue-100">
+                                  Rastreio: {order.tracking_code}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            {order.label_url ? (
+                              <a
+                                href={order.label_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
+                              >
+                                📄 Imprimir Etiqueta PDF ↗
+                              </a>
+                            ) : order.fulfillment_type === 'delivery' ? (
+                              <button
+                                type="button"
+                                disabled={generatingLabelId === order.id}
+                                onClick={() => handleGenerateLabel(order.id)}
+                                className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                              >
+                                <RefreshCw size={13} className={generatingLabelId === order.id ? 'animate-spin' : ''} />
+                                <span>{generatingLabelId === order.id ? 'Gerando...' : '🏷️ Gerar Etiqueta Melhor Envio'}</span>
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+
                         <div className="flex justify-between items-center mt-4 pt-2">
                           <span className="text-xs text-gray-400 font-bold">Total da Encomenda:</span>
                           <span className="text-2xl font-black text-[#2563EB]">R$ {order.total.toFixed(2).replace('.', ',')}</span>
@@ -1240,6 +1341,114 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 7: REPOSITÓRIO DE FOTOS & CONVERSOR WEBP */}
+        {activeTab === 'gallery' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Header / Intro */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-[#BFDBFE] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-[#2563EB] uppercase tracking-wider mb-1">
+                  <Sparkles size={15} />
+                  <span>Otimização de Performance Web</span>
+                </div>
+                <h2 className="text-2xl font-extrabold text-[#1E293B] font-nunito">
+                  Repositório de Fotos & Conversor WebP
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-xl">
+                  Selecione ou arraste qualquer imagem (JPEG, PNG, etc.). O script converte automaticamente para o formato <strong>.webp</strong> ultra-leve antes de guardar no repositório.
+                </p>
+              </div>
+
+              <div className="px-4 py-3 bg-[#F0F7FF] rounded-2xl border border-[#93C5FD] text-xs font-bold text-[#2563EB] flex items-center gap-2">
+                <ImageIcon size={18} />
+                <span>{uploadedImages.length} fotos salvas</span>
+              </div>
+            </div>
+
+            {/* Upload Zone */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-[#BFDBFE]">
+              <ImageUploader
+                label="Adicionar Nova Imagem ao Repositório"
+                onImageUploaded={(url) => {
+                  loadUploads();
+                }}
+              />
+            </div>
+
+            {/* Grid de Imagens no Repositório */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-[#BFDBFE] space-y-4">
+              <h3 className="font-bold text-[#1E293B] text-base flex items-center gap-2">
+                <ImageIcon size={18} className="text-[#2563EB]" /> Imagens no Repositório ({uploadedImages.length})
+              </h3>
+
+              {uploadedImages.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 border border-dashed border-gray-200 rounded-2xl">
+                  <ImageIcon size={36} className="mx-auto mb-2 text-gray-300" />
+                  <p className="font-bold text-sm text-[#1E293B]">Nenhuma foto salva no repositório ainda</p>
+                  <p className="text-xs text-gray-400 mt-1">Carregue a sua primeira imagem acima para testar a conversão automática para WebP.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {uploadedImages.map((img) => {
+                    const isCopied = copiedUrl === img.url;
+
+                    return (
+                      <div
+                        key={img.filename}
+                        className="group bg-[#F8FAFC] border border-gray-200 hover:border-[#2563EB] rounded-2xl p-2.5 space-y-2 transition-all hover:shadow-md flex flex-col justify-between"
+                      >
+                        <div className="relative aspect-square rounded-xl overflow-hidden bg-white border border-gray-100">
+                          <img
+                            src={img.url}
+                            alt={img.filename}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 bg-black/60 text-white text-[9px] font-bold rounded-md uppercase backdrop-blur-xs">
+                            WEBP
+                          </span>
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-[11px] font-bold text-gray-700 truncate" title={img.filename}>
+                            {img.filename}
+                          </p>
+                          <p className="text-[10px] text-gray-400">
+                            {formatFileSize(img.sizeBytes)}
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(img.url);
+                            setCopiedUrl(img.url);
+                            setTimeout(() => setCopiedUrl(null), 2000);
+                          }}
+                          className={`w-full py-1.5 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                            isCopied
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'bg-white hover:bg-[#2563EB] hover:text-white text-gray-700 border border-gray-200'
+                          }`}
+                        >
+                          {isCopied ? (
+                            <>
+                              <CheckIcon size={12} strokeWidth={3} /> Copiado!
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} /> Copiar Link
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -1263,63 +1472,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
             <form onSubmit={handleSaveInstaPost} className="space-y-4 text-sm">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Título do Post</label>
-                <textarea 
+                <label className="block font-bold text-[#1E293B] mb-1">Título do Post / Tema *</label>
+                <input 
                   required
-                  rows={2}
+                  type="text"
                   value={editingInstaPost.title || ''} 
                   onChange={e => setEditingInstaPost({...editingInstaPost, title: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  placeholder="Ex: Passo a passo de crochê com fio de algodão supremo..."
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none font-semibold text-sm"
+                  placeholder="Ex: Novas cores de fios para amigurumi"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Tag / Etiqueta</label>
+                <label className="block font-bold text-[#1E293B] mb-1">Descrição / Resumo do Post</label>
+                <textarea 
+                  rows={3}
+                  value={editingInstaPost.description || ''} 
+                  onChange={e => setEditingInstaPost({...editingInstaPost, description: e.target.value})}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs resize-none"
+                  placeholder="Ex: Confira no reels o unboxing com as novas tonalidades que chegaram na loja..."
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#1E293B] mb-1">Link Real do Post / Reels no Instagram *</label>
+                <input 
+                  required
+                  type="url" 
+                  value={editingInstaPost.url || ''} 
+                  onChange={e => setEditingInstaPost({...editingInstaPost, url: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs font-mono"
+                  placeholder="https://www.instagram.com/p/C..."
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#1E293B] mb-1">Tag / Etiqueta em Destaque</label>
                 <input 
                   type="text" 
                   value={editingInstaPost.tag || ''} 
                   onChange={e => setEditingInstaPost({...editingInstaPost, tag: e.target.value.toUpperCase()})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  placeholder="Ex: TUTORIAL CROCHÊ, NOVIDADE..."
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-700 mb-1">URL da Imagem</label>
-                <input 
-                  required
-                  type="text" 
-                  value={editingInstaPost.image || ''} 
-                  onChange={e => setEditingInstaPost({...editingInstaPost, image: e.target.value})}
                   className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs"
+                  placeholder="Ex: DICA DA SEMANA, NOVIDADE, REELS..."
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Curtidas</label>
-                  <input 
-                    type="text" 
-                    value={editingInstaPost.likes || '250'} 
-                    onChange={e => setEditingInstaPost({...editingInstaPost, likes: e.target.value})}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-gray-700 mb-1">Comentários</label>
-                  <input 
-                    type="text" 
-                    value={editingInstaPost.comments || '18'} 
-                    onChange={e => setEditingInstaPost({...editingInstaPost, comments: e.target.value})}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t">
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <Button type="button" variant="ghost" onClick={() => setEditingInstaPost(null)}>Cancelar</Button>
-                <Button type="submit">Salvar Post</Button>
+                <Button type="submit">Salvar Link</Button>
               </div>
             </form>
           </div>
@@ -1341,25 +1541,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
             <form onSubmit={handleSaveCategory} className="space-y-4 text-sm">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Nome da Categoria</label>
+                <label className="block font-bold text-[#1E293B] mb-1">Nome da Categoria *</label>
                 <input 
                   required
                   type="text" 
                   value={editingCategory.name || ''} 
                   onChange={e => setEditingCategory({...editingCategory, name: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-sm font-semibold"
                   placeholder="Ex: Fios & Linhas, Matérias-Primas..."
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Cor do Card / Gradiente</label>
+                <label className="block font-bold text-[#1E293B] mb-1">Cor do Card / Gradiente</label>
                 <div className="flex items-center gap-3">
                   <input 
                     type="color" 
                     value={editingCategory.color || '#2563EB'} 
                     onChange={e => setEditingCategory({...editingCategory, color: e.target.value})}
-                    className="w-10 h-10 rounded-lg border-2 border-gray-200 cursor-pointer p-0.5 bg-white"
+                    className="w-10 h-10 rounded-xl border-2 border-gray-200 cursor-pointer p-0.5 bg-white"
                   />
                   <input 
                     type="text" 
@@ -1372,17 +1572,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">URL da Imagem de Fundo</label>
-                <input 
-                  required
-                  type="text" 
-                  value={editingCategory.image || ''} 
-                  onChange={e => setEditingCategory({...editingCategory, image: e.target.value})}
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-xs"
-                  placeholder="https://images.unsplash.com/..."
-                />
-                {editingCategory.image && (
-                  <div className="mt-2 relative h-24 rounded-xl overflow-hidden border border-gray-200">
+                <label className="block font-bold text-[#1E293B] mb-1.5">Foto de Fundo da Categoria</label>
+                
+                {/* Repository & Upload Buttons */}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsCategoryGalleryOpen(true)}
+                    className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#2563EB] font-bold text-xs rounded-xl border border-blue-200 flex items-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <ImageIcon size={15} />
+                    <span>{editingCategory.image ? 'Trocar do Repositório' : '📁 Escolher do Repositório'}</span>
+                  </button>
+
+                  <ImageUploader
+                    compact
+                    onImageUploaded={(url) => setEditingCategory(prev => prev ? { ...prev, image: url } : null)}
+                  />
+                </div>
+
+                {/* Preview Box with Gradient */}
+                {editingCategory.image ? (
+                  <div className="relative h-28 rounded-2xl overflow-hidden border border-gray-200 shadow-inner group">
                     <img 
                       src={editingCategory.image} 
                       alt="preview" 
@@ -1390,15 +1601,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                       onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                     <div 
-                      className="absolute inset-0 opacity-60" 
+                      className="absolute inset-0 opacity-70" 
                       style={{ background: `linear-gradient(to top, ${editingCategory.color || '#2563EB'} 0%, transparent 100%)` }} 
                     />
-                    <span className="absolute bottom-2 left-2 text-white font-bold text-xs">Pré-visualização</span>
+                    <div className="absolute bottom-2.5 left-3 text-white">
+                      <p className="font-extrabold text-sm leading-none drop-shadow">{editingCategory.name || 'Nome da Categoria'}</p>
+                      <span className="text-[10px] opacity-90 font-mono truncate block max-w-[200px] mt-0.5">
+                        {editingCategory.image.split('/').pop()}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingCategory(prev => prev ? { ...prev, image: '' } : null)}
+                      className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-rose-600 text-white rounded-lg transition-colors"
+                      title="Remover foto"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-center py-5 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/60 text-gray-400 text-xs">
+                    <ImageIcon size={24} className="mx-auto mb-1 text-gray-300" />
+                    <p className="font-bold text-[#1E293B]">Nenhuma foto selecionada</p>
+                    <p className="text-[11px] mt-0.5">Clique acima para escolher do repositório ou submeter.</p>
                   </div>
                 )}
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t">
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                 <Button type="button" variant="ghost" onClick={() => setEditingCategory(null)}>Cancelar</Button>
                 <Button type="submit">Salvar Categoria</Button>
               </div>
@@ -1406,6 +1636,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
           </div>
         </div>
       )}
+
+      {/* MODAL: REPOSITÓRIO DE FOTOS PARA CATEGORIA */}
+      <PhotoRepositoryModal
+        isOpen={isCategoryGalleryOpen}
+        onClose={() => setIsCategoryGalleryOpen(false)}
+        onSelectImage={(url) => setEditingCategory(prev => prev ? { ...prev, image: url } : null)}
+        title={`Foto para Categoria: ${editingCategory?.name || 'Nova Categoria'}`}
+      />
 
       {/* PRODUCT PREVIEW MODAL (same as store) */}
       {previewProduct && (

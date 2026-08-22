@@ -24,14 +24,19 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const addToCart = (product: Product, qty = 1) => {
+    if (product.stock <= 0) {
+      alert(`O produto "${product.name}" está temporariamente indisponível.`);
+      return;
+    }
+
     setItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
         return prev.map(item => 
-          item.id === product.id ? { ...item, qty: item.qty + qty } : item
+          item.id === product.id ? { ...item, qty: Math.min(product.stock, item.qty + qty) } : item
         );
       }
-      return [...prev, { ...product, qty }];
+      return [...prev, { ...product, qty: Math.min(product.stock, qty) }];
     });
     setIsOpen(true);
   };

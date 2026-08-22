@@ -1,4 +1,4 @@
-import { Product, StoreCategory, Testimonial, Event, OrderInput, OrderResult, InstaPost, StoredOrder, OrderStatus } from '../types';
+import { Product, StoreCategory, Testimonial, Event, OrderInput, OrderResult, InstaPost, StoredOrder, OrderStatus, Kit, KitInput } from '../types';
 
 const INITIAL_CATEGORIES: StoreCategory[] = [
   { id: 'linhas-fios',       name: 'Linhas & Fios',         color: '#2563EB', image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=500&auto=format&fit=crop' },
@@ -23,6 +23,7 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Azul Bebê', hex: '#93C5FD', image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?q=80&w=800&auto=format&fit=crop' },
     ],
     weight: '250g',
+    weight_grams: 250,
     composition: '100% Algodão Mercerizado',
     tags: ['Mais Vendido', 'Kit Completo'],
     category: 'kits',
@@ -32,7 +33,7 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: '2',
-    name: 'Novelo Fio de Algodão Supremo (100g)',
+    name: 'Novelo Fio de Algodão Supremo (160g)',
     slug: 'novelo-algodao-supremo',
     description: 'O queridinho das artesãs do Espírito Santo! Fio super macio e resistente, ideal para kits de crochê, tricot, amigurumi e peças de vestuário.',
     price: 16.50,
@@ -45,17 +46,18 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Amarelo Sol',  hex: '#FCD34D', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
       { name: 'Lilás',        hex: '#C4B5FD', image: 'https://images.unsplash.com/photo-1550159930-40066082a4fc?q=80&w=800&auto=format&fit=crop' },
     ],
-    weight: '100g',
+    weight: '160g',
+    weight_grams: 160,
     composition: '100% Algodão Mercerizado — Tex 394',
     tags: ['Campeão de Vendas', 'Cores Pastéis'],
     category: 'linhas-fios',
-    allergens: ['100g / 254 Metros', 'Tex 394', 'Agulha Recomendada: 2.5mm a 3.5mm'],
+    allergens: ['160g / aprox. 320 Metros', 'Tex 394', 'Agulha Recomendada: 2.5mm a 3.5mm'],
     active: true,
     featured: true,
   },
   {
     id: '3',
-    name: 'Kit Pulseira de Miçangas & Pérolas DIY',
+    name: 'Kit Pulseira de Miçangas & Pérolas DIY (350g)',
     slug: 'kit-pulseiras-micangas',
     description: 'Caixa organizadora completa com mais de 1200 peças: miçangas em tons pastel, pérolas de vidro, pingentes fofos e 2 rolos de fio elástico de silicone.',
     price: 55.00,
@@ -66,6 +68,8 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Multicolor',   hex: '#F59E0B', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop' },
       { name: 'Azul & Prata', hex: '#7DD3FC', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop' },
     ],
+    weight: '350g',
+    weight_grams: 350,
     tags: ['Destaque da Semana', 'Criatividade'],
     category: 'kits',
     allergens: ['Livre de Níquel', 'Resistente à Água', 'Fio Elástico Silicone 0.8mm'],
@@ -74,7 +78,7 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: '4',
-    name: 'Kit Vestido & Top de Tricô de Verão',
+    name: 'Kit Vestido & Top de Tricô de Verão (700g)',
     slug: 'kit-vestido-trico-verao',
     description: 'Kit de alta costura artesanal. Contém 5 novelos de fio de algodão penteado em tons de azul pastel, gráfico exclusivo Pedra Mania e agulha circular de bambu.',
     price: 119.90,
@@ -85,6 +89,8 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Areia',         hex: '#D4B896', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop' },
       { name: 'Branco Off',    hex: '#FAF9F6', image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=800&auto=format&fit=crop' },
     ],
+    weight: '700g',
+    weight_grams: 700,
     tags: ['Edição Especial', 'Moda Artesanal'],
     category: 'kits',
     allergens: ['Algodão Penteado Premium', 'Gráfico Exclusivo Pedra Mania', 'Nível Intermediário'],
@@ -93,7 +99,7 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: '5',
-    name: 'Maleta de Pedras Naturais & Miçangas Sortidas',
+    name: 'Maleta de Pedras Naturais & Miçangas Sortidas (700g)',
     slug: 'maleta-pedras-naturais',
     description: 'Seleção premium de pedras brasileiras autenticadas, miçangas facetadas e contas para confecção de bijuterias refinadas e exclusivas.',
     price: 89.00,
@@ -104,6 +110,8 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Pedras Negras',   hex: '#374151', image: 'https://images.unsplash.com/photo-1600703093977-9e85ca22dc71?q=80&w=800&auto=format&fit=crop' },
       { name: 'Quartzo Rosa',    hex: '#F9A8D4', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop' },
     ],
+    weight: '700g',
+    weight_grams: 700,
     tags: ['Coleção Pedra Mania', 'Qualidade'],
     category: 'materias-primas',
     allergens: ['Pedras Naturais Autênticas', 'Maleta com 24 Divisórias', 'Brilho Intenso'],
@@ -112,10 +120,10 @@ const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: '6',
-    name: 'Fio de Malha Premium para Cestos & Decor (500g)',
+    name: 'Fio de Malha Premium para Cestos & Decor (1,8kg)',
     slug: 'fio-de-malha-premium',
     description: 'Fio ecológico sem emendas e espessura regular. Perfeito para confeccionar cestos organizadores, tapetes e peças de decoração moderna.',
-    price: 29.90,
+    price: 49.90,
     stock: 30,
     images: ['https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop'],
     colors: [
@@ -124,9 +132,11 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Verde Oliva',  hex: '#65A30D', image: 'https://images.unsplash.com/photo-1560707303-4e980ce876ad?q=80&w=800&auto=format&fit=crop' },
       { name: 'Terracota',    hex: '#C2410C', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
     ],
-    tags: ['Ecológico', 'Decor'],
+    weight: '1,8kg',
+    weight_grams: 1800,
+    tags: ['Ecológico', 'Decor', 'Linha Pesada'],
     category: 'linhas-fios',
-    allergens: ['500g / aprox. 140m', 'Sem Emendas', 'Espessura Uniforme 25mm'],
+    allergens: ['1,8kg / aprox. 480m', 'Sem Emendas', 'Espessura Uniforme 25mm'],
     active: true,
     featured: true,
   },
@@ -138,6 +148,8 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 42.00,
     stock: 18,
     images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop'],
+    weight: '350g',
+    weight_grams: 350,
     tags: ['Profissional', 'Indispensável'],
     category: 'decor-ferramentas',
     allergens: ['Aço Carbono Temperado', 'Cabo Emborrachado Antiderrapante', 'Mola Retrátil'],
@@ -157,6 +169,8 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Prateado',    hex: '#9CA3AF', image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop' },
       { name: 'Rosé Gold',   hex: '#E8A598', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop' },
     ],
+    weight: '160g',
+    weight_grams: 160,
     tags: ['Qualidade Premium', 'Antialérgico'],
     category: 'bijuterias-pecas',
     allergens: ['Verniz de Proteção Duplo', 'Antialérgico (Sem Níquel)', 'Garantia de Brilho'],
@@ -177,6 +191,8 @@ const INITIAL_PRODUCTS: Product[] = [
       { name: 'Vermelho',     hex: '#DC2626', image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?q=80&w=800&auto=format&fit=crop' },
       { name: 'Caramelo',     hex: '#D97706', image: 'https://images.unsplash.com/photo-1598532213919-078e54dd1f40?q=80&w=800&auto=format&fit=crop' },
     ],
+    weight: '160g',
+    weight_grams: 160,
     tags: ['Toque de Seda', 'Azul Pastel'],
     category: 'linhas-fios',
     allergens: ['Espessura 1mm', 'Rolo de 50 Metros', 'Resistência ao Desbotamento'],
@@ -191,6 +207,8 @@ const INITIAL_PRODUCTS: Product[] = [
     price: 69.90,
     stock: 14,
     images: ['https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=800&auto=format&fit=crop'],
+    weight: '350g',
+    weight_grams: 350,
     tags: ['Ergonômico', 'Com Estojo'],
     category: 'decor-ferramentas',
     allergens: ['Ponta de Alumínio Polido', 'Cabo Ergonômico Antialérgico', 'Acompanha Estojo Estampado'],
@@ -202,27 +220,24 @@ const INITIAL_PRODUCTS: Product[] = [
 const INITIAL_INSTA_POSTS: InstaPost[] = [
   {
     id: '1',
-    title: 'Passo a Passo: Como combinar fios de algodão pastel em kits de crochê 🧶✨',
-    image: 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop',
-    likes: '482',
-    comments: '34',
-    tag: 'TUTORIAL CROCHÊ'
+    title: 'Novas Cores de Linhas de Algodão para Amigurumi',
+    description: 'Confira no reels o unboxing com as novas tonalidades pastel e fios mercerizados que acabaram de chegar na loja!',
+    url: 'https://www.instagram.com/pedramaniaoficial/',
+    tag: 'Novidades'
   },
   {
     id: '2',
-    title: 'Bastidores do nosso Encontro de Artesãs no Espírito Santo! 💙',
-    image: 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?q=80&w=800&auto=format&fit=crop',
-    likes: '891',
-    comments: '67',
-    tag: 'ENCONTRO ES'
+    title: 'Dica Rápida: Como Escolher a Agulha Ergonômica Ideal',
+    description: 'Vídeo rápido mostrando a numeração certa de agulhas para cada espessura de linha sem cansar as mãos.',
+    url: 'https://www.instagram.com/pedramaniaoficial/',
+    tag: 'Dica da Semana'
   },
   {
     id: '3',
-    title: 'Chegaram novas pedras naturais e miçangas para bijuterias exclusivas! 💎',
-    image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop',
-    likes: '625',
-    comments: '41',
-    tag: 'NOVIDADES'
+    title: 'Bastidores do Encontro de Artesãs em Vitória / ES',
+    description: 'Veja como foi nossa última oficina de artesanato presencial no armarinho de Jardim Camburi!',
+    url: 'https://www.instagram.com/pedramaniaoficial/',
+    tag: 'Comunidade'
   }
 ];
 
@@ -232,10 +247,17 @@ const INITIAL_ORDERS: StoredOrder[] = [
     customer_name: 'Carolina Neves',
     email: 'carolina.neves@email.com',
     phone: '5527998124455',
-    address: 'Rua das Palmeiras, 120 - Praia do Canto, Vitória - ES',
+    fulfillment_type: 'delivery',
+    address_zip: '29055-270',
+    address: 'Rua das Palmeiras, 120 - Praia do Canto, Vitória - ES, CEP: 29055-270',
     scheduled_date: '2026-08-12',
     notes: 'Favor embalar os novelos de algodão nas cores azul pastel separadamente para presente. Obrigada!',
-    total: 151.80,
+    subtotal: 151.80,
+    shipping_cost: 14.50,
+    total: 166.30,
+    shipping_service_name: 'SEDEX (Correios)',
+    shipping_carrier: 'Correios',
+    package_tier: 'Saco 2 Médio (26x33cm)',
     status: 'preparing',
     created_at: '2026-08-10T14:20:00.000Z',
     items: [
@@ -248,7 +270,7 @@ const INITIAL_ORDERS: StoredOrder[] = [
       },
       {
         product_id: '2',
-        product_name: 'Novelo Fio de Algodão Supremo (100g)',
+        product_name: 'Novelo Fio de Algodão Supremo (160g)',
         product_image: 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop',
         qty: 2,
         price: 16.50
@@ -259,97 +281,6 @@ const INITIAL_ORDERS: StoredOrder[] = [
         product_image: 'https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=800&auto=format&fit=crop',
         qty: 1,
         price: 69.90
-      }
-    ]
-  },
-  {
-    id: 'PM-74B39',
-    customer_name: 'Renata Vasconcelos',
-    email: 'renata.vasc@email.com',
-    phone: '5527997431122',
-    address: 'Av. Gil Veloso, 840 - Praia da Costa, Vila Velha - ES',
-    scheduled_date: '2026-08-11',
-    notes: 'Retirada na loja física de Vitória no final da tarde.',
-    total: 213.00,
-    status: 'new',
-    created_at: '2026-08-10T15:10:00.000Z',
-    items: [
-      {
-        product_id: '3',
-        product_name: 'Kit Pulseira de Miçangas & Pérolas DIY',
-        product_image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop',
-        qty: 1,
-        price: 55.00
-      },
-      {
-        product_id: '5',
-        product_name: 'Maleta de Pedras Naturais & Miçangas Sortidas',
-        product_image: 'https://images.unsplash.com/photo-1611591475285-a29ae2ea1c5c?q=80&w=800&auto=format&fit=crop',
-        qty: 1,
-        price: 89.00
-      },
-      {
-        product_id: '8',
-        product_name: 'Kit Argolas & Fechos Folheados (150 Pçs)',
-        product_image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop',
-        qty: 2,
-        price: 34.50
-      }
-    ]
-  },
-  {
-    id: 'PM-52C88',
-    customer_name: 'Mariana Alcantara',
-    email: 'mari.alcantara@email.com',
-    phone: '5527995548899',
-    address: 'Rua Major Pissarra, 45 - Laranjeiras, Serra - ES',
-    scheduled_date: '2026-08-10',
-    notes: 'Avisar no WhatsApp antes da entrega.',
-    total: 179.60,
-    status: 'ready',
-    created_at: '2026-08-09T18:45:00.000Z',
-    items: [
-      {
-        product_id: '4',
-        product_name: 'Kit Vestido & Top de Tricô de Verão',
-        product_image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=800&auto=format&fit=crop',
-        qty: 1,
-        price: 119.90
-      },
-      {
-        product_id: '9',
-        product_name: 'Cordão Acetinado / Fio de Seda (Rolo 50m)',
-        product_image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800&auto=format&fit=crop',
-        qty: 3,
-        price: 19.90
-      }
-    ]
-  },
-  {
-    id: 'PM-31D04',
-    customer_name: 'Fernanda Duarte',
-    email: 'fefe.duarte@email.com',
-    phone: '5527996113377',
-    address: 'Rua Muqui, 310 - Itaparica, Vila Velha - ES',
-    scheduled_date: '2026-08-09',
-    notes: '',
-    total: 101.80,
-    status: 'delivered',
-    created_at: '2026-08-08T11:20:00.000Z',
-    items: [
-      {
-        product_id: '6',
-        product_name: 'Fio de Malha Premium para Cestos & Decor (500g)',
-        product_image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop',
-        qty: 2,
-        price: 29.90
-      },
-      {
-        product_id: '7',
-        product_name: 'Kit Alicates de Precisão para Bijuterias (3 Pçs)',
-        product_image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop',
-        qty: 1,
-        price: 42.00
       }
     ]
   }
@@ -368,10 +299,10 @@ const EVENTS: Event[] = [
 
 // Helper for localStorage persistence
 const STORAGE_KEYS = {
-  PRODUCTS: 'pedramania_products_v7',
-  INSTA_POSTS: 'pedramania_insta_posts_v7',
-  ORDERS: 'pedramania_orders_v7',
-  CATEGORIES: 'pedramania_categories_v7',
+  PRODUCTS: 'pedramania_products_v8',
+  INSTA_POSTS: 'pedramania_insta_posts_v8',
+  ORDERS: 'pedramania_orders_v8',
+  CATEGORIES: 'pedramania_categories_v8',
 };
 
 const getStoredData = <T>(key: string, fallback: T): T => {
@@ -397,12 +328,33 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export const api = {
   // CATEGORIES
   getCategories: async (): Promise<StoreCategory[]> => {
-    await delay(100);
+    try {
+      const res = await fetch('/api/categories');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          saveStoredData(STORAGE_KEYS.CATEGORIES, data);
+          return data;
+        }
+      }
+    } catch (e) {
+      // Offline fallback
+    }
     return getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
   },
 
   addCategory: async (data: Omit<StoreCategory, 'id'>): Promise<StoreCategory> => {
-    await delay(200);
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
     const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
     const newCat: StoreCategory = {
       ...data,
@@ -413,7 +365,17 @@ export const api = {
   },
 
   updateCategory: async (id: string, updates: Partial<StoreCategory>): Promise<StoreCategory> => {
-    await delay(200);
+    try {
+      const res = await fetch(`/api/categories/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
     const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
     let updated: StoreCategory | null = null;
     const next = cats.map(c => { if (c.id === id) { updated = { ...c, ...updates }; return updated; } return c; });
@@ -423,7 +385,11 @@ export const api = {
   },
 
   deleteCategory: async (id: string): Promise<boolean> => {
-    await delay(200);
+    try {
+      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+      if (res.ok) return true;
+    } catch {}
+
     const cats = getStoredData<StoreCategory[]>(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
     saveStoredData(STORAGE_KEYS.CATEGORIES, cats.filter(c => c.id !== id));
     return true;
@@ -431,18 +397,41 @@ export const api = {
 
   // PRODUCTS & STOCK
   getProducts: async (): Promise<Product[]> => {
-    await delay(200);
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          saveStoredData(STORAGE_KEYS.PRODUCTS, data);
+          return data;
+        }
+      }
+    } catch (e) {}
     return getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
   },
 
   getFeaturedProducts: async (): Promise<Product[]> => {
-    await delay(200);
-    const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
-    return products.filter(p => p.featured && p.active);
+    try {
+      const prods = await api.getProducts();
+      return prods.filter(p => p.featured && p.active);
+    } catch {
+      const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+      return products.filter(p => p.featured && p.active);
+    }
   },
 
   addProduct: async (productData: Omit<Product, 'id'>): Promise<Product> => {
-    await delay(300);
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
     const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     const newProduct: Product = {
       ...productData,
@@ -454,7 +443,17 @@ export const api = {
   },
 
   updateProduct: async (id: string, updates: Partial<Product>): Promise<Product> => {
-    await delay(200);
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
     const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     let updatedProduct: Product | null = null;
     const updated = products.map(p => {
@@ -470,7 +469,11 @@ export const api = {
   },
 
   deleteProduct: async (id: string): Promise<boolean> => {
-    await delay(200);
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      if (res.ok) return true;
+    } catch {}
+
     const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     const updated = products.filter(p => p.id !== id);
     saveStoredData(STORAGE_KEYS.PRODUCTS, updated);
@@ -479,12 +482,10 @@ export const api = {
 
   // INSTAGRAM POSTS
   getInstaPosts: async (): Promise<InstaPost[]> => {
-    await delay(200);
     return getStoredData<InstaPost[]>(STORAGE_KEYS.INSTA_POSTS, INITIAL_INSTA_POSTS);
   },
 
   addInstaPost: async (postData: Omit<InstaPost, 'id'>): Promise<InstaPost> => {
-    await delay(200);
     const posts = getStoredData<InstaPost[]>(STORAGE_KEYS.INSTA_POSTS, INITIAL_INSTA_POSTS);
     const newPost: InstaPost = {
       ...postData,
@@ -496,7 +497,6 @@ export const api = {
   },
 
   updateInstaPost: async (id: string, updates: Partial<InstaPost>): Promise<InstaPost> => {
-    await delay(200);
     const posts = getStoredData<InstaPost[]>(STORAGE_KEYS.INSTA_POSTS, INITIAL_INSTA_POSTS);
     let updatedPost: InstaPost | null = null;
     const updated = posts.map(p => {
@@ -512,10 +512,8 @@ export const api = {
   },
 
   deleteInstaPost: async (id: string): Promise<boolean> => {
-    await delay(200);
     const posts = getStoredData<InstaPost[]>(STORAGE_KEYS.INSTA_POSTS, INITIAL_INSTA_POSTS);
-    const updated = posts.filter(p => p.id !== id);
-    saveStoredData(STORAGE_KEYS.INSTA_POSTS, updated);
+    saveStoredData(STORAGE_KEYS.INSTA_POSTS, posts.filter(p => p.id !== id));
     return true;
   },
 
@@ -530,14 +528,38 @@ export const api = {
     return EVENTS;
   },
 
-  // ORDERS
+  // ORDERS & STOCK DECREMENT
   getOrders: async (): Promise<StoredOrder[]> => {
-    await delay(200);
+    try {
+      const res = await fetch('/api/orders', {
+        headers: { Authorization: 'Bearer pedramania_admin_secret_token_2026' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          saveStoredData(STORAGE_KEYS.ORDERS, data);
+          return data;
+        }
+      }
+    } catch {}
     return getStoredData<StoredOrder[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
   },
 
   updateOrderStatus: async (id: string, status: OrderStatus): Promise<StoredOrder> => {
-    await delay(200);
+    try {
+      const res = await fetch(`/api/orders/${id}/status`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer pedramania_admin_secret_token_2026'
+        },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {}
+
     const orders = getStoredData<StoredOrder[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
     let updatedOrder: StoredOrder | null = null;
     const updated = orders.map(o => {
@@ -552,19 +574,79 @@ export const api = {
     return updatedOrder;
   },
 
+  generateOrderLabel: async (id: string): Promise<StoredOrder> => {
+    try {
+      const res = await fetch(`/api/orders/${id}/generate-label`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer pedramania_admin_secret_token_2026'
+        }
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        // Atualizar cache local
+        const orders = getStoredData<StoredOrder[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+        saveStoredData(STORAGE_KEYS.ORDERS, orders.map(o => o.id === id ? updated : o));
+        return updated;
+      }
+    } catch {}
+
+    // Fallback local se backend offline
+    const orders = getStoredData<StoredOrder[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+    let updatedOrder: StoredOrder | null = null;
+    const tracking = `PM${Math.floor(100000000 + Math.random() * 900000000)}BR`;
+    const labelUrl = `https://sandbox.melhorenvio.com.br/painel/carrinho?order=${id}`;
+    const updated = orders.map(o => {
+      if (o.id === id) {
+        updatedOrder = { ...o, tracking_code: tracking, label_url: labelUrl };
+        return updatedOrder;
+      }
+      return o;
+    });
+    saveStoredData(STORAGE_KEYS.ORDERS, updated);
+    if (!updatedOrder) throw new Error('Pedido não encontrado');
+    return updatedOrder;
+  },
+
   createOrder: async (input: OrderInput): Promise<OrderResult> => {
-    await delay(500);
+    // 1. Tentar enviar para a API central (PostgreSQL + Email)
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input)
+      });
+
+      if (res.ok) {
+        const orderData = await res.json();
+        // Sincronizar cache local
+        const existingOrders = getStoredData<StoredOrder[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+        saveStoredData(STORAGE_KEYS.ORDERS, [orderData, ...existingOrders]);
+        
+        return {
+          id: orderData.id,
+          total: parseFloat(orderData.total),
+          status: orderData.status || 'new'
+        };
+      }
+    } catch (apiErr) {
+      console.warn('Backend PostgreSQL offline, gravando em cache local:', apiErr);
+    }
+
+    // 2. Fallback local offline
     const products = getStoredData<Product[]>(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
     
-    let total = 0;
+    let subtotal = 0;
     const itemDetails = input.items.map(i => {
       const product = products.find(p => p.id === i.product_id);
       const price = product ? product.price : 0;
-      total += price * i.qty;
+      subtotal += price * i.qty;
       return {
         product_id: i.product_id,
         product_name: product ? product.name : 'Produto',
         product_image: product?.images?.[0] || 'https://images.unsplash.com/photo-1608248597260-6f216e589959?q=80&w=800&auto=format&fit=crop',
+        selected_color: i.selected_color,
         qty: i.qty,
         price
       };
@@ -583,16 +665,34 @@ export const api = {
     });
     saveStoredData(STORAGE_KEYS.PRODUCTS, updatedProducts);
 
+    const shippingCost = input.shipping_cost || 0;
+    const total = subtotal + shippingCost;
     const orderId = 'PM-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
     const newOrder: StoredOrder = {
       id: orderId,
       customer_name: input.customer_name,
       email: input.email,
       phone: input.phone,
+      fulfillment_type: input.fulfillment_type,
+      address_zip: input.address_zip,
+      address_street: input.address_street,
+      address_number: input.address_number,
+      address_complement: input.address_complement,
+      address_district: input.address_district,
+      address_city: input.address_city,
+      address_state: input.address_state,
       address: input.address || 'Vitória / ES',
       scheduled_date: input.scheduled_date,
       notes: input.notes,
+      subtotal,
+      shipping_cost: shippingCost,
       total,
+      shipping_service_id: input.shipping_service_id,
+      shipping_service_name: input.shipping_service_name,
+      shipping_carrier: input.shipping_carrier,
+      shipping_delivery_time: input.shipping_delivery_time,
+      package_tier: input.package_tier,
       status: 'new',
       created_at: new Date().toISOString(),
       items: itemDetails
@@ -606,5 +706,59 @@ export const api = {
       total,
       status: 'new'
     };
+  },
+
+  // 🎁 KITS & COMBOS PROMOCIONAIS
+  getKits: async (activeOnly = false): Promise<Kit[]> => {
+    try {
+      const res = await fetch(`/api/kits${activeOnly ? '?active=true' : ''}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          return data;
+        }
+      }
+    } catch {}
+    return [];
+  },
+
+  addKit: async (data: KitInput): Promise<Kit> => {
+    const res = await fetch('/api/kits', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer pedramania_admin_secret_token_2026'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Erro ao criar kit');
+    }
+    return await res.json();
+  },
+
+  updateKit: async (id: string, updates: Partial<KitInput>): Promise<Kit> => {
+    const res = await fetch(`/api/kits/${id}`, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer pedramania_admin_secret_token_2026'
+      },
+      body: JSON.stringify(updates)
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Erro ao atualizar kit');
+    }
+    return await res.json();
+  },
+
+  deleteKit: async (id: string): Promise<boolean> => {
+    const res = await fetch(`/api/kits/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer pedramania_admin_secret_token_2026' }
+    });
+    return res.ok;
   }
 };

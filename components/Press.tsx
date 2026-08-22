@@ -35,23 +35,35 @@ export const Press: React.FC = () => {
           {instaPosts.map((post) => (
             <a 
               key={post.id} 
-              href={instaUrl} 
+              href={post.url || instaUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-white/80 hover:bg-white transition-all p-4 sm:p-5 rounded-2xl flex items-center justify-between group cursor-pointer shadow-sm hover:shadow-md border border-white/60"
+              className="bg-white/90 hover:bg-white transition-all p-4 sm:p-5 rounded-2xl flex items-center justify-between group cursor-pointer shadow-sm hover:shadow-md border border-white/80"
             >
-              <div className="flex items-center gap-3 sm:gap-4 flex-1 pr-2">
-                <img src={post.image} alt={post.title} className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shadow-sm shrink-0 group-hover:scale-105 transition-transform" />
-                <div>
-                  <span className="block font-bold text-[#2563EB] text-[0.65rem] sm:text-[0.7rem] uppercase tracking-wider mb-0.5">{post.tag}</span>
-                  <h3 className="font-nunito font-bold text-[#1E293B] text-xs sm:text-sm md:text-base leading-tight group-hover:text-[#2563EB] transition-colors line-clamp-2">{post.title}</h3>
-                  <div className="flex items-center gap-3 mt-1.5 text-[0.65rem] sm:text-xs text-gray-500 font-bold">
-                    <span className="flex items-center gap-1"><Heart size={12} className="text-[#2563EB]" fill="currentColor" /> {post.likes}</span>
-                    <span className="flex items-center gap-1"><MessageCircle size={12} className="text-gray-400" /> {post.comments}</span>
-                  </div>
+              <div className="flex items-start gap-3.5 sm:gap-4 flex-1 pr-3">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform mt-0.5">
+                  <Instagram size={20} />
+                </div>
+                <div className="space-y-1">
+                  {post.tag && (
+                    <span className="inline-block font-black text-[#2563EB] text-[0.65rem] sm:text-[0.7rem] uppercase tracking-wider bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                      {post.tag}
+                    </span>
+                  )}
+                  <h3 className="font-nunito font-extrabold text-[#1E293B] text-sm sm:text-base leading-snug group-hover:text-[#2563EB] transition-colors">
+                    {post.title}
+                  </h3>
+                  {post.description && (
+                    <p className="text-xs sm:text-sm text-gray-600 font-lato leading-relaxed line-clamp-2">
+                      {post.description}
+                    </p>
+                  )}
                 </div>
               </div>
-              <ExternalLink size={18} className="text-[#2563EB] transform group-hover:scale-110 transition-transform shrink-0" />
+              <div className="flex items-center gap-1 text-xs font-bold text-[#2563EB] shrink-0 opacity-80 group-hover:opacity-100">
+                <span className="hidden sm:inline">Ver Post</span>
+                <ExternalLink size={16} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
             </a>
           ))}
         </div>

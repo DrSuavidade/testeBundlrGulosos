@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, User, Search, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search, ChevronDown, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/Button';
 import { useCart } from '../context/CartContext';
+import { CustomerUser } from '../services/customerService';
 
 interface NavbarProps {
   onNavigate: (page: string) => void;
+  customer?: CustomerUser | null;
+  onOpenCustomerAuth?: () => void;
+  onOpenCustomerPortal?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  onNavigate,
+  customer,
+  onOpenCustomerAuth,
+  onOpenCustomerPortal
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toggleCart, itemCount } = useCart();
@@ -33,6 +42,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     window.scrollTo(0, 0);
   };
 
+  const handleAccountClick = () => {
+    if (customer) {
+      if (onOpenCustomerPortal) onOpenCustomerPortal();
+      else onNavigate('customer');
+    } else {
+      if (onOpenCustomerAuth) onOpenCustomerAuth();
+      else onNavigate('customer');
+    }
+  };
+
   return (
     <>
       <nav
@@ -45,7 +64,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
         <div className="bg-[#1E293B] text-white text-[0.65rem] sm:text-xs font-bold">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-between">
             <span>Entrega e retirada no Espírito Santo</span>
-            <button onClick={() => handleLinkClick('contact')} className="hidden sm:block hover:text-[#BFDBFE] transition-colors">Atendimento pelo WhatsApp →</button>
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={handleAccountClick} 
+                className="hover:text-[#BFDBFE] transition-colors flex items-center gap-1 font-bold text-[11px]"
+              >
+                <User size={13} /> {customer ? `Minha Conta (${customer.name || customer.email.split('@')[0]})` : 'Entrar / Minha Conta'}
+              </button>
+              <button onClick={() => handleLinkClick('contact')} className="hidden sm:block hover:text-[#BFDBFE] transition-colors">Atendimento WhatsApp →</button>
+            </div>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex justify-between items-center">
@@ -84,12 +111,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
               <div className="h-6 w-px bg-[#CBD5E1]" />
               <button onClick={() => handleLinkClick('products')} className="flex items-center gap-1.5 px-3 py-2.5 text-xs lg:text-sm font-bold text-[#1E293B] hover:text-[#2563EB] transition-colors"><ChevronDown size={16} /> Categorias</button>
             </div>
+
+            {/* Account / User Portal Button */}
             <button
-              className="hidden lg:block p-1.5 text-[#1E293B] hover:text-[#2563EB] transition-colors"
-              onClick={() => handleLinkClick('admin')}
-              title="Painel de Administração (/admin)"
+              className={`p-1.5 transition-colors rounded-xl flex items-center gap-1.5 text-xs font-bold ${
+                customer 
+                  ? 'bg-blue-50 text-[#2563EB] px-2.5 py-1.5 border border-[#BFDBFE]' 
+                  : 'text-[#1E293B] hover:text-[#2563EB]'
+              }`}
+              onClick={handleAccountClick}
+              title={customer ? `Área do Cliente (${customer.email})` : 'Entrar / Rastrear Pedidos'}
             >
-              <User size={20} />
+              <User size={18} />
+              {customer && <span className="hidden xl:inline truncate max-w-[100px]">{customer.name || customer.email.split('@')[0]}</span>}
             </button>
 
             <button

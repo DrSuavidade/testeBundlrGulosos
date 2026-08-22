@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Plus, Minus, Info, Palette } from 'lucide-react';
+import { X, Plus, Minus, Info, Palette, AlertTriangle } from 'lucide-react';
 import { Product, ProductColor } from '../types';
 import { Button } from './ui/Button';
 import { useCart } from '../context/CartContext';
@@ -163,29 +163,50 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
 
           <div className="mt-2 sm:mt-4 pt-4 sm:pt-6 border-t border-gray-100 shrink-0">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <span className="text-xl sm:text-2xl font-black text-[#2563EB]">
-                R$ {product.price.toFixed(2).replace('.', ',')}
-              </span>
-              
-              <div className="flex items-center bg-[#F0F7FF] rounded-full border border-[#BFDBFE]">
-                <button 
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="p-2 sm:p-3 text-[#2563EB] hover:bg-white rounded-full transition-colors"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="w-6 sm:w-8 text-center text-xs sm:text-base font-bold text-[#1E293B]">{qty}</span>
-                <button 
-                  onClick={() => setQty(qty + 1)}
-                  className="p-2 sm:p-3 text-[#2563EB] hover:bg-white rounded-full transition-colors"
-                >
-                  <Plus size={14} />
-                </button>
+              <div className="flex flex-col">
+                <span className={`text-xl sm:text-2xl font-black ${product.stock <= 0 ? 'text-gray-400' : 'text-[#2563EB]'}`}>
+                  R$ {product.price.toFixed(2).replace('.', ',')}
+                </span>
+                {product.stock <= 0 && (
+                  <span className="text-xs font-extrabold text-rose-600 mt-0.5 flex items-center gap-1">
+                    <AlertTriangle size={13} /> Temporariamente indisponível
+                  </span>
+                )}
               </div>
+              
+              {product.stock > 0 && (
+                <div className="flex items-center bg-[#F0F7FF] rounded-full border border-[#BFDBFE]">
+                  <button 
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                    className="p-2 sm:p-3 text-[#2563EB] hover:bg-white rounded-full transition-colors"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="w-6 sm:w-8 text-center text-xs sm:text-base font-bold text-[#1E293B]">{qty}</span>
+                  <button 
+                    onClick={() => setQty(qty + 1)}
+                    className="p-2 sm:p-3 text-[#2563EB] hover:bg-white rounded-full transition-colors"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              )}
             </div>
 
-            <Button fullWidth size="lg" onClick={handleAdd} className="py-3 sm:py-3.5 text-sm sm:text-lg">
-              Adicionar ao Pedido — R$ {(product.price * qty).toFixed(2).replace('.', ',')}
+            <Button
+              fullWidth
+              size="lg"
+              disabled={product.stock <= 0}
+              onClick={product.stock <= 0 ? undefined : handleAdd}
+              className={`py-3 sm:py-3.5 text-sm sm:text-lg ${
+                product.stock <= 0
+                  ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed opacity-75'
+                  : ''
+              }`}
+            >
+              {product.stock <= 0
+                ? 'Produto Temporariamente Indisponível'
+                : `Adicionar ao Pedido — R$ ${(product.price * qty).toFixed(2).replace('.', ',')}`}
             </Button>
           </div>
         </div>

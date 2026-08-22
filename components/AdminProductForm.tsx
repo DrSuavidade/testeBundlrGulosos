@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Product, ProductColor, StoreCategory } from '../types';
 import { Button } from './ui/Button';
+import { ImageUploader } from './ImageUploader';
+import { PhotoRepositoryModal } from './PhotoRepositoryModal';
 import { 
   ArrowLeft, 
   Save, 
@@ -17,7 +19,9 @@ import {
   Check, 
   Info,
   Scale,
-  FileText
+  FileText,
+  Image as ImageIcon,
+  UploadCloud
 } from 'lucide-react';
 
 interface AdminProductFormProps {
@@ -54,6 +58,8 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
     featured: initialProduct.featured ?? false,
   });
 
+  const [galleryModalColorIdx, setGalleryModalColorIdx] = useState<number | null>(null);
+  const [isMainGalleryModalOpen, setIsMainGalleryModalOpen] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [specInput, setSpecInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -303,55 +309,80 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
               {(formData.colors || []).map((color, idx) => (
                 <div 
                   key={idx} 
-                  className="p-4 bg-gray-50/80 hover:bg-[#F0F7FF]/50 rounded-2xl border border-gray-200 transition-colors flex flex-col sm:flex-row items-start sm:items-center gap-3.5"
+                  className="p-4 bg-gray-50/80 hover:bg-[#F0F7FF]/50 rounded-2xl border border-gray-200 transition-colors flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3.5"
                 >
-                  {/* Color Picker swatch */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <input
-                      type="color"
-                      value={color.hex || '#3B82F6'}
-                      onChange={e => handleUpdateColor(idx, { hex: e.target.value })}
-                      className="w-10 h-10 rounded-xl border-2 border-white shadow-sm cursor-pointer p-0.5 bg-white"
-                      title="Escolher tom da cor"
-                    />
-                  </div>
-
-                  {/* Color Name */}
-                  <div className="w-full sm:w-44">
-                    <input
-                      type="text"
-                      value={color.name}
-                      onChange={e => handleUpdateColor(idx, { name: e.target.value })}
-                      placeholder="Nome da cor (ex: Rosa Bebê)"
-                      className="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white focus:border-[#2563EB] outline-none text-xs font-bold text-[#1E293B]"
-                    />
-                  </div>
-
-                  {/* Image URL */}
-                  <div className="flex-1 w-full">
-                    <input
-                      type="text"
-                      value={color.image}
-                      onChange={e => handleUpdateColor(idx, { image: e.target.value })}
-                      placeholder="URL da foto para esta cor (https://...)"
-                      className="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white focus:border-[#2563EB] outline-none text-xs text-gray-700"
-                    />
-                  </div>
-
-                  {/* Preview Thumbnail */}
-                  {color.image && (
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-300 shrink-0 bg-white">
-                      <img
-                        src={color.image}
-                        alt={color.name || 'preview'}
-                        className="w-full h-full object-cover"
-                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  {/* Left: Swatch & Name */}
+                  <div className="flex items-center gap-3 w-full lg:w-auto">
+                    {/* Color Picker swatch */}
+                    <div className="relative shrink-0">
+                      <input
+                        type="color"
+                        value={color.hex || '#3B82F6'}
+                        onChange={e => handleUpdateColor(idx, { hex: e.target.value })}
+                        className="w-10 h-10 rounded-xl border-2 border-white shadow-sm cursor-pointer p-0.5 bg-white"
+                        title="Escolher tom da cor"
                       />
                     </div>
-                  )}
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
+                    {/* Color Name */}
+                    <div className="flex-1 lg:w-48">
+                      <input
+                        type="text"
+                        value={color.name}
+                        onChange={e => handleUpdateColor(idx, { name: e.target.value })}
+                        placeholder="Nome da cor (ex: Rosa Bebê)"
+                        className="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-white focus:border-[#2563EB] outline-none text-xs font-bold text-[#1E293B]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Center: Image Thumbnail & Repository / Drop Actions */}
+                  <div className="flex flex-wrap items-center gap-2 w-full lg:flex-1">
+                    {color.image ? (
+                      <div className="flex items-center gap-2.5 bg-white px-2.5 py-1.5 rounded-xl border border-gray-200 w-full sm:w-auto">
+                        <img
+                          src={color.image}
+                          alt={color.name || 'preview'}
+                          className="w-9 h-9 rounded-lg object-cover border border-gray-100 shrink-0"
+                          onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                        <span className="text-[11px] text-gray-500 font-mono truncate max-w-[140px] sm:max-w-[200px]" title={color.image}>
+                          {color.image.split('/').pop() || 'foto.webp'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateColor(idx, { image: '' })}
+                          className="text-gray-400 hover:text-rose-500 p-1"
+                          title="Remover foto da cor"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400 italic">Sem foto vinculada a esta cor</span>
+                    )}
+
+                    {/* Buttons: Escolher do Repositório & Dropar / Upload */}
+                    <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+                      <button
+                        type="button"
+                        onClick={() => setGalleryModalColorIdx(idx)}
+                        className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#2563EB] font-bold text-xs rounded-xl border border-blue-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                        title="Escolher foto existente no Repositório de Fotos"
+                      >
+                        <ImageIcon size={13} />
+                        <span>{color.image ? 'Trocar do Repositório' : '📁 Repositório'}</span>
+                      </button>
+
+                      <ImageUploader
+                        compact
+                        onImageUploaded={(url) => handleUpdateColor(idx, { image: url })}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right Actions */}
+                  <div className="flex items-center gap-1 shrink-0 self-end lg:self-center">
                     <button
                       type="button"
                       onClick={() => setPreviewColorIndex(idx)}
@@ -368,30 +399,43 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
                       className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
                       title="Remover esta cor"
                     >
-                      <X size={15} />
+                      <Trash2 size={15} />
                     </button>
                   </div>
                 </div>
               ))}
 
               {(!formData.colors || formData.colors.length === 0) && (
-                <div className="text-center py-8 px-4 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50 text-gray-400">
-                  <Palette size={28} className="mx-auto mb-2 text-gray-300" />
-                  <p className="font-bold text-sm text-[#1E293B]">Nenhuma variação de cor cadastrada</p>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    Clique no botão acima para adicionar cores (ex: Branco, Azul, Vermelho) com fotos individuais.
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-gray-200 text-left">
-                    <label className="block font-bold text-gray-700 text-xs mb-1">
-                      Ou informe a URL da foto principal (sem variações):
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.images?.[0] || ''}
-                      onChange={e => setFormData({ ...formData, images: [e.target.value] })}
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:border-[#2563EB] outline-none text-xs"
-                    />
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                    <div className="flex-1">
+                      <ImageUploader
+                        label="Submeter Foto Principal do Produto"
+                        currentImageUrl={formData.images?.[0]}
+                        onImageUploaded={(url) => setFormData({ ...formData, images: [url] })}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsMainGalleryModalOpen(true)}
+                      className="px-5 py-3.5 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] font-bold text-xs rounded-2xl border border-[#93C5FD] flex items-center justify-center gap-2 transition-all shadow-xs"
+                    >
+                      <ImageIcon size={16} />
+                      <span>Escolher do Repositório</span>
+                    </button>
+                  </div>
+
+                  <div className="text-center py-3 px-4 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50 text-gray-400">
+                    <p className="font-bold text-xs text-[#1E293B]">Ou informe a URL externa da foto principal:</p>
+                    <div className="mt-1.5 text-left">
+                      <input
+                        type="text"
+                        value={formData.images?.[0] || ''}
+                        onChange={e => setFormData({ ...formData, images: [e.target.value] })}
+                        placeholder="https://images.unsplash.com/... ou /uploads/foto.webp"
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-white focus:border-[#2563EB] outline-none text-xs"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -727,6 +771,30 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
           </Button>
         </div>
       </div>
+
+      {/* MODAL: REPOSITÓRIO DE FOTOS PARA VARIAÇÃO DE COR */}
+      <PhotoRepositoryModal
+        isOpen={galleryModalColorIdx !== null}
+        onClose={() => setGalleryModalColorIdx(null)}
+        onSelectImage={(url) => {
+          if (galleryModalColorIdx !== null) {
+            handleUpdateColor(galleryModalColorIdx, { image: url });
+          }
+        }}
+        title={
+          galleryModalColorIdx !== null
+            ? `Escolher Foto para Cor: ${formData.colors?.[galleryModalColorIdx]?.name || 'Nova Cor'}`
+            : 'Repositório de Fotos'
+        }
+      />
+
+      {/* MODAL: REPOSITÓRIO DE FOTOS PARA FOTO PRINCIPAL */}
+      <PhotoRepositoryModal
+        isOpen={isMainGalleryModalOpen}
+        onClose={() => setIsMainGalleryModalOpen(false)}
+        onSelectImage={(url) => setFormData({ ...formData, images: [url] })}
+        title="Escolher Foto Principal do Produto"
+      />
 
     </div>
   );

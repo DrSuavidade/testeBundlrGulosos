@@ -79,17 +79,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onOpenModal, onAddTo
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
-          <span className="text-xl sm:text-2xl font-black text-[#2563EB]">
-            R$ {product.price.toFixed(2).replace('.', ',')}
-          </span>
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 gap-2">
+          <div className="flex flex-col min-w-0">
+            <span className={`text-xl sm:text-2xl font-black ${product.stock <= 0 ? 'text-gray-400' : 'text-[#2563EB]'}`}>
+              R$ {product.price.toFixed(2).replace('.', ',')}
+            </span>
+            {product.stock <= 0 && (
+              <span className="text-[11px] font-extrabold text-rose-600 leading-tight">
+                Temporariamente indisponível
+              </span>
+            )}
+          </div>
+
           <Button
             size="md"
-            variant="secondary"
-            className="group-hover:bg-[#2563EB] group-hover:text-white transition-colors font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5"
-            onClick={onAddToCart}
+            variant={product.stock <= 0 ? 'ghost' : 'secondary'}
+            disabled={product.stock <= 0}
+            className={product.stock <= 0
+              ? "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed font-bold text-xs px-3 sm:px-4 py-2 opacity-75 shrink-0"
+              : "group-hover:bg-[#2563EB] group-hover:text-white transition-colors font-bold text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5 shrink-0"}
+            onClick={product.stock <= 0 ? undefined : onAddToCart}
           >
-            Adicionar
+            {product.stock <= 0 ? 'Esgotado' : 'Adicionar'}
           </Button>
         </div>
       </div>

@@ -215,17 +215,28 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) =
                     {product.description}
                   </p>
 
-                  <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-gray-100">
-                    <span className={`${compact ? 'text-sm sm:text-base' : 'text-lg sm:text-xl'} font-black text-[#2563EB]`}>
-                      R$ {product.price.toFixed(2).replace('.', ',')}
-                    </span>
+                  <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-gray-100 gap-2">
+                    <div className="flex flex-col min-w-0">
+                      <span className={`${compact ? 'text-sm sm:text-base' : 'text-lg sm:text-xl'} font-black ${product.stock <= 0 ? 'text-gray-400' : 'text-[#2563EB]'}`}>
+                        R$ {product.price.toFixed(2).replace('.', ',')}
+                      </span>
+                      {product.stock <= 0 && (
+                        <span className="text-[10px] sm:text-[11px] font-extrabold text-rose-600 leading-tight">
+                          Temporariamente indisponível
+                        </span>
+                      )}
+                    </div>
+
                     <Button
                       size="sm"
-                      variant="secondary"
-                      className="group-hover:bg-[#2563EB] group-hover:text-white text-xs px-3 sm:px-4 py-1.5"
-                      onClick={() => addToCart(product)}
+                      variant={product.stock <= 0 ? 'ghost' : 'secondary'}
+                      disabled={product.stock <= 0}
+                      className={product.stock <= 0
+                        ? "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed font-bold text-xs px-2.5 py-1 opacity-75 shrink-0"
+                        : "group-hover:bg-[#2563EB] group-hover:text-white text-xs px-3 sm:px-4 py-1.5 shrink-0"}
+                      onClick={product.stock <= 0 ? undefined : () => addToCart(product)}
                     >
-                      + Add
+                      {product.stock <= 0 ? 'Esgotado' : '+ Add'}
                     </Button>
                   </div>
                 </div>
