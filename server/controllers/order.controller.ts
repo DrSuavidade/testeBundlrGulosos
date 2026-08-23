@@ -3,10 +3,12 @@ import { z } from 'zod';
 import { OrderModel } from '../models/order.model.js';
 import { CustomerModel } from '../models/customer.model.js';
 import { EmailService } from '../services/email.service.js';
+import { ENV } from '../config/env.js';
 
 const orderCreateSchema = z.object({
   customer_name: z.string().min(2, 'Nome do cliente é obrigatório'),
   email: z.string().email('Email inválido'),
+  cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/, 'CPF inválido').optional(),
   phone: z.string().min(8, 'Telefone inválido'),
   fulfillment_type: z.enum(['delivery', 'pickup']).default('delivery'),
   address_zip: z.string().optional(),
@@ -32,6 +34,21 @@ const orderCreateSchema = z.object({
       selected_color: z.string().optional()
     })
   ).min(1, 'O pedido deve ter pelo menos um item')
+}).refine(data => {
+  if (data.fulfillment_type === 'delivery') {
+    const hasStreet = !!data.address_street?.trim();
+    const hasNumber = !!data.address_number?.trim();
+    const hasDistrict = !!data.address_district?.trim();
+    const hasCity = !!data.address_city?.trim();
+    const hasState = !!data.address_state?.trim();
+    const cleanZip = data.address_zip?.replace(/\D/g, '') || '';
+    const hasValidZip = cleanZip.length === 8;
+    return hasStreet && hasNumber && hasDistrict && hasCity && hasState && hasValidZip;
+  }
+  return true;
+}, {
+  message: 'Endereço completo com CEP de 8 dígitos, Rua, Número, Bairro, Cidade e Estado é obrigatório para entregas.',
+  path: ['address_zip']
 });
 
 const statusUpdateSchema = z.object({
@@ -56,6 +73,30 @@ export const OrderController = {
         res.status(404).json({ error: 'Pedido não encontrado' });
         return;
       }
+
+      // Prevenir IDOR: verificar se administrador ou o próprio cliente dono do pedido
+      const authHeader = req.headers.authorization;
+      const adminTokenHeader = req.headers['x-admin-token'];
+      const token = authHeader?.startsWith('Bearer ')
+        ? authHeader.substring(7)
+        : (Array.isArray(adminTokenHeader) ? adminTokenHeader[0] : adminTokenHeader);
+
+      const isAdmin = (token && token === ENV.ADMIN_TOKEN) ||
+                      (ENV.NODE_ENV === 'development' && (!token || token === 'admin' || token === ENV.ADMIN_TOKEN));
+
+      let isAuthorized = isAdmin;
+      if (!isAuthorized && token) {
+        const customer = await CustomerModel.findBySessionToken(token);
+        if (customer && customer.email.trim().toLowerCase() === order.email.trim().toLowerCase()) {
+          isAuthorized = true;
+        }
+      }
+
+      if (!isAuthorized) {
+        res.status(403).json({ error: 'Acesso não autorizado ao pedido.' });
+        return;
+      }
+
       res.json(order);
     } catch (err) {
       next(err);
@@ -72,7 +113,7 @@ export const OrderController = {
 
       // 1. Auto-cadastrar / vincular cliente pelo email
       try {
-        await CustomerModel.findOrCreate(parsed.email, parsed.customer_name, parsed.phone);
+        await CustomerModel.findOrCreate(parsed.email, parsed.customer_name, parsed.phone, parsed.cpf);
       } catch (custErr) {
         console.warn('Aviso: Não foi possível vincular cliente automaticamente:', custErr);
       }

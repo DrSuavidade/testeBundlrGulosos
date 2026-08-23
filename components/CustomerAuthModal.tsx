@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Mail, KeyRound, ArrowRight, ShieldCheck, X, AlertCircle, Sparkles, RefreshCw, Check } from 'lucide-react';
+import { Mail, KeyRound, ArrowRight, ShieldCheck, X, AlertCircle, Sparkles, RefreshCw } from 'lucide-react';
 import { customerService, CustomerUser } from '../services/customerService';
 import { Button } from './ui/Button';
 

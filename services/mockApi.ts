@@ -693,6 +693,7 @@ export const api = {
       shipping_carrier: input.shipping_carrier,
       shipping_delivery_time: input.shipping_delivery_time,
       package_tier: input.package_tier,
+      payment_method: input.payment_method,
       status: 'new',
       created_at: new Date().toISOString(),
       items: itemDetails

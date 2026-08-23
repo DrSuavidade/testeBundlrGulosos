@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { convertImageToWebP, formatFileSize, WebPConversionResult } from '../services/imageUtils';
-import { UploadCloud, Image as ImageIcon, Sparkles, Check, AlertCircle, RefreshCw, X } from 'lucide-react';
+import { convertImageToWebP, WebPConversionResult } from '../services/imageUtils';
+import { UploadCloud, Check, AlertCircle, RefreshCw, X } from 'lucide-react';
 
 interface ImageUploaderProps {
   currentImageUrl?: string;

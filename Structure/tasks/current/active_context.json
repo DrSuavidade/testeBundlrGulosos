@@ -1,0 +1,180 @@
+{
+  "budget": {
+    "control_tokens": 392,
+    "limit": 12000,
+    "reference_tokens": 0,
+    "rule_tokens": 77,
+    "source_tokens": 8087,
+    "tokenizer": "char_heuristic",
+    "used": 8556
+  },
+  "category": "investigate",
+  "events": [
+    {
+      "action": "admit",
+      "confidence": 1.0,
+      "direction": "forward",
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "graph_confidence": 0.0,
+      "graph_edge_kind": "",
+      "graph_edge_source_id": "",
+      "graph_edge_target_id": "",
+      "graph_node_id": "",
+      "graph_query_id": "",
+      "graph_snapshot_hash": "",
+      "id": "evt-init-000",
+      "lexical_matched_terms": [
+        "order",
+        "package"
+      ],
+      "lexical_query_hash": "3a0533270ce175ab3aa824e116f25eea392684a1346a6dc2f61ef4ff58a3a7d2",
+      "lexical_score": 25.0,
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=25) matching keywords: order, package",
+      "relation": "keyword_match",
+      "source": "heuristic",
+      "target": "types.ts",
+      "trigger": "initial_route",
+      "triggered_by": null
+    },
+    {
+      "action": "admit",
+      "confidence": 1.0,
+      "direction": "forward",
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "graph_confidence": 0.0,
+      "graph_edge_kind": "",
+      "graph_edge_source_id": "",
+      "graph_edge_target_id": "",
+      "graph_node_id": "",
+      "graph_query_id": "",
+      "graph_snapshot_hash": "",
+      "id": "evt-init-001",
+      "lexical_matched_terms": [
+        "order"
+      ],
+      "lexical_query_hash": "3a0533270ce175ab3aa824e116f25eea392684a1346a6dc2f61ef4ff58a3a7d2",
+      "lexical_score": 16.0,
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=16) matching keywords: order",
+      "relation": "keyword_match",
+      "source": "heuristic",
+      "target": "server/models/order.model.ts",
+      "trigger": "initial_route",
+      "triggered_by": null
+    },
+    {
+      "action": "admit",
+      "confidence": 1.0,
+      "direction": "forward",
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "graph_confidence": 0.0,
+      "graph_edge_kind": "",
+      "graph_edge_source_id": "",
+      "graph_edge_target_id": "",
+      "graph_node_id": "",
+      "graph_query_id": "",
+      "graph_snapshot_hash": "",
+      "id": "evt-init-002",
+      "lexical_matched_terms": [
+        "admin"
+      ],
+      "lexical_query_hash": "3a0533270ce175ab3aa824e116f25eea392684a1346a6dc2f61ef4ff58a3a7d2",
+      "lexical_score": 11.0,
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=11) matching keywords: admin",
+      "relation": "keyword_match",
+      "source": "heuristic",
+      "target": "components/AdminLogin.tsx",
+      "trigger": "initial_route",
+      "triggered_by": null
+    }
+  ],
+  "files": [
+    {
+      "confidence": 1.0,
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "git_revision": "4870e49fbb8d64c3dd46a793cc77f94c940281dd",
+      "hash": "98d1f760305a4ebdcaaecd69d27d16ec9c71f020bd1be7b5d58261621cc31e21",
+      "path": "types.ts",
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=25) matching keywords: order, package",
+      "relation": "keyword_match",
+      "role": "source",
+      "selection": {
+        "mode": "full"
+      },
+      "source": "heuristic",
+      "trigger": "task_goal"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "git_revision": "4870e49fbb8d64c3dd46a793cc77f94c940281dd",
+      "hash": "5dc71ba41704ed60a3c88e4e7c26640277a541c69ac3f6ad5a66fa5fb6d28145",
+      "path": "server/models/order.model.ts",
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=16) matching keywords: order",
+      "relation": "keyword_match",
+      "role": "source",
+      "selection": {
+        "mode": "full"
+      },
+      "source": "heuristic",
+      "trigger": "task_goal"
+    },
+    {
+      "confidence": 1.0,
+      "evidence": [
+        "heuristic_keyword_match"
+      ],
+      "git_revision": "4870e49fbb8d64c3dd46a793cc77f94c940281dd",
+      "hash": "29039dfc277a22153a350851d1124c70db4cef0ebc90b59c1c1cbf03dcb972f0",
+      "path": "components/AdminLogin.tsx",
+      "ranking_score": 1.0,
+      "reason": "Matched heuristic scoring (score=11) matching keywords: admin",
+      "relation": "keyword_match",
+      "role": "source",
+      "selection": {
+        "mode": "full"
+      },
+      "source": "heuristic",
+      "trigger": "task_goal"
+    }
+  ],
+  "git_revision": "4870e49fbb8d64c3dd46a793cc77f94c940281dd",
+  "goal": "Package 4: Admin Panel Payment Settings and Order Financials",
+  "graph_snapshot_hash": "",
+  "policy": {
+    "effective": "advisory",
+    "file_reads": "advisory",
+    "mcp_reads": "advisory",
+    "provider": "advisory",
+    "requested": "advisory",
+    "terminal_reads": "advisory"
+  },
+  "reference_files": [],
+  "references": [],
+  "rules": [
+    {
+      "hash": "76a69d319f0ea7de4b1e5bd8914facd31638b6784936cf942ed3c2a84fa43f19",
+      "path": "Structure/rules/boundaries.md",
+      "reason": "Heuristic rule match"
+    }
+  ],
+  "schema_version": 1,
+  "task_contract_hash": "sha256:1f187272d8cb8bfa05639222ed569172827548af5c8867dfdcc149baf685cf1d",
+  "task_id": "0b3bba9f",
+  "tests": [],
+  "working_files": []
+}

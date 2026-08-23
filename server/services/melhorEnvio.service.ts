@@ -466,7 +466,7 @@ export async function generateShipmentLabel(input: GenerateLabelInput): Promise<
 
         // 2. Checkout / Compra da etiqueta (usando saldo da carteira Melhor Envio)
         try {
-          const checkoutRes = await fetch(`${ENV.MELHOR_ENVIO.API_URL}/me/shipment/checkout`, {
+          await fetch(`${ENV.MELHOR_ENVIO.API_URL}/me/shipment/checkout`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',

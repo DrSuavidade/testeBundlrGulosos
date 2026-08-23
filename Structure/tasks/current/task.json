@@ -1,0 +1,15 @@
+{
+  "category": "investigate",
+  "constraints": [],
+  "criteria": [
+    "Payment credentials settings tab accessible in Admin Panel",
+    "Orders table displays payment method badge and MP transaction ID"
+  ],
+  "goal": "Package 4: Admin Panel Payment Settings and Order Financials",
+  "schema_version": 1,
+  "task_id": "0b3bba9f",
+  "verification": [
+    "npx tsc --noEmit",
+    "npm run build"
+  ]
+}

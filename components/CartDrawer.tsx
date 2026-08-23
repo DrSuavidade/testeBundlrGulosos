@@ -38,41 +38,59 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                 <p className="text-sm mt-1">Que tal escolher alguns fios de algodão ou kits de crochê?</p>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.id} className="flex gap-4 bg-white p-4 rounded-2xl shadow-sm border border-[#BFDBFE]/40">
-                <img src={item.images[0]} alt={item.name} className="w-20 h-20 object-cover rounded-xl" />
-                <div className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-[#1E293B] text-sm leading-tight">{item.name}</h3>
-                    <p className="text-xs text-[#2563EB] font-bold mt-1">R$ {item.price.toFixed(2).replace('.', ',')} un</p>
-                  </div>
-                  <div className="flex items-center justify-between mt-2">
-                     <div className="flex items-center bg-[#F0F7FF] rounded-full border border-[#BFDBFE] h-8">
+            items.map((item) => {
+              const matchedColorObj = item.colors?.find(c => c.name === item.selectedColor);
+              const itemImage = matchedColorObj?.image || item.images?.[0] || '';
+              const itemKey = `${item.id}-${item.selectedColor || 'default'}`;
+
+              return (
+                <div key={itemKey} className="flex gap-4 bg-white p-4 rounded-2xl shadow-sm border border-[#BFDBFE]/40">
+                  <img src={itemImage} alt={item.name} className="w-20 h-20 object-cover rounded-xl shrink-0" />
+                  <div className="flex-1 flex flex-col justify-between min-w-0">
+                    <div>
+                      <h3 className="font-bold text-[#1E293B] text-sm leading-tight truncate">{item.name}</h3>
+                      {item.selectedColor && (
+                        <p className="text-xs text-gray-500 font-semibold mt-0.5 flex items-center gap-1.5">
+                          {matchedColorObj?.hex && (
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-gray-300 inline-block shrink-0"
+                              style={{ backgroundColor: matchedColorObj.hex }}
+                            />
+                          )}
+                          <span>Cor: {item.selectedColor}</span>
+                        </p>
+                      )}
+                      <p className="text-xs text-[#2563EB] font-bold mt-1">R$ {item.price.toFixed(2).replace('.', ',')} un</p>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                       <div className="flex items-center bg-[#F0F7FF] rounded-full border border-[#BFDBFE] h-8">
+                          <button 
+                            onClick={() => updateQty(item.id, item.qty - 1, item.selectedColor)}
+                            className="px-2 text-[#2563EB] hover:text-[#1E293B]"
+                            disabled={item.qty <= 1}
+                          >
+                            <Minus size={12} />
+                          </button>
+                          <span className="w-6 text-center text-xs font-bold text-[#1E293B]">{item.qty}</span>
+                          <button 
+                            onClick={() => updateQty(item.id, item.qty + 1, item.selectedColor)}
+                            className="px-2 text-[#2563EB] hover:text-[#1E293B]"
+                          >
+                            <Plus size={12} />
+                          </button>
+                        </div>
                         <button 
-                          onClick={() => updateQty(item.id, item.qty - 1)}
-                          className="px-2 text-[#2563EB] hover:text-[#1E293B]"
-                          disabled={item.qty <= 1}
+                          onClick={() => removeFromCart(item.id, item.selectedColor)}
+                          className="text-gray-400 hover:text-red-400 p-1"
+                          aria-label="Remover item"
                         >
-                          <Minus size={12} />
+                          <Trash2 size={16} />
                         </button>
-                        <span className="w-6 text-center text-xs font-bold text-[#1E293B]">{item.qty}</span>
-                        <button 
-                          onClick={() => updateQty(item.id, item.qty + 1)}
-                          className="px-2 text-[#2563EB] hover:text-[#1E293B]"
-                        >
-                          <Plus size={12} />
-                        </button>
-                      </div>
-                      <button 
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-gray-400 hover:text-red-400 p-1"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

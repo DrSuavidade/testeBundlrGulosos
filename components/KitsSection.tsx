@@ -3,11 +3,7 @@ import {
   Sparkles, 
   ShoppingBag, 
   Check, 
-  Percent, 
-  ArrowRight, 
-  PackageCheck, 
-  AlertCircle,
-  Clock,
+  Clock, 
   Layers
 } from 'lucide-react';
 import { Kit } from '../types';

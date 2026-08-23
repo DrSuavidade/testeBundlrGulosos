@@ -11,17 +11,13 @@ import {
   X, 
   Palette, 
   Tag, 
-  Layers, 
   DollarSign, 
   Package, 
   Sparkles, 
   Eye, 
-  Check, 
   Info,
   Scale,
-  FileText,
-  Image as ImageIcon,
-  UploadCloud
+  Image as ImageIcon
 } from 'lucide-react';
 
 interface AdminProductFormProps {

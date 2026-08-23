@@ -4,15 +4,12 @@ import {
   Plus, 
   Trash2, 
   Edit, 
-  Check, 
   Sparkles, 
   Percent, 
   AlertCircle, 
   X, 
   Layers, 
   Search, 
-  ArrowRight,
-  TrendingDown,
   Boxes
 } from 'lucide-react';
 import { Kit, KitInput, Product } from '../types';

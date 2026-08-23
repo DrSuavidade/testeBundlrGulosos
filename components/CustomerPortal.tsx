@@ -10,8 +10,6 @@ import {
   ShoppingBag, 
   ArrowLeft, 
   LogOut, 
-  CheckCircle2, 
-  Sparkles, 
   RefreshCw, 
   Phone, 
   ShieldCheck, 
@@ -81,7 +79,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({
         allergens: [],
         active: true,
         featured: false
-      }, item.qty);
+      }, item.qty, item.selected_color);
       addedCount += item.qty;
     });
 

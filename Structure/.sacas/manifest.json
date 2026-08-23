@@ -1,0 +1,10 @@
+{
+  "adapters": [],
+  "context_budget": 12000,
+  "current_task_id": "0b3bba9f",
+  "graphify_mode": "off",
+  "graphify_output": "graphify-out",
+  "repository_root": ".",
+  "sacas_root": "Structure",
+  "schema_version": 1
+}

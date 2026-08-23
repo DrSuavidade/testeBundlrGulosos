@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Instagram, ExternalLink, Heart, MessageCircle } from 'lucide-react';
+import { Instagram, ExternalLink } from 'lucide-react';
 import { WavyDivider } from './ui/WavyDivider';
 import { api } from '../services/mockApi';
 import { InstaPost } from '../types';

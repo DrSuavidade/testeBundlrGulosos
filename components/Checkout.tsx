@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { Button } from './ui/Button';
-import { ArrowLeft, CheckCircle, Truck, Package, ShieldCheck, MapPin } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Truck, Package, ShieldCheck, MapPin, QrCode, MessageCircle } from 'lucide-react';
 import { api } from '../services/mockApi';
 import { ShippingCalculator } from './ShippingCalculator';
 import { ShippingQuote } from '../types';
+
+const formatPhone = (value: string) => {
+  const clean = value.replace(/\D/g, '');
+  if (clean.length === 0) return '';
+  if (clean.length <= 2) return `(${clean}`;
+  if (clean.length <= 6) return `(${clean.slice(0, 2)}) ${clean.slice(2)}`;
+  if (clean.length <= 10) return `(${clean.slice(0, 2)}) ${clean.slice(2, 6)}-${clean.slice(6)}`;
+  return `(${clean.slice(0, 2)}) ${clean.slice(2, 7)}-${clean.slice(7, 11)}`;
+};
+
+const formatCpf = (value: string) => {
+  const clean = value.replace(/\D/g, '');
+  if (clean.length === 0) return '';
+  if (clean.length <= 3) return clean;
+  if (clean.length <= 6) return `${clean.slice(0, 3)}.${clean.slice(3)}`;
+  if (clean.length <= 9) return `${clean.slice(0, 3)}.${clean.slice(3, 6)}.${clean.slice(6)}`;
+  return `${clean.slice(0, 3)}.${clean.slice(3, 6)}.${clean.slice(6, 9)}-${clean.slice(9, 11)}`;
+};
 
 interface CheckoutProps {
   onBack: () => void;
@@ -18,10 +36,12 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
 
   // Cotação de Frete Selecionada
   const [selectedShippingQuote, setSelectedShippingQuote] = useState<ShippingQuote | null>(null);
+  const isPickup = selectedShippingQuote?.id === 'pickup_store';
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    cpf: '',
     phone: '',
     zip: '',
     street: '',
@@ -31,7 +51,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
     city: 'Vitória',
     state: 'ES',
     date: '',
-    notes: ''
+    notes: '',
+    paymentMethod: 'pix' as 'pix' | 'whatsapp'
   });
 
   // Callback ao encontrar endereço pelo CEP no componente de frete
@@ -57,9 +78,39 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
       return;
     }
 
+    // 1. Validar Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Por favor, informe um email válido.');
+      return;
+    }
+
+    // 2. Validar Phone/WhatsApp
+    const cleanPhone = formData.phone.replace(/\D/g, '');
+    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      alert('Por favor, informe um WhatsApp/Celular válido com DDD (10 ou 11 dígitos).');
+      return;
+    }
+
+    // 2.5 Validar CPF
+    const cleanCpf = formData.cpf.replace(/\D/g, '');
+    if (cleanCpf.length !== 11) {
+      alert('Por favor, informe um CPF válido.');
+      return;
+    }
+
+    // 3. Validar CEP (se entrega)
+    if (!isPickup) {
+      const cleanZip = formData.zip.replace(/\D/g, '');
+      if (cleanZip.length !== 8) {
+        alert('Por favor, informe um CEP válido.');
+        return;
+      }
+    }
+
     setLoading(true);
 
-    const fullAddress = [
+    const fullAddress = isPickup ? 'Retirada na Loja' : [
       formData.street,
       formData.number ? `nº ${formData.number}` : '',
       formData.complement,
@@ -68,22 +119,21 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
       formData.zip ? `CEP: ${formData.zip}` : ''
     ].filter(Boolean).join(', ');
 
-    const isPickup = selectedShippingQuote.id === 'pickup_store';
-
     try {
       const orderPayload = {
         customer_name: formData.name,
-        email: formData.email,
+        email: formData.email.trim().toLowerCase(),
+        cpf: formData.cpf,
         phone: formData.phone,
         fulfillment_type: (isPickup ? 'pickup' : 'delivery') as 'pickup' | 'delivery',
-        address_zip: formData.zip,
-        address_street: formData.street,
-        address_number: formData.number,
-        address_complement: formData.complement,
-        address_district: formData.district,
-        address_city: formData.city,
-        address_state: formData.state,
-        address: fullAddress,
+        address_zip: isPickup ? '' : formData.zip,
+        address_street: isPickup ? '' : formData.street,
+        address_number: isPickup ? '' : formData.number,
+        address_complement: isPickup ? '' : formData.complement,
+        address_district: isPickup ? '' : formData.district,
+        address_city: isPickup ? '' : formData.city,
+        address_state: isPickup ? '' : formData.state,
+        address: isPickup ? 'Retirada na Loja' : fullAddress,
         scheduled_date: formData.date || new Date().toISOString().split('T')[0],
         shipping_cost: shippingCost,
         shipping_service_id: selectedShippingQuote.id,
@@ -94,9 +144,10 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
         items: items.map(i => ({
           product_id: i.id,
           qty: i.qty,
-          selected_color: (i as any).selectedColor || undefined
+          selected_color: i.selectedColor || undefined
         })),
-        notes: formData.notes
+        notes: formData.notes,
+        payment_method: formData.paymentMethod
       };
 
       const res = await api.createOrder(orderPayload);
@@ -164,9 +215,25 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
             </div>
           </div>
 
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-            Nossa equipe da <strong>Pedra Mania</strong> entrará em contato via WhatsApp com os detalhes do rastreio e instruções de envio!
-          </p>
+          {formData.paymentMethod === 'pix' ? (
+            <div className="bg-[#EFF6FF] p-4 rounded-2xl border-2 border-[#2563EB] space-y-3">
+              <h3 className="font-bold text-[#1E293B] text-sm">Escaneie o QR Code para Pagar</h3>
+              <div className="flex justify-center">
+                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020126580014br.gov.bcb.pix0136pedramania-pix-random-key-00000000`} alt="PIX QR Code" className="w-32 h-32 rounded-lg border border-gray-200" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-gray-500">Ou use o Pix Copia e Cola:</p>
+                <div className="flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
+                  <span className="text-xs text-gray-700 truncate flex-1">00020126580014br.gov.bcb.pix0136pedramania...</span>
+                  <button className="text-[#2563EB] text-xs font-bold px-2 py-1 bg-[#EFF6FF] rounded hover:bg-[#DBEAFE]" onClick={() => alert('Chave copiada!')}>Copiar</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+              Nossa equipe da <strong>Pedra Mania</strong> entrará em contato via WhatsApp com os detalhes do rastreio e instruções de pagamento!
+            </p>
+          )}
 
           <Button onClick={onBack} fullWidth size="lg">
             Voltar para a Loja
@@ -238,6 +305,22 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
                     </div>
                     <div>
                       <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                        CPF *
+                      </label>
+                      <input 
+                        required 
+                        type="text" 
+                        placeholder="000.000.000-00"
+                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                        value={formData.cpf}
+                        onChange={e => setFormData({...formData, cpf: formatCpf(e.target.value)})}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
                         WhatsApp / Celular *
                       </label>
                       <input 
@@ -246,7 +329,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
                         placeholder="(27) 99999-9999"
                         className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
                         value={formData.phone}
-                        onChange={e => setFormData({...formData, phone: e.target.value})}
+                        onChange={e => setFormData({...formData, phone: formatPhone(e.target.value)})}
                       />
                     </div>
                   </div>
@@ -264,101 +347,145 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
               </div>
 
               {/* 3. Endereço de Entrega */}
+              {!isPickup && (
+                <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-[#BFDBFE] shadow-sm space-y-4">
+                  <h3 className="font-bold text-[#1E293B] text-base border-b border-gray-100 pb-3 flex items-center gap-2">
+                    <MapPin size={18} className="text-[#2563EB]" /> 3. Endereço Completo de Destino
+                  </h3>
+
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          Rua / Avenida *
+                        </label>
+                        <input 
+                          required 
+                          type="text" 
+                          placeholder="Rua das Palmeiras"
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                          value={formData.street}
+                          onChange={e => setFormData({...formData, street: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          Número *
+                        </label>
+                        <input 
+                          required 
+                          type="text" 
+                          placeholder="120"
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                          value={formData.number}
+                          onChange={e => setFormData({...formData, number: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          Complemento / Apto
+                        </label>
+                        <input 
+                          type="text" 
+                          placeholder="Apto 302"
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                          value={formData.complement}
+                          onChange={e => setFormData({...formData, complement: e.target.value})}
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          Bairro *
+                        </label>
+                        <input 
+                          required 
+                          type="text" 
+                          placeholder="Praia do Canto"
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                          value={formData.district}
+                          onChange={e => setFormData({...formData, district: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          Cidade *
+                        </label>
+                        <input 
+                          required 
+                          type="text" 
+                          placeholder="Vitória"
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
+                          value={formData.city}
+                          onChange={e => setFormData({...formData, city: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                          UF *
+                        </label>
+                        <select 
+                          required 
+                          className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm bg-white"
+                          value={formData.state}
+                          onChange={e => setFormData({...formData, state: e.target.value})}
+                        >
+                          <option value="">Selecione</option>
+                          {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
+                            <option key={uf} value={uf}>{uf}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
+                        Observações para a Embalagem ou Envio
+                      </label>
+                      <textarea 
+                        rows={2}
+                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all resize-none text-sm"
+                        placeholder="Ex: Preferência por cores específicas, instruções de entrega..."
+                        value={formData.notes}
+                        onChange={e => setFormData({...formData, notes: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. Método de Pagamento */}
               <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-[#BFDBFE] shadow-sm space-y-4">
                 <h3 className="font-bold text-[#1E293B] text-base border-b border-gray-100 pb-3 flex items-center gap-2">
-                  <MapPin size={18} className="text-[#2563EB]" /> 3. Endereço Completo de Destino
+                  <QrCode size={18} className="text-[#2563EB]" /> {isPickup ? '3' : '4'}. Método de Pagamento
                 </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className={`relative flex flex-col p-4 cursor-pointer rounded-xl border-2 transition-all ${
+                    formData.paymentMethod === 'pix' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-gray-200 hover:border-gray-300'
+                  }`}>
+                    <input type="radio" name="payment" value="pix" className="sr-only" checked={formData.paymentMethod === 'pix'} onChange={() => setFormData({...formData, paymentMethod: 'pix'})} />
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-[#1E293B] flex items-center gap-2"><QrCode size={18} className="text-[#2563EB]" /> PIX Instantâneo</span>
+                      {formData.paymentMethod === 'pix' && <CheckCircle size={18} className="text-[#2563EB]" />}
+                    </div>
+                    <p className="text-xs text-gray-500">Aprovação imediata. Escaneie o QR Code ou copie o código Pix Copia e Cola na próxima tela.</p>
+                  </label>
 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div className="sm:col-span-2">
-                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                        Rua / Avenida *
-                      </label>
-                      <input 
-                        required 
-                        type="text" 
-                        placeholder="Rua das Palmeiras"
-                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
-                        value={formData.street}
-                        onChange={e => setFormData({...formData, street: e.target.value})}
-                      />
+                  <label className={`relative flex flex-col p-4 cursor-pointer rounded-xl border-2 transition-all ${
+                    formData.paymentMethod === 'whatsapp' ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-gray-200 hover:border-gray-300'
+                  }`}>
+                    <input type="radio" name="payment" value="whatsapp" className="sr-only" checked={formData.paymentMethod === 'whatsapp'} onChange={() => setFormData({...formData, paymentMethod: 'whatsapp'})} />
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-[#1E293B] flex items-center gap-2"><MessageCircle size={18} className="text-[#059669]" /> Combinar WhatsApp</span>
+                      {formData.paymentMethod === 'whatsapp' && <CheckCircle size={18} className="text-[#2563EB]" />}
                     </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                        Número *
-                      </label>
-                      <input 
-                        required 
-                        type="text" 
-                        placeholder="120"
-                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
-                        value={formData.number}
-                        onChange={e => setFormData({...formData, number: e.target.value})}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                        Complemento / Apto
-                      </label>
-                      <input 
-                        type="text" 
-                        placeholder="Apto 302"
-                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
-                        value={formData.complement}
-                        onChange={e => setFormData({...formData, complement: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                        Bairro *
-                      </label>
-                      <input 
-                        required 
-                        type="text" 
-                        placeholder="Praia do Canto"
-                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
-                        value={formData.district}
-                        onChange={e => setFormData({...formData, district: e.target.value})}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                        Cidade / UF *
-                      </label>
-                      <input 
-                        required 
-                        type="text" 
-                        placeholder="Vitória - ES"
-                        className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all text-sm"
-                        value={`${formData.city} - ${formData.state}`}
-                        onChange={e => {
-                          const parts = e.target.value.split('-');
-                          setFormData({
-                            ...formData,
-                            city: parts[0]?.trim() || formData.city,
-                            state: parts[1]?.trim() || formData.state
-                          });
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-bold text-[#1E293B] mb-1.5">
-                      Observações para a Embalagem ou Envio
-                    </label>
-                    <textarea 
-                      rows={2}
-                      className="w-full px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#93C5FD] outline-none transition-all resize-none text-sm"
-                      placeholder="Ex: Preferência por cores específicas, instruções de entrega..."
-                      value={formData.notes}
-                      onChange={e => setFormData({...formData, notes: e.target.value})}
-                    />
-                  </div>
+                    <p className="text-xs text-gray-500">Finalize o pedido e nossa equipe enviará o link de pagamento do Cartão/Boleto pelo WhatsApp.</p>
+                  </label>
                 </div>
               </div>
 
@@ -386,26 +513,32 @@ export const Checkout: React.FC<CheckoutProps> = ({ onBack }) => {
 
               {/* Lista de Itens */}
               <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-                {items.map(item => (
-                  <div key={item.id} className="flex items-center justify-between gap-3 text-xs sm:text-sm pb-2 border-b border-gray-50">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <img 
-                        src={item.images?.[0] || 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=100'} 
-                        alt={item.name} 
-                        className="w-10 h-10 rounded-lg object-cover shrink-0 border border-gray-100"
-                      />
-                      <div className="min-w-0">
-                        <p className="font-semibold text-[#1E293B] truncate">{item.name}</p>
-                        <p className="text-gray-400 text-[11px]">
-                          Qtd: {item.qty} {item.weight ? `• ${item.weight}` : ''}
-                        </p>
+                {items.map(item => {
+                  const matchedColorObj = item.colors?.find(c => c.name === item.selectedColor);
+                  const itemImage = matchedColorObj?.image || item.images?.[0] || 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=100';
+                  const itemKey = `${item.id}-${item.selectedColor || 'default'}`;
+
+                  return (
+                    <div key={itemKey} className="flex items-center justify-between gap-3 text-xs sm:text-sm pb-2 border-b border-gray-50">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img 
+                          src={itemImage} 
+                          alt={item.name} 
+                          className="w-10 h-10 rounded-lg object-cover shrink-0 border border-gray-100"
+                        />
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#1E293B] truncate">{item.name}</p>
+                          <p className="text-gray-400 text-[11px] truncate">
+                            Qtd: {item.qty} {item.selectedColor ? `• Cor: ${item.selectedColor}` : ''} {item.weight ? `• ${item.weight}` : ''}
+                          </p>
+                        </div>
                       </div>
+                      <span className="font-bold text-[#1E293B] shrink-0">
+                        R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}
+                      </span>
                     </div>
-                    <span className="font-bold text-[#1E293B] shrink-0">
-                      R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Subtotal, Frete e Total */}

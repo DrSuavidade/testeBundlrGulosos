@@ -32,7 +32,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
   }, []);
 
   const handleAdd = () => {
-    addToCart(product, qty);
+    addToCart(product, qty, selectedColor?.name);
     onClose();
   };
 

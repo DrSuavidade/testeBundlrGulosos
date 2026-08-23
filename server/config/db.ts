@@ -130,6 +130,10 @@ export async function autoMigrateAndSeed(): Promise<boolean> {
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS tracking_code VARCHAR(100);
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS label_url TEXT;
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_cost_real NUMERIC(10,2) DEFAULT 0;
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS cpf VARCHAR(14);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS mp_transaction_id VARCHAR(100);
+      ALTER TABLE customers ADD COLUMN IF NOT EXISTS cpf VARCHAR(14);
 
       CREATE TABLE IF NOT EXISTS order_items (
         id SERIAL PRIMARY KEY,

@@ -17,6 +17,7 @@ export interface OrderRow {
   id: string;
   customer_name: string;
   email: string;
+  cpf?: string | null;
   phone: string;
   fulfillment_type: 'delivery' | 'pickup';
   address_zip?: string | null;
@@ -41,6 +42,8 @@ export interface OrderRow {
   status: 'new' | 'preparing' | 'ready' | 'delivered';
   tracking_code?: string | null;
   label_url?: string | null;
+  payment_method?: string | null;
+  mp_transaction_id?: string | null;
   created_at?: Date;
   updated_at?: Date;
   items?: OrderItemRow[];
@@ -51,6 +54,7 @@ const inMemoryOrders: OrderRow[] = [
     id: 'PM-89A12',
     customer_name: 'Carolina Neves',
     email: 'carolina.neves@email.com',
+    cpf: '123.456.789-00',
     phone: '5527998124455',
     fulfillment_type: 'delivery',
     address_zip: '29055-270',
@@ -68,6 +72,8 @@ const inMemoryOrders: OrderRow[] = [
     status: 'preparing',
     tracking_code: 'BR982134561PM',
     label_url: 'https://sandbox.melhorenvio.com.br/painel/carrinho?order=PM-89A12',
+    payment_method: 'credit_card',
+    mp_transaction_id: '1234567890',
     created_at: new Date('2026-08-10T14:20:00.000Z'),
     items: [
       {
@@ -94,6 +100,36 @@ const inMemoryOrders: OrderRow[] = [
     ]
   }
 ];
+
+function toTitleCase(str: string | undefined | null): string {
+  if (!str) return '';
+  const lowercaseWords = ['de', 'do', 'da', 'dos', 'das', 'e', 'em', 'para', 'com', 'no', 'na', 'nos', 'nas'];
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((word, index) => {
+      if (word.length === 0) return '';
+      if (index === 0 || !lowercaseWords.includes(word)) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      }
+      return word;
+    })
+    .join(' ');
+}
+
+function formatCep(cep: string | undefined | null): string {
+  if (!cep) return '';
+  const clean = cep.replace(/\D/g, '');
+  if (clean.length !== 8) return clean;
+  return `${clean.slice(0, 5)}-${clean.slice(5)}`;
+}
+
+function formatUf(uf: string | undefined | null): string {
+  if (!uf) return '';
+  return uf.trim().toUpperCase().slice(0, 2);
+}
 
 export const OrderModel = {
   async findAll(): Promise<OrderRow[]> {
@@ -167,6 +203,7 @@ export const OrderModel = {
   async create(data: {
     customer_name: string;
     email: string;
+    cpf?: string;
     phone: string;
     fulfillment_type: 'delivery' | 'pickup';
     address_zip?: string;
@@ -193,14 +230,31 @@ export const OrderModel = {
   }): Promise<OrderRow> {
     const orderId = 'PM-' + Math.random().toString(36).substring(2, 7).toUpperCase();
     const shippingCost = data.shipping_cost || 0;
-    const fullAddress = data.full_address || [
-      data.address_street,
-      data.address_number,
-      data.address_complement,
-      data.address_district,
-      data.address_city,
-      data.address_state,
-      data.address_zip
+
+    const isPickup = data.fulfillment_type === 'pickup';
+    const street = isPickup ? '' : toTitleCase(data.address_street);
+    const number = isPickup ? '' : data.address_number?.trim() || '';
+    const complement = isPickup ? '' : toTitleCase(data.address_complement);
+    const district = isPickup ? '' : toTitleCase(data.address_district);
+    const city = isPickup ? '' : toTitleCase(data.address_city);
+    const state = isPickup ? '' : formatUf(data.address_state);
+    const zip = isPickup ? '' : formatCep(data.address_zip);
+
+    data.address_street = street;
+    data.address_number = number;
+    data.address_complement = complement;
+    data.address_district = district;
+    data.address_city = city;
+    data.address_state = state;
+    data.address_zip = zip;
+
+    const fullAddress = isPickup ? 'Retirada na Loja' : [
+      street,
+      number ? `nº ${number}` : '',
+      complement,
+      district,
+      `${city} - ${state}`,
+      zip ? `CEP: ${zip}` : ''
     ].filter(Boolean).join(', ');
 
     // 1. Gerar Etiqueta no Melhor Envio
@@ -338,24 +392,27 @@ export const OrderModel = {
 
         await client.query(
           `INSERT INTO orders (
-            id, customer_name, email, phone, fulfillment_type,
+            id, customer_name, email, cpf, phone, fulfillment_type,
             address_zip, address_street, address_number, address_complement,
             address_district, address_city, address_state, full_address,
             scheduled_date, notes, subtotal, shipping_cost, shipping_cost_real, total,
             shipping_service_id, shipping_service_name, shipping_carrier,
-            shipping_delivery_time, package_tier, status, tracking_code, label_url
+            shipping_delivery_time, package_tier, status, tracking_code, label_url,
+            payment_method, mp_transaction_id
           ) VALUES (
-            $1, $2, $3, $4, $5,
-            $6, $7, $8, $9,
-            $10, $11, $12, $13,
-            $14, $15, $16, $17, $18, $19,
-            $20, $21, $22,
-            $23, $24, 'new', $25, $26
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10,
+            $11, $12, $13, $14,
+            $15, $16, $17, $18, $19, $20,
+            $21, $22, $23,
+            $24, $25, 'new', $26, $27,
+            $28, $29
           )`,
           [
             orderId,
             data.customer_name,
             data.email,
+            data.cpf || null,
             data.phone,
             data.fulfillment_type,
             data.address_zip || null,
@@ -378,7 +435,9 @@ export const OrderModel = {
             data.shipping_delivery_time || null,
             data.package_tier || null,
             trackingCode,
-            labelUrl
+            labelUrl,
+            null, // payment_method
+            null  // mp_transaction_id
           ]
         );
 
@@ -430,6 +489,7 @@ export const OrderModel = {
       id: orderId,
       customer_name: data.customer_name,
       email: data.email,
+      cpf: data.cpf || null,
       phone: data.phone,
       fulfillment_type: data.fulfillment_type,
       address_zip: data.address_zip || null,
@@ -454,6 +514,8 @@ export const OrderModel = {
       status: 'new',
       tracking_code: trackingCode,
       label_url: labelUrl,
+      payment_method: null,
+      mp_transaction_id: null,
       created_at: new Date(),
       items: fallbackItems
     };

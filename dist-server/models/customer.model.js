@@ -6,22 +6,29 @@ export const CustomerModel = {
         const res = await pool.query('SELECT * FROM customers WHERE LOWER(email) = $1', [cleanEmail]);
         return res.rows[0] || null;
     },
-    async findOrCreate(email, name, phone) {
+    async findOrCreate(email, name, phone, cpf) {
         const cleanEmail = email.trim().toLowerCase();
         const existing = await this.findByEmail(cleanEmail);
         if (existing) {
-            if (name || phone) {
+            if (name || phone || cpf) {
                 const res = await pool.query(`UPDATE customers 
-           SET name = COALESCE($1, name), phone = COALESCE($2, phone), last_login_at = NOW() 
-           WHERE id = $3 RETURNING *`, [name || null, phone || null, existing.id]);
+           SET name = COALESCE($1, name), phone = COALESCE($2, phone), cpf = COALESCE($3, cpf), last_login_at = NOW() 
+           WHERE id = $4 RETURNING *`, [name || null, phone || null, cpf || null, existing.id]);
                 return res.rows[0];
             }
             return existing;
         }
-        const res = await pool.query(`INSERT INTO customers (email, name, phone, last_login_at)
-       VALUES ($1, $2, $3, NOW())
-       RETURNING *`, [cleanEmail, name || null, phone || null]);
+        const res = await pool.query(`INSERT INTO customers (email, name, phone, cpf, last_login_at)
+       VALUES ($1, $2, $3, $4, NOW())
+       RETURNING *`, [cleanEmail, name || null, phone || null, cpf || null]);
         return res.rows[0];
+    },
+    async getLastAuthCode(email) {
+        const cleanEmail = email.trim().toLowerCase();
+        const res = await pool.query(`SELECT created_at FROM customer_auth_codes 
+       WHERE LOWER(email) = $1 
+       ORDER BY created_at DESC LIMIT 1`, [cleanEmail]);
+        return res.rows[0] || null;
     },
     async createAuthCode(email) {
         const cleanEmail = email.trim().toLowerCase();
@@ -43,9 +50,21 @@ export const CustomerModel = {
         const record = res.rows[0];
         if (!record)
             return false;
+        // Se já excedeu as tentativas permitidas, apagar e bloquear
+        if (record.attempts >= 5) {
+            await pool.query('DELETE FROM customer_auth_codes WHERE id = $1', [record.id]);
+            return false;
+        }
         if (record.code !== cleanCode) {
-            // Incrementar tentativas
-            await pool.query('UPDATE customer_auth_codes SET attempts = attempts + 1 WHERE id = $1', [record.id]);
+            const newAttempts = (record.attempts || 0) + 1;
+            if (newAttempts >= 5) {
+                // Excedeu 5 tentativas -> Invalida código apagando-o
+                await pool.query('DELETE FROM customer_auth_codes WHERE id = $1', [record.id]);
+            }
+            else {
+                // Incrementar tentativas
+                await pool.query('UPDATE customer_auth_codes SET attempts = $1 WHERE id = $2', [newAttempts, record.id]);
+            }
             return false;
         }
         // Código válido -> Apagar código consumido

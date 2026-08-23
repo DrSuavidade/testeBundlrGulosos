@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, User, Search, ChevronDown, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search, ChevronDown } from 'lucide-react';
 import { Button } from './ui/Button';
 import { useCart } from '../context/CartContext';
 import { CustomerUser } from '../services/customerService';

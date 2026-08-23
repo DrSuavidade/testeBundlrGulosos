@@ -5,7 +5,6 @@ import { Button } from './ui/Button';
 import { Eye, Search, Heart } from 'lucide-react';
 import { ProductModal } from './ProductModal';
 import { useCart } from '../context/CartContext';
-import { WavyDivider } from './ui/WavyDivider';
 
 import { ShopeeMigrationBanner } from './ShopeeMigrationBanner';
 import { ShopByCategory } from './ShopByCategory';

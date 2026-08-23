@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Product, ProductColor, StoreCategory, Category, InstaPost, StoredOrder, OrderStatus } from '../types';
+import { Product, StoreCategory, Category, InstaPost, StoredOrder, OrderStatus } from '../types';
 import { ProductModal } from './ProductModal';
 import { AdminProductForm } from './AdminProductForm';
 import { api } from '../services/mockApi';
@@ -25,7 +25,6 @@ import {
   CheckCircle2,
   X,
   Menu,
-  ChevronRight,
   Sparkles,
   Clock,
   Send,
@@ -35,7 +34,6 @@ import {
   Calendar,
   FileText,
   LogOut,
-  Palette,
   Image as ImageIcon,
   Copy,
   Check as CheckIcon
@@ -54,7 +52,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('pedramania_admin_auth') === 'true';
   });
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'kits' | 'insta' | 'orders' | 'gallery'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'kits' | 'insta' | 'orders' | 'gallery' | 'settings'>('dashboard');
   const [orderFilter, setOrderFilter] = useState<'new' | 'all' | 'preparing' | 'ready' | 'delivered'>('new');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -72,6 +70,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [orders, setOrders] = useState<StoredOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [stockFilter, setStockFilter] = useState<'all' | 'low' | 'out'>('all');
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Product | null, direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
   const [editingCategory, setEditingCategory] = useState<Partial<StoreCategory> | null>(null);
 
   // Picking checklist state (orderId -> set of item product_ids checked)
@@ -308,10 +309,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   };
 
   // Derived Data
-  const filteredProducts = products.filter(p => 
+  let filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     p.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  if (stockFilter === 'low') filteredProducts = filteredProducts.filter(p => p.stock > 0 && p.stock <= 10);
+  if (stockFilter === 'out') filteredProducts = filteredProducts.filter(p => p.stock === 0);
+
+  if (sortConfig.key) {
+    filteredProducts.sort((a, b) => {
+      const aVal = a[sortConfig.key!];
+      const bVal = b[sortConfig.key!];
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
 
   const activeKits = products.filter(p => p.category === 'kits');
   const lowStockProducts = products.filter(p => p.stock <= 10);
@@ -395,6 +408,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     { id: 'insta',      label: 'Destaques Instagram',     icon: Instagram, count: instaPosts.length },
     { id: 'orders',     label: 'Pedidos Recebidos',       icon: ShoppingBag, count: orders.length, badge: (newOrdersCount + preparingOrdersCount) > 0 ? `${newOrdersCount + preparingOrdersCount} ativos` : undefined },
     { id: 'gallery',    label: 'Repositório de Fotos',    icon: ImageIcon },
+    { id: 'settings',   label: 'Configurações',           icon: Edit3 },
   ];
 
   const statusBadges: Record<OrderStatus, { label: string; class: string }> = {
@@ -545,6 +559,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               {activeTab === 'kits' && ' Kits Ativos & Criatividade'}
               {activeTab === 'insta' && ' Destaques do Instagram'}
               {activeTab === 'orders' && ' Preparação & Separação de Pedidos'}
+              {activeTab === 'settings' && ' Configurações de Pagamento'}
             </h1>
             <p className="text-xs text-gray-500 font-lato">Atualizado em tempo real com localStorage</p>
           </div>
@@ -791,19 +806,48 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
         {activeTab === 'products' && (
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-[#BFDBFE] animate-fade-in-up">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-              <div className="relative w-full md:w-80">
-                <input 
-                  type="text" 
-                  placeholder="Buscar produto por nome ou categoria..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-sm"
-                />
-                <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                <div className="relative w-full md:w-80">
+                  <input 
+                    type="text" 
+                    placeholder="Buscar produto por nome ou categoria..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-sm"
+                  />
+                  <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                </div>
+                <select
+                  value={stockFilter}
+                  onChange={(e) => setStockFilter(e.target.value as any)}
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#2563EB] outline-none text-sm font-bold bg-white"
+                >
+                  <option value="all">Todos os Estoques</option>
+                  <option value="low">Estoque Baixo</option>
+                  <option value="out">Esgotados</option>
+                </select>
               </div>
-              <Button onClick={() => setEditingProduct({ active: true, featured: false, category: 'linhas-fios', price: 0, stock: 10, allergens: [], tags: ['Novo'] })}>
-                <Plus size={18} className="mr-1.5" /> Adicionar Produto / Insumo
-              </Button>
+              <div className="flex items-center gap-2">
+                {selectedProductIds.size > 0 && (
+                  <div className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 mr-2">
+                    <span className="text-xs font-bold text-blue-700">{selectedProductIds.size} selecionados</span>
+                    <button
+                      onClick={() => {
+                        if (window.confirm('Apagar selecionados?')) {
+                          selectedProductIds.forEach(id => handleDeleteProduct(id));
+                          setSelectedProductIds(new Set());
+                        }
+                      }}
+                      className="text-xs font-bold text-rose-600 hover:text-rose-700 ml-2"
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                )}
+                <Button onClick={() => setEditingProduct({ active: true, featured: false, category: 'linhas-fios', price: 0, stock: 10, allergens: [], tags: ['Novo'] })}>
+                  <Plus size={18} className="mr-1.5" /> Adicionar Produto / Insumo
+                </Button>
+              </div>
             </div>
 
             {loading ? (
@@ -813,18 +857,32 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-50/50">
-                      <th className="py-3 px-4">Produto</th>
-                      <th className="py-3 px-4">Categoria</th>
-                      <th className="py-3 px-4">Preço (R$)</th>
-                      <th className="py-3 px-4">Estoque</th>
-                      <th className="py-3 px-4">Destaque</th>
-                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4">
+                        <input type="checkbox" checked={selectedProductIds.size > 0 && selectedProductIds.size === filteredProducts.length} onChange={(e) => {
+                          if (e.target.checked) setSelectedProductIds(new Set(filteredProducts.map(p => p.id)));
+                          else setSelectedProductIds(new Set());
+                        }} />
+                      </th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'name', direction: sortConfig.key === 'name' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Produto {sortConfig.key === 'name' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'category', direction: sortConfig.key === 'category' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Categoria {sortConfig.key === 'category' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'price', direction: sortConfig.key === 'price' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Preço {sortConfig.key === 'price' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'stock', direction: sortConfig.key === 'stock' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Estoque {sortConfig.key === 'stock' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'featured', direction: sortConfig.key === 'featured' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Dest. {sortConfig.key === 'featured' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                      <th className="py-3 px-4 cursor-pointer hover:text-[#2563EB]" onClick={() => setSortConfig({ key: 'active', direction: sortConfig.key === 'active' && sortConfig.direction === 'asc' ? 'desc' : 'asc' })}>Status {sortConfig.key === 'active' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                       <th className="py-3 px-4 text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
                     {filteredProducts.map(product => (
                       <tr key={product.id} className="hover:bg-gray-50/80 transition-colors">
+                        <td className="py-3.5 px-4">
+                          <input type="checkbox" checked={selectedProductIds.has(product.id)} onChange={(e) => {
+                            const newSet = new Set(selectedProductIds);
+                            if (e.target.checked) newSet.add(product.id);
+                            else newSet.delete(product.id);
+                            setSelectedProductIds(newSet);
+                          }} />
+                        </td>
                         <td className="py-3.5 px-4 font-bold text-[#1E293B]">
                           <button
                             onClick={() => setPreviewProduct(product)}
@@ -1203,8 +1261,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                         </div>
                       </div>
 
-                      {/* Customer Details & Address */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-b border-gray-100 text-xs">
+                      {/* Customer Details & Address & Payment */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-4 border-b border-gray-100 text-xs">
                         <div>
                           <span className="font-bold text-gray-400 uppercase tracking-wider block mb-1">Cliente</span>
                           <p className="font-extrabold text-[#1E293B] text-sm">{order.customer_name}</p>
@@ -1228,6 +1286,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                           <p className="text-xs text-[#2563EB] font-bold bg-blue-50 p-2 rounded-lg border border-blue-100">
                             {order.notes || 'Nenhuma observação especial.'}
                           </p>
+                        </div>
+
+                        <div>
+                          <span className="font-bold text-gray-400 uppercase tracking-wider block mb-1 flex items-center gap-1">
+                            <DollarSign size={12} /> Pagamento & Total
+                          </span>
+                          <p className="font-extrabold text-emerald-600 text-sm mb-1">R$ {order.total?.toFixed(2).replace('.', ',')}</p>
+                          <div className="flex flex-col gap-1 mt-1">
+                            {order.payment_method ? (
+                              <span className="inline-block bg-blue-100 text-blue-800 text-[10px] px-2 py-0.5 rounded uppercase font-bold w-max">
+                                {order.payment_method}
+                              </span>
+                            ) : (
+                              <span className="inline-block bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded uppercase font-bold w-max">
+                                NÃO DEFINIDO
+                              </span>
+                            )}
+                            {order.mp_transaction_id && (
+                              <span className="text-[10px] font-mono text-gray-400">ID: {order.mp_transaction_id}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
@@ -1453,6 +1532,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
         )}
 
           </>
+        )}
+
+        {/* TAB 7: SETTINGS (PAYMENT CREDENTIALS) */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6 animate-fade-in-up max-w-2xl">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-[#BFDBFE]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-blue-50 text-[#2563EB] rounded-2xl">
+                  <DollarSign size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-[#1E293B] font-nunito">Configurações de Pagamento</h3>
+                  <p className="text-xs text-gray-500">Credenciais Mercado Pago</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Access Token (Mercado Pago)</label>
+                  <input type="password" placeholder="APP_USR-..." className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm" />
+                  <p className="text-[10px] text-gray-400 mt-1">Token de acesso para criação de preferências e recebimento via PIX/Cartão</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Public Key (Mercado Pago)</label>
+                  <input type="text" placeholder="APP_USR-..." className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm" />
+                </div>
+                <div className="pt-4">
+                  <Button onClick={() => alert('Configurações salvas (mock)')}>Salvar Credenciais</Button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
       </main>

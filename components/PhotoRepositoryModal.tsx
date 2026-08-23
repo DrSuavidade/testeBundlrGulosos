@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Image as ImageIcon, X, Check, RefreshCw, Upload, Sparkles, Trash2, Search } from 'lucide-react';
+import { Image as ImageIcon, X, Check, Sparkles, Search } from 'lucide-react';
 import { ImageUploader } from './ImageUploader';
 import { formatFileSize } from '../services/imageUtils';
 import { Button } from './ui/Button';

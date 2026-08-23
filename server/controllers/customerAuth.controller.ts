@@ -21,6 +21,19 @@ export const CustomerAuthController = {
       const { email } = sendCodeSchema.parse(req.body);
       const cleanEmail = email.trim().toLowerCase();
 
+      // Verificar se existe OTP recente (rate limiting de 60 segundos)
+      const lastCode = await CustomerModel.getLastAuthCode(cleanEmail);
+      if (lastCode) {
+        const diffMs = Date.now() - new Date(lastCode.created_at).getTime();
+        if (diffMs < 60 * 1000) {
+          const waitSeconds = Math.ceil((60 * 1000 - diffMs) / 1000);
+          res.status(429).json({ 
+            error: `Por favor, aguarde ${waitSeconds} segundos antes de solicitar um novo código.` 
+          });
+          return;
+        }
+      }
+
       // Gerar código de 6 dígitos temporário
       const code = await CustomerModel.createAuthCode(cleanEmail);
 

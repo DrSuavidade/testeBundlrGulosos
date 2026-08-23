@@ -1,0 +1,1341 @@
+{
+  ".aiignore": {
+    "content_hash": "e794ee3f6e6d40f4ba721f765afcca5baad3a80869be3ee5d8fa2f59613ccf1b",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": ".aiignore",
+    "size": 123,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 30
+  },
+  ".claudeignore": {
+    "content_hash": "df2b03e04a20a662b30d6f89b8b9b7da21388fb9024aa5b2198e4d88fb245bc1",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": ".claudeignore",
+    "size": 125,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 31
+  },
+  ".cursor/rules/sacas.mdc": {
+    "content_hash": "6b3df7df43c29f9767b6279df5319cd288af186202d766080aaa55cb60c0dc13",
+    "directory_tokens": 3,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": ".cursor/rules/sacas.mdc",
+    "size": 276,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 69
+  },
+  ".cursorignore": {
+    "content_hash": "51afc22887c2ef4710f2ed3a0c6dacaa9e41324b14c5191c5114a03bcb280971",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": ".cursorignore",
+    "size": 125,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 31
+  },
+  ".geminiignore": {
+    "content_hash": "f5f05530262ae14d520e84fa2850d569b67a895d6aa1294c0e57c4276d9e927f",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": ".geminiignore",
+    "size": 125,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 31
+  },
+  ".github/copilot-instructions.md": {
+    "content_hash": "bf0fe66558b0dfc753b2a6043f73328d9af7d6a16ba0c639a8beebff570ccad3",
+    "directory_tokens": 1,
+    "filename_tokens": 5,
+    "language": "unknown",
+    "path": ".github/copilot-instructions.md",
+    "size": 428,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 107
+  },
+  ".gitignore": {
+    "content_hash": "e7a0628d58b4daa878baa2a9de56852023be1de5d737bfe1f8f8849891822218",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": ".gitignore",
+    "size": 309,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 77
+  },
+  "AGENTS.md": {
+    "content_hash": "85cba74bc880bdcf2376b6f4d60a625f80f3b7c6f2d7fbcbb2efcccda0f544f6",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": "AGENTS.md",
+    "size": 209,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 52
+  },
+  "App.tsx": {
+    "content_hash": "e64a0c5a906f5ee12c56c3e8efea6c3be0453609e3b6e0b50f684cfc44bf8714",
+    "directory_tokens": 0,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "App.tsx",
+    "size": 5926,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1481
+  },
+  "CLAUDE.md": {
+    "content_hash": "8711780d9ec21cec979d5957817a035306ba88dcc42132ddb1bef44825bd2498",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": "CLAUDE.md",
+    "size": 211,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 52
+  },
+  "GEMINI.md": {
+    "content_hash": "fd26060454ad327db11d0ef16e9d8ad0ec5cbd680590201c5554875fa0c89bc0",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": "GEMINI.md",
+    "size": 211,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 52
+  },
+  "README.md": {
+    "content_hash": "f0197192e9ed410dedf84547c86f3f03cd8a1b2387d7cf6a7b8bb7bce66f98dd",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": "README.md",
+    "size": 573,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 143
+  },
+  "components/AdminKitManager.tsx": {
+    "content_hash": "4bcecb106c749a611c0bacaeb7e3d8a47c48cb5946daa8de9dbd66ebd53e8a41",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/AdminKitManager.tsx",
+    "size": 25253,
+    "symbols": [
+      "AdminKitManagerProps"
+    ],
+    "test_indicator": false,
+    "tokens": 6304
+  },
+  "components/AdminLogin.tsx": {
+    "content_hash": "29039dfc277a22153a350851d1124c70db4cef0ebc90b59c1c1cbf03dcb972f0",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/AdminLogin.tsx",
+    "size": 6214,
+    "symbols": [
+      "AdminLoginProps"
+    ],
+    "test_indicator": false,
+    "tokens": 1547
+  },
+  "components/AdminPanel.tsx": {
+    "content_hash": "788a278a498d01e3b50ba7890e62e418199909c624c1fda4b922d49e31f25530",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/AdminPanel.tsx",
+    "size": 89966,
+    "symbols": [
+      "AdminPanelProps"
+    ],
+    "test_indicator": false,
+    "tokens": 22452
+  },
+  "components/AdminProductForm.tsx": {
+    "content_hash": "12c3243d0385b54ceec3e787b03058cb56cfdab55d06aab74dd87462ed75c37c",
+    "directory_tokens": 2,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "components/AdminProductForm.tsx",
+    "size": 37438,
+    "symbols": [
+      "AdminProductFormProps"
+    ],
+    "test_indicator": false,
+    "tokens": 9335
+  },
+  "components/CartDrawer.tsx": {
+    "content_hash": "4dfbf302a96caf6adc5929f8f2e456ad5244e9cfd2e063d140d9b73a1715873b",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/CartDrawer.tsx",
+    "size": 5756,
+    "symbols": [
+      "CartDrawerProps"
+    ],
+    "test_indicator": false,
+    "tokens": 1437
+  },
+  "components/Checkout.tsx": {
+    "content_hash": "b8c2342c90c9d64beb15988d4f55047da946bc6bab7786fb99439c94bd215028",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/Checkout.tsx",
+    "size": 26290,
+    "symbols": [
+      "CheckoutProps"
+    ],
+    "test_indicator": false,
+    "tokens": 6563
+  },
+  "components/Contact.tsx": {
+    "content_hash": "ddd96f729578ba4a8e429787327b7761c82196f3fa739aaa9754112b4f5e6a69",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "components/Contact.tsx",
+    "size": 6577,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1639
+  },
+  "components/CustomerAuthModal.tsx": {
+    "content_hash": "d45ccb7f9d210b371b9c30a30bdfdcd499675aff3794625a6de2c2b495492879",
+    "directory_tokens": 2,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "components/CustomerAuthModal.tsx",
+    "size": 8834,
+    "symbols": [
+      "CustomerAuthModalProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2202
+  },
+  "components/CustomerPortal.tsx": {
+    "content_hash": "5ca0f8ea0db7616704bf4502be2283d7dbddd9c18860c2be91a60c1d991ecf65",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/CustomerPortal.tsx",
+    "size": 15320,
+    "symbols": [
+      "CustomerPortalProps"
+    ],
+    "test_indicator": false,
+    "tokens": 3821
+  },
+  "components/FloatingWhatsApp.tsx": {
+    "content_hash": "1b522ad37ef931ed6340495a12ce817d17bf406a6d4bfae1622f5ce67aa6b86e",
+    "directory_tokens": 2,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "components/FloatingWhatsApp.tsx",
+    "size": 2195,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 548
+  },
+  "components/Footer.tsx": {
+    "content_hash": "3fb96679a05c33ca4526e2813fa761b5a06fd7cb9cf125aae4e213eb434bcfa3",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "components/Footer.tsx",
+    "size": 4891,
+    "symbols": [
+      "FooterProps"
+    ],
+    "test_indicator": false,
+    "tokens": 1218
+  },
+  "components/HowToOrder.tsx": {
+    "content_hash": "2a68d8f6e30bc40e862c57e8402d1df532649c88e25a5bbb85c95f4f33b28d9f",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/HowToOrder.tsx",
+    "size": 4301,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1073
+  },
+  "components/ImageUploader.tsx": {
+    "content_hash": "131055bb264569c6bde89bfe4a573743aaf5b58c149c3613a3ecb79bc786bd43",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/ImageUploader.tsx",
+    "size": 7664,
+    "symbols": [
+      "ImageUploaderProps"
+    ],
+    "test_indicator": false,
+    "tokens": 1915
+  },
+  "components/KitsSection.tsx": {
+    "content_hash": "4d557f2567b2e065819dc31706bfb9320107c7b5df1b75defd5ee329e097a98a",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/KitsSection.tsx",
+    "size": 10529,
+    "symbols": [
+      "KitsSectionProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2630
+  },
+  "components/MeetTheBaker.tsx": {
+    "content_hash": "03ce6e8f57e3df92d5985e5754b870307cff28163f085606d69b4ef9ec7ea54f",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/MeetTheBaker.tsx",
+    "size": 3066,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 761
+  },
+  "components/Navbar.tsx": {
+    "content_hash": "0114ff81a8eb6bc7bc039732cced7687d37d201fe076f76413b1a6b77ef2d0a7",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "components/Navbar.tsx",
+    "size": 8627,
+    "symbols": [
+      "NavbarProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2154
+  },
+  "components/PhotoRepositoryModal.tsx": {
+    "content_hash": "352c2eaeaf2c5d95f93a73470f69a26869cc8cdb5721fd011d1bbe8b316c7b6c",
+    "directory_tokens": 2,
+    "filename_tokens": 6,
+    "language": "javascript",
+    "path": "components/PhotoRepositoryModal.tsx",
+    "size": 8338,
+    "symbols": [
+      "PhotoRepositoryModalProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2082
+  },
+  "components/Press.tsx": {
+    "content_hash": "76f8602c697d403425e1e4d1d2c0b21c7508a1f23f5f4b440ef47c7a3d999584",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "components/Press.tsx",
+    "size": 6139,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1534
+  },
+  "components/ProductModal.tsx": {
+    "content_hash": "9a0e15e5e72a1cfe513bdcd2ded31804436c7b049c8a45e6aa5c7924f6fd7961",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/ProductModal.tsx",
+    "size": 9772,
+    "symbols": [
+      "ProductModalProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2439
+  },
+  "components/ProductsPage.tsx": {
+    "content_hash": "62631811bac31b49d5a7ad6c431df1aa3ff9b5259f245766db2b32d4bed70a0a",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/ProductsPage.tsx",
+    "size": 13147,
+    "symbols": [
+      "ProductsPageProps"
+    ],
+    "test_indicator": false,
+    "tokens": 3284
+  },
+  "components/ShippingCalculator.tsx": {
+    "content_hash": "f9ffc90f95877f278c42d9a94a76b5b51adb48856df892410323239ff5f288d8",
+    "directory_tokens": 2,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "components/ShippingCalculator.tsx",
+    "size": 10906,
+    "symbols": [
+      "ShippingCalculatorProps"
+    ],
+    "test_indicator": false,
+    "tokens": 2717
+  },
+  "components/ShopByCategory.tsx": {
+    "content_hash": "6949289637fa7d35a407cf7e85d7b658a597fd67e19537f4906f99398cefa8ca",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/ShopByCategory.tsx",
+    "size": 2249,
+    "symbols": [
+      "ShopByCategoryProps"
+    ],
+    "test_indicator": false,
+    "tokens": 561
+  },
+  "components/ShopeeMigrationBanner.tsx": {
+    "content_hash": "b1d561c42c61b361aedd0f701c78eb3cab12001eaaaf3165b6a946dd180ee2ee",
+    "directory_tokens": 2,
+    "filename_tokens": 6,
+    "language": "javascript",
+    "path": "components/ShopeeMigrationBanner.tsx",
+    "size": 3706,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 923
+  },
+  "components/Testimonials.tsx": {
+    "content_hash": "ddfc42c63480a3f5df489eaa6f63cfc32aa404ed6861e145fcb09487fd7ed253",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "components/Testimonials.tsx",
+    "size": 4015,
+    "symbols": [],
+    "test_indicator": true,
+    "tokens": 1003
+  },
+  "components/ui/Button.tsx": {
+    "content_hash": "e98b86ff7695806d6da67c0eb04a04e4e2cac08bc64f95bab96cf4bb477a212e",
+    "directory_tokens": 3,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "components/ui/Button.tsx",
+    "size": 1318,
+    "symbols": [
+      "ButtonProps"
+    ],
+    "test_indicator": false,
+    "tokens": 329
+  },
+  "components/ui/WavyDivider.tsx": {
+    "content_hash": "97102dff6aeaee6af4d99b729965752547ddb0489e766297a4dce806d08c4737",
+    "directory_tokens": 3,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "components/ui/WavyDivider.tsx",
+    "size": 2596,
+    "symbols": [
+      "WavyDividerProps",
+      "color"
+    ],
+    "test_indicator": false,
+    "tokens": 649
+  },
+  "context/CartContext.tsx": {
+    "content_hash": "ab734b3ab28bffbb256234b68f420b8ac56ddd18c1e2713fd50110e28a756003",
+    "directory_tokens": 1,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "context/CartContext.tsx",
+    "size": 3246,
+    "symbols": [
+      "CartContextType",
+      "CartProviderProps"
+    ],
+    "test_indicator": false,
+    "tokens": 811
+  },
+  "dist-server/app.js": {
+    "content_hash": "3ef1aef42f5a8311eef81ed7d49b323a62357401cffa9c87cd1675e68ffff650",
+    "directory_tokens": 2,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "dist-server/app.js",
+    "size": 1292,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 321
+  },
+  "dist-server/config/db.js": {
+    "content_hash": "665b063feb4659da5e298dc9dd1636d4cd048a2a3f78d3b030203925b266bbc7",
+    "directory_tokens": 4,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "dist-server/config/db.js",
+    "size": 9199,
+    "symbols": [
+      "autoMigrateAndSeed"
+    ],
+    "test_indicator": false,
+    "tokens": 2294
+  },
+  "dist-server/config/env.js": {
+    "content_hash": "f49790579767f7d40e2edf728fc1a94842294c8269a217a713d74c154f5764e2",
+    "directory_tokens": 4,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "dist-server/config/env.js",
+    "size": 1465,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 365
+  },
+  "dist-server/controllers/category.controller.js": {
+    "content_hash": "ec162069e422bbd1a21776fe35feba92a8ffa9af35b180415aaf524d9658ca1c",
+    "directory_tokens": 5,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "dist-server/controllers/category.controller.js",
+    "size": 2812,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 700
+  },
+  "dist-server/controllers/customerAuth.controller.js": {
+    "content_hash": "aec6279623e34b84d97003ef319eb4979071e64fb3c20f21e05bc71a7c069d0a",
+    "directory_tokens": 5,
+    "filename_tokens": 6,
+    "language": "javascript",
+    "path": "dist-server/controllers/customerAuth.controller.js",
+    "size": 4867,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1208
+  },
+  "dist-server/controllers/kit.controller.js": {
+    "content_hash": "50bb069f9b1ebca22cecc7e3261fb2b49b0b39b712c0d139cc6a9b3e7664f37f",
+    "directory_tokens": 5,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/controllers/kit.controller.js",
+    "size": 3088,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 769
+  },
+  "dist-server/controllers/order.controller.js": {
+    "content_hash": "9b10c25cb97cb760f68a9d07a663055d6c144c211741214f701f417e98496b89",
+    "directory_tokens": 5,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/controllers/order.controller.js",
+    "size": 8362,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 2084
+  },
+  "dist-server/controllers/product.controller.js": {
+    "content_hash": "b1f7e6776a5f6163b4851b2493407e4f6c87a22b894c0004429f07ab3a1ad8bc",
+    "directory_tokens": 5,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "dist-server/controllers/product.controller.js",
+    "size": 3795,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 946
+  },
+  "dist-server/controllers/shipping.controller.js": {
+    "content_hash": "308edc4ea38312b243ba73d213d837f61f7d16af445fa1fa7b9b3a303ec6c6e6",
+    "directory_tokens": 5,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "dist-server/controllers/shipping.controller.js",
+    "size": 1360,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 339
+  },
+  "dist-server/controllers/upload.controller.js": {
+    "content_hash": "8450ad48be2d730ee18b20e49af55ceb5ac54dc1367daae6624f59ac9957e150",
+    "directory_tokens": 5,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "dist-server/controllers/upload.controller.js",
+    "size": 3319,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 828
+  },
+  "dist-server/middleware/auth.js": {
+    "content_hash": "65727826b4557c2e41bee8facfa68358db068ef9c47887ce2bc01b90f90467a7",
+    "directory_tokens": 5,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "dist-server/middleware/auth.js",
+    "size": 616,
+    "symbols": [
+      "requireAdmin"
+    ],
+    "test_indicator": false,
+    "tokens": 153
+  },
+  "dist-server/middleware/errorHandler.js": {
+    "content_hash": "48845a6918efee9c6bc13735978768d2c08ad0a39242d9d94c25b1b2f32a698e",
+    "directory_tokens": 5,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "dist-server/middleware/errorHandler.js",
+    "size": 367,
+    "symbols": [
+      "errorHandler"
+    ],
+    "test_indicator": false,
+    "tokens": 91
+  },
+  "dist-server/models/category.model.js": {
+    "content_hash": "b103e849861abb7c7249ef95415b85b061ae909dd76147b21f4f830d5ebd7e2a",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/models/category.model.js",
+    "size": 1541,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 385
+  },
+  "dist-server/models/customer.model.js": {
+    "content_hash": "c7f579b04f9d8394e4855fc1ddd6925019df364aae092deabe3438ef76f80b42",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/models/customer.model.js",
+    "size": 4884,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1218
+  },
+  "dist-server/models/kit.model.js": {
+    "content_hash": "ea90aea5fc7cbb34a6fa790f4688a16fa71f1e8d1fd79d0a7ab5d06a94a21035",
+    "directory_tokens": 4,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "dist-server/models/kit.model.js",
+    "size": 8100,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 2024
+  },
+  "dist-server/models/order.model.js": {
+    "content_hash": "e700a7e3b21c4bfc55cb9e8b19826b06fc7f82ed2f082035e2d213531714a858",
+    "directory_tokens": 4,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "dist-server/models/order.model.js",
+    "size": 19639,
+    "symbols": [
+      "toTitleCase",
+      "formatCep",
+      "formatUf"
+    ],
+    "test_indicator": false,
+    "tokens": 4906
+  },
+  "dist-server/models/product.model.js": {
+    "content_hash": "91462079bf8e85b8e47db6102a7f6a524c752a924a6235682db154ef50f016aa",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/models/product.model.js",
+    "size": 8377,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 2094
+  },
+  "dist-server/routes/category.routes.js": {
+    "content_hash": "e305974cecbfe8e362df116f641a4f11028dd5256076f4dc07569f4d1a2f8b2b",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/routes/category.routes.js",
+    "size": 552,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 137
+  },
+  "dist-server/routes/customer.routes.js": {
+    "content_hash": "7df4e98064c4dbce7e58ffc59928470c95f2c3c3b0c4eaa381a4a4716e1fb6a8",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/routes/customer.routes.js",
+    "size": 624,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 154
+  },
+  "dist-server/routes/index.js": {
+    "content_hash": "5e87c5ff9ff7e0ef6ad1aa9b2f2820eb9ac8c57f9a137f6cff8b6e9a1041c26d",
+    "directory_tokens": 4,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "dist-server/routes/index.js",
+    "size": 1153,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 288
+  },
+  "dist-server/routes/kit.routes.js": {
+    "content_hash": "cc485783e4173b17eeb10285125a8311088d26acd98e383f2e167193172188b7",
+    "directory_tokens": 4,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "dist-server/routes/kit.routes.js",
+    "size": 528,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 131
+  },
+  "dist-server/routes/order.routes.js": {
+    "content_hash": "e79b41d0190958309f0af7a02eb66a305a0b98ff36e6bdfdd14bc9ca410e1815",
+    "directory_tokens": 4,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "dist-server/routes/order.routes.js",
+    "size": 645,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 160
+  },
+  "dist-server/routes/product.routes.js": {
+    "content_hash": "2a740d0b4927bcde139860d9c384111e1f8c0bf3a7305fbbc50e238393071d94",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/routes/product.routes.js",
+    "size": 614,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 153
+  },
+  "dist-server/routes/shipping.routes.js": {
+    "content_hash": "96a6246e37d5e88f1e1ba22463e82836f2710cffcbee19cc860d9aeff0b1a850",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/routes/shipping.routes.js",
+    "size": 362,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 90
+  },
+  "dist-server/routes/upload.routes.js": {
+    "content_hash": "1ff4de145f562d7e9d455911727b9372b9efc88fe457341896b53d22a09c77da",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/routes/upload.routes.js",
+    "size": 357,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 89
+  },
+  "dist-server/server.js": {
+    "content_hash": "92438f347a24624226e3f14dfb6d9712cd7b9711f4ddc56d8d0e421fc0b2d301",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "dist-server/server.js",
+    "size": 876,
+    "symbols": [
+      "bootstrap"
+    ],
+    "test_indicator": false,
+    "tokens": 214
+  },
+  "dist-server/services/email.service.js": {
+    "content_hash": "2e987172c355dd635d2d2d0223d4940e6683a8b53195dd6bf409938be023317b",
+    "directory_tokens": 5,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "dist-server/services/email.service.js",
+    "size": 11333,
+    "symbols": [
+      "getTransporter"
+    ],
+    "test_indicator": false,
+    "tokens": 2807
+  },
+  "dist-server/services/melhorEnvio.service.js": {
+    "content_hash": "8feb736b17a3e5333ab04c8b7b40e65216a7695d4a27df8e3d308e0fb229c075",
+    "directory_tokens": 5,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "dist-server/services/melhorEnvio.service.js",
+    "size": 17666,
+    "symbols": [
+      "selectPackageByWeight",
+      "calculateShipping",
+      "generateEstimatedQuotes",
+      "generateShipmentLabel"
+    ],
+    "test_indicator": false,
+    "tokens": 4409
+  },
+  "docs/superpowers/plans/2026-08-11-storefront-homepage.md": {
+    "content_hash": "8a0970cb28aad7a58318c5b6dbd6dd8bc95463d4ea0fae5d306862226df9609f",
+    "directory_tokens": 5,
+    "filename_tokens": 8,
+    "language": "unknown",
+    "path": "docs/superpowers/plans/2026-08-11-storefront-homepage.md",
+    "size": 3144,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 782
+  },
+  "docs/superpowers/specs/2026-08-11-storefront-homepage-design.md": {
+    "content_hash": "6f2fdf12daa6a0aaef9278936fc5983e8a140cad974c74c5f99207e243c32e1a",
+    "directory_tokens": 5,
+    "filename_tokens": 10,
+    "language": "unknown",
+    "path": "docs/superpowers/specs/2026-08-11-storefront-homepage-design.md",
+    "size": 1987,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 494
+  },
+  "index.html": {
+    "content_hash": "62d15610a1a73c8120cc6e201be012444ace45b1ee7cd23cdd69e8fccb67a6fc",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "unknown",
+    "path": "index.html",
+    "size": 2910,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 727
+  },
+  "index.tsx": {
+    "content_hash": "6f6863f735e617078923da9d6de5fb962c38f87b983f4d255c286cc734039835",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "index.tsx",
+    "size": 365,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 91
+  },
+  "metadata.json": {
+    "content_hash": "3d2b3d66d36152007e735ceb6cabadf03457e1131f9f68a9d878daa83752b581",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": "metadata.json",
+    "size": 186,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 46
+  },
+  "package-lock.json": {
+    "content_hash": "953d125a1ea3a631806688418c094abf0d5b1b32e564ba99606b086c6ac0ad40",
+    "directory_tokens": 0,
+    "filename_tokens": 4,
+    "language": "unknown",
+    "path": "package-lock.json",
+    "size": 123358,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 30839
+  },
+  "package.json": {
+    "content_hash": "d8c28041e173f79beace7389d1f6d4bee269b0e704117b8c668aa5a3616ce132",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": "package.json",
+    "size": 1074,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 268
+  },
+  "server/app.ts": {
+    "content_hash": "db63eee77df95ef14d70f76cf4bdfc103ab9ebd30e6cea375315710e3e6c6246",
+    "directory_tokens": 1,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "server/app.ts",
+    "size": 1318,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 328
+  },
+  "server/config/db.ts": {
+    "content_hash": "2bb7b80ad18467816457b1062ea5f2ebd033bd268b26856ce7cf6d0b9f131b0a",
+    "directory_tokens": 3,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "server/config/db.ts",
+    "size": 9314,
+    "symbols": [
+      "autoMigrateAndSeed"
+    ],
+    "test_indicator": false,
+    "tokens": 2322
+  },
+  "server/config/env.ts": {
+    "content_hash": "09b8a594c17c3666d75f1221dfb30d154d150ea4c1285c9fdb8f6b7ae989c88e",
+    "directory_tokens": 3,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "server/config/env.ts",
+    "size": 1416,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 353
+  },
+  "server/controllers/category.controller.ts": {
+    "content_hash": "355039fa7aa5e0dc283b451e9332a19b46239d2b36ac5b521594a39f5850a1df",
+    "directory_tokens": 4,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "server/controllers/category.controller.ts",
+    "size": 2699,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 672
+  },
+  "server/controllers/customerAuth.controller.ts": {
+    "content_hash": "8104585a679e007117b168851286ad3ff39e5712c000c669d1f9fd2c48ad52c8",
+    "directory_tokens": 4,
+    "filename_tokens": 6,
+    "language": "javascript",
+    "path": "server/controllers/customerAuth.controller.ts",
+    "size": 4549,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1129
+  },
+  "server/controllers/kit.controller.ts": {
+    "content_hash": "3e90bffbbe741cf4f954ee107066888532fa8073cfd48ae700781e8cbb9786fc",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/controllers/kit.controller.ts",
+    "size": 3006,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 749
+  },
+  "server/controllers/order.controller.ts": {
+    "content_hash": "31d0251fb27b065414c30791aab074a3d97a6f80d52097225b5c11dd0e20a548",
+    "directory_tokens": 4,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/controllers/order.controller.ts",
+    "size": 7985,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 1989
+  },
+  "server/controllers/product.controller.ts": {
+    "content_hash": "c6fa3390a455a322c392f19c94367d5843dca4ba915cc3e01dc09dc8d4d570e5",
+    "directory_tokens": 4,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "server/controllers/product.controller.ts",
+    "size": 3718,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 926
+  },
+  "server/controllers/shipping.controller.ts": {
+    "content_hash": "9f6789e2eee17dfc062a7fb16a237e27529a7919623ebd1d257872fa66f20dd5",
+    "directory_tokens": 4,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "server/controllers/shipping.controller.ts",
+    "size": 1415,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 353
+  },
+  "server/controllers/upload.controller.ts": {
+    "content_hash": "f6093cf1d5ff5a5f4941404d8f5b7efedb771bbb8167822e499b372927a2575f",
+    "directory_tokens": 4,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "server/controllers/upload.controller.ts",
+    "size": 3135,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 782
+  },
+  "server/middleware/auth.ts": {
+    "content_hash": "4baf5af3533a1411229d23764ea8ac2b327878bb93f9e4d8fa091ca4ed510a55",
+    "directory_tokens": 4,
+    "filename_tokens": 1,
+    "language": "javascript",
+    "path": "server/middleware/auth.ts",
+    "size": 702,
+    "symbols": [
+      "requireAdmin"
+    ],
+    "test_indicator": false,
+    "tokens": 175
+  },
+  "server/middleware/errorHandler.ts": {
+    "content_hash": "eea48328a7aae0c6b57e34b07d9c11e2f084815078aff542c87fb0facd3fdc90",
+    "directory_tokens": 4,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "server/middleware/errorHandler.ts",
+    "size": 477,
+    "symbols": [
+      "errorHandler"
+    ],
+    "test_indicator": false,
+    "tokens": 119
+  },
+  "server/models/category.model.ts": {
+    "content_hash": "e84f4efb0abf71625f2465769ca2f6a79cbfc8d1a9e8a003661a1a910ea1a7da",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/models/category.model.ts",
+    "size": 1828,
+    "symbols": [
+      "CategoryRow"
+    ],
+    "test_indicator": false,
+    "tokens": 457
+  },
+  "server/models/customer.model.ts": {
+    "content_hash": "65dff0ad1c01012508aa55fc7c0f11f2c2296ef2762d8af3987151d5a5955dcc",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/models/customer.model.ts",
+    "size": 5389,
+    "symbols": [
+      "Customer"
+    ],
+    "test_indicator": false,
+    "tokens": 1344
+  },
+  "server/models/kit.model.ts": {
+    "content_hash": "df71b16b82793ddd8f48317d5e0f156be30cb9c5a102682f7e938fb286406820",
+    "directory_tokens": 3,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "server/models/kit.model.ts",
+    "size": 8462,
+    "symbols": [
+      "KitItemInput",
+      "KitInput",
+      "KitOutput"
+    ],
+    "test_indicator": false,
+    "tokens": 2114
+  },
+  "server/models/order.model.ts": {
+    "content_hash": "5dc71ba41704ed60a3c88e4e7c26640277a541c69ac3f6ad5a66fa5fb6d28145",
+    "directory_tokens": 3,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "server/models/order.model.ts",
+    "size": 20318,
+    "symbols": [
+      "OrderItemRow",
+      "OrderRow",
+      "toTitleCase",
+      "formatCep",
+      "formatUf"
+    ],
+    "test_indicator": false,
+    "tokens": 5076
+  },
+  "server/models/product.model.ts": {
+    "content_hash": "da56ecded32edb8104dab42da92e783bd74cd409ec5a343a68e0500eea757fb9",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/models/product.model.ts",
+    "size": 8281,
+    "symbols": [
+      "ProductColorRow",
+      "ProductRow"
+    ],
+    "test_indicator": false,
+    "tokens": 2070
+  },
+  "server/routes/category.routes.ts": {
+    "content_hash": "5442cad03cc5e58b1738f52e69b8c2e126cb58a74cd37bbff2b3934bdf79406e",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/routes/category.routes.ts",
+    "size": 569,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 142
+  },
+  "server/routes/customer.routes.ts": {
+    "content_hash": "ac76945ebc2d92c7460d975ba3382140d57b891a53d1af709fdafffedf7a452d",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/routes/customer.routes.ts",
+    "size": 645,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 160
+  },
+  "server/routes/index.ts": {
+    "content_hash": "095ebfb592b6521ad6a8a2802da08a87f1a155c07bfe9f645e8cf3de6c90c606",
+    "directory_tokens": 3,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "server/routes/index.ts",
+    "size": 1148,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 287
+  },
+  "server/routes/kit.routes.ts": {
+    "content_hash": "a9b551895542ee85d2b5b16e4ddfc56853e7708cfda158efb7035debd9bd3674",
+    "directory_tokens": 3,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "server/routes/kit.routes.ts",
+    "size": 545,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 135
+  },
+  "server/routes/order.routes.ts": {
+    "content_hash": "e78dbf7d1a5190d28320a07e6b2ba1578b28dc86d714075b73de8af5aa6d3858",
+    "directory_tokens": 3,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "server/routes/order.routes.ts",
+    "size": 663,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 165
+  },
+  "server/routes/product.routes.ts": {
+    "content_hash": "41e0d1d0ae1dde5be0cb50254c828a8d8118e535ce6e9de5ce04f3a6bf05d12e",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/routes/product.routes.ts",
+    "size": 632,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 157
+  },
+  "server/routes/shipping.routes.ts": {
+    "content_hash": "312e07361076fcf084b32f9de5a25ab6d34cb2a07b05139c27a31fc4e49a92ea",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/routes/shipping.routes.ts",
+    "size": 375,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 93
+  },
+  "server/routes/upload.routes.ts": {
+    "content_hash": "0606d2e49190ff25ca08ef18ae3abe8d49ad391400b2261a15a2a6c3cb8456d3",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/routes/upload.routes.ts",
+    "size": 370,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 92
+  },
+  "server/server.ts": {
+    "content_hash": "c1a73df6e0f87406c5e494cf1234dce2453b8937a49505c32875d6e2cad71ede",
+    "directory_tokens": 1,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "server/server.ts",
+    "size": 873,
+    "symbols": [
+      "bootstrap"
+    ],
+    "test_indicator": false,
+    "tokens": 214
+  },
+  "server/services/email.service.ts": {
+    "content_hash": "6c902a680a20cd4a26c4c2d9a8e326227f1c6ceace925e5b0e239d4f5e735f8f",
+    "directory_tokens": 3,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "server/services/email.service.ts",
+    "size": 11209,
+    "symbols": [
+      "getTransporter"
+    ],
+    "test_indicator": false,
+    "tokens": 2776
+  },
+  "server/services/melhorEnvio.service.ts": {
+    "content_hash": "0d3ab13081c14c9ac6126fce967b9312b5ed1c602bb6b5f90772818f474cb073",
+    "directory_tokens": 3,
+    "filename_tokens": 5,
+    "language": "javascript",
+    "path": "server/services/melhorEnvio.service.ts",
+    "size": 17078,
+    "symbols": [
+      "PackageTier",
+      "ShippingItemInput",
+      "ShippingQuote",
+      "ShippingCalculationResponse",
+      "selectPackageByWeight",
+      "calculateShipping",
+      "generateEstimatedQuotes",
+      "GenerateLabelInput",
+      "GenerateLabelResult",
+      "generateShipmentLabel"
+    ],
+    "test_indicator": false,
+    "tokens": 4262
+  },
+  "server/tsconfig.json": {
+    "content_hash": "2ce3a0e6afb1481e8f1c6b457fc7e1cc6d0c9aa8f539285e37806e3604b558e3",
+    "directory_tokens": 1,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": "server/tsconfig.json",
+    "size": 359,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 89
+  },
+  "services/customerService.ts": {
+    "content_hash": "09ea115117cc80d1516404d779e58f4f70175e90d28d5118a778ef5eadc37068",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "services/customerService.ts",
+    "size": 3074,
+    "symbols": [
+      "CustomerUser",
+      "CustomerOrder"
+    ],
+    "test_indicator": false,
+    "tokens": 767
+  },
+  "services/imageUtils.ts": {
+    "content_hash": "b0df774d222e179531df5713da9cc12732480ab884ab54d1bb96bcbf26097aef",
+    "directory_tokens": 2,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "services/imageUtils.ts",
+    "size": 4312,
+    "symbols": [
+      "WebPConversionResult",
+      "ConvertOptions",
+      "convertImageToWebP",
+      "formatFileSize"
+    ],
+    "test_indicator": false,
+    "tokens": 1071
+  },
+  "services/mockApi.ts": {
+    "content_hash": "f7c846f81c86ee2ed09e684726dfd8ae3c7c3a5608c07b442e12fa6054b332a9",
+    "directory_tokens": 2,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "services/mockApi.ts",
+    "size": 31898,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 7940
+  },
+  "services/shippingService.ts": {
+    "content_hash": "f538eb3018e009c11f3f86f95a8fa290f50adb70470c72de56aefa4f90a67c16",
+    "directory_tokens": 2,
+    "filename_tokens": 4,
+    "language": "javascript",
+    "path": "services/shippingService.ts",
+    "size": 7207,
+    "symbols": [
+      "calculateCartPackage",
+      "lookupAddressByCep",
+      "calculateShippingQuotes"
+    ],
+    "test_indicator": false,
+    "tokens": 1797
+  },
+  "tsconfig.json": {
+    "content_hash": "3aeaee39323457b8b0c3b010827c84f33527e4abed6a7d63ea402e183d0cc608",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "unknown",
+    "path": "tsconfig.json",
+    "size": 791,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 197
+  },
+  "types.ts": {
+    "content_hash": "98d1f760305a4ebdcaaecd69d27d16ec9c71f020bd1be7b5d58261621cc31e21",
+    "directory_tokens": 0,
+    "filename_tokens": 2,
+    "language": "javascript",
+    "path": "types.ts",
+    "size": 5886,
+    "symbols": [
+      "StoreCategory",
+      "ProductColor",
+      "Product",
+      "InstaPost",
+      "CartItem",
+      "Testimonial",
+      "Event",
+      "OrderItemDetail",
+      "PackageTier",
+      "ShippingQuote",
+      "ShippingCalculationResponse",
+      "StoredOrder",
+      "OrderInput",
+      "OrderResult",
+      "KitItem",
+      "Kit",
+      "KitInput"
+    ],
+    "test_indicator": false,
+    "tokens": 1464
+  },
+  "vite.config.ts": {
+    "content_hash": "9b34957587fe57aa944b5ceee029bb85bf7bdde108e11e97de966db65f64ec62",
+    "directory_tokens": 0,
+    "filename_tokens": 3,
+    "language": "javascript",
+    "path": "vite.config.ts",
+    "size": 772,
+    "symbols": [],
+    "test_indicator": false,
+    "tokens": 193
+  }
+}

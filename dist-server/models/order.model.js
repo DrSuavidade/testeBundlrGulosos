@@ -6,6 +6,7 @@ const inMemoryOrders = [
         id: 'PM-89A12',
         customer_name: 'Carolina Neves',
         email: 'carolina.neves@email.com',
+        cpf: '123.456.789-00',
         phone: '5527998124455',
         fulfillment_type: 'delivery',
         address_zip: '29055-270',
@@ -23,6 +24,8 @@ const inMemoryOrders = [
         status: 'preparing',
         tracking_code: 'BR982134561PM',
         label_url: 'https://sandbox.melhorenvio.com.br/painel/carrinho?order=PM-89A12',
+        payment_method: 'credit_card',
+        mp_transaction_id: '1234567890',
         created_at: new Date('2026-08-10T14:20:00.000Z'),
         items: [
             {
@@ -49,6 +52,38 @@ const inMemoryOrders = [
         ]
     }
 ];
+function toTitleCase(str) {
+    if (!str)
+        return '';
+    const lowercaseWords = ['de', 'do', 'da', 'dos', 'das', 'e', 'em', 'para', 'com', 'no', 'na', 'nos', 'nas'];
+    return str
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .split(' ')
+        .map((word, index) => {
+        if (word.length === 0)
+            return '';
+        if (index === 0 || !lowercaseWords.includes(word)) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+        return word;
+    })
+        .join(' ');
+}
+function formatCep(cep) {
+    if (!cep)
+        return '';
+    const clean = cep.replace(/\D/g, '');
+    if (clean.length !== 8)
+        return clean;
+    return `${clean.slice(0, 5)}-${clean.slice(5)}`;
+}
+function formatUf(uf) {
+    if (!uf)
+        return '';
+    return uf.trim().toUpperCase().slice(0, 2);
+}
 export const OrderModel = {
     async findAll() {
         if (!ENV.DATABASE_URL || ENV.DATABASE_URL.trim() === '') {
@@ -100,7 +135,7 @@ export const OrderModel = {
                 shipping_cost: parseFloat(order.shipping_cost),
                 shipping_cost_real: parseFloat((order.shipping_cost_real || order.shipping_cost)),
                 total: parseFloat(order.total),
-                items: itemsRes.rows.map(item => ({
+                items: itemsRes.rows.map((item) => ({
                     ...item,
                     unit_price: parseFloat(item.unit_price)
                 }))
@@ -113,14 +148,28 @@ export const OrderModel = {
     async create(data) {
         const orderId = 'PM-' + Math.random().toString(36).substring(2, 7).toUpperCase();
         const shippingCost = data.shipping_cost || 0;
-        const fullAddress = data.full_address || [
-            data.address_street,
-            data.address_number,
-            data.address_complement,
-            data.address_district,
-            data.address_city,
-            data.address_state,
-            data.address_zip
+        const isPickup = data.fulfillment_type === 'pickup';
+        const street = isPickup ? '' : toTitleCase(data.address_street);
+        const number = isPickup ? '' : data.address_number?.trim() || '';
+        const complement = isPickup ? '' : toTitleCase(data.address_complement);
+        const district = isPickup ? '' : toTitleCase(data.address_district);
+        const city = isPickup ? '' : toTitleCase(data.address_city);
+        const state = isPickup ? '' : formatUf(data.address_state);
+        const zip = isPickup ? '' : formatCep(data.address_zip);
+        data.address_street = street;
+        data.address_number = number;
+        data.address_complement = complement;
+        data.address_district = district;
+        data.address_city = city;
+        data.address_state = state;
+        data.address_zip = zip;
+        const fullAddress = isPickup ? 'Retirada na Loja' : [
+            street,
+            number ? `nº ${number}` : '',
+            complement,
+            district,
+            `${city} - ${state}`,
+            zip ? `CEP: ${zip}` : ''
         ].filter(Boolean).join(', ');
         // 1. Gerar Etiqueta no Melhor Envio
         let trackingCode = null;
@@ -227,23 +276,26 @@ export const OrderModel = {
                 }
                 const total = subtotal + shippingCost;
                 await client.query(`INSERT INTO orders (
-            id, customer_name, email, phone, fulfillment_type,
+            id, customer_name, email, cpf, phone, fulfillment_type,
             address_zip, address_street, address_number, address_complement,
             address_district, address_city, address_state, full_address,
             scheduled_date, notes, subtotal, shipping_cost, shipping_cost_real, total,
             shipping_service_id, shipping_service_name, shipping_carrier,
-            shipping_delivery_time, package_tier, status, tracking_code, label_url
+            shipping_delivery_time, package_tier, status, tracking_code, label_url,
+            payment_method, mp_transaction_id
           ) VALUES (
-            $1, $2, $3, $4, $5,
-            $6, $7, $8, $9,
-            $10, $11, $12, $13,
-            $14, $15, $16, $17, $18, $19,
-            $20, $21, $22,
-            $23, $24, 'new', $25, $26
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10,
+            $11, $12, $13, $14,
+            $15, $16, $17, $18, $19, $20,
+            $21, $22, $23,
+            $24, $25, 'new', $26, $27,
+            $28, $29
           )`, [
                     orderId,
                     data.customer_name,
                     data.email,
+                    data.cpf || null,
                     data.phone,
                     data.fulfillment_type,
                     data.address_zip || null,
@@ -266,7 +318,9 @@ export const OrderModel = {
                     data.shipping_delivery_time || null,
                     data.package_tier || null,
                     trackingCode,
-                    labelUrl
+                    labelUrl,
+                    null, // payment_method
+                    null // mp_transaction_id
                 ]);
                 for (const item of orderItemsToInsert) {
                     await client.query(`INSERT INTO order_items (
@@ -312,6 +366,7 @@ export const OrderModel = {
             id: orderId,
             customer_name: data.customer_name,
             email: data.email,
+            cpf: data.cpf || null,
             phone: data.phone,
             fulfillment_type: data.fulfillment_type,
             address_zip: data.address_zip || null,
@@ -336,6 +391,8 @@ export const OrderModel = {
             status: 'new',
             tracking_code: trackingCode,
             label_url: labelUrl,
+            payment_method: null,
+            mp_transaction_id: null,
             created_at: new Date(),
             items: fallbackItems
         };

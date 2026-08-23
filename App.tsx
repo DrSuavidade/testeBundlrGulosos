@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { ProductGrid } from './components/ProductGrid';
 import { HowToOrder } from './components/HowToOrder';
 import { Testimonials } from './components/Testimonials';
 import { Press } from './components/Press';
@@ -14,9 +12,6 @@ import { ProductsPage } from './components/ProductsPage';
 import { AdminPanel } from './components/AdminPanel';
 import { CartProvider } from './context/CartContext';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-
-import { ShopeeMigrationBanner } from './components/ShopeeMigrationBanner';
-import { ShopByCategory } from './components/ShopByCategory';
 
 import { CustomerPortal } from './components/CustomerPortal';
 import { CustomerAuthModal } from './components/CustomerAuthModal';

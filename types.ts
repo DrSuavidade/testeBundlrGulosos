@@ -150,6 +150,8 @@ export interface StoredOrder {
   tracking_code?: string;
   label_url?: string;
   shipping_cost_real?: number;
+  payment_method?: string;
+  mp_transaction_id?: string;
   created_at: string;
   items: OrderItemDetail[];
 }
@@ -175,6 +177,7 @@ export interface OrderInput {
   shipping_carrier?: string;
   shipping_delivery_time?: number;
   package_tier?: string;
+  payment_method?: string;
   items: { product_id: string; qty: number; selected_color?: string }[];
 }
 
