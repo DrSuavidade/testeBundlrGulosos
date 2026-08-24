@@ -229,16 +229,18 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({
                               {item.selected_color && (
                                 <p className="text-[10px] text-[#2563EB] font-semibold">Cor: {item.selected_color}</p>
                               )}
-                              <p className="text-[10px] text-gray-400">R$ {item.unit_price.toFixed(2).replace('.', ',')} un</p>
+                              <p className="text-[10px] text-gray-400">
+                                R$ {(Number(item.unit_price ?? item.price ?? 0)).toFixed(2).replace('.', ',')} un
+                              </p>
                             </div>
                           </div>
 
                           <div className="text-right shrink-0">
                             <span className="font-black text-[#1E293B] px-2 py-0.5 bg-gray-100 rounded-md">
-                              {item.qty}x
+                              {item.qty || 1}x
                             </span>
                             <span className="block font-bold text-xs text-[#2563EB] mt-0.5">
-                              R$ {(item.unit_price * item.qty).toFixed(2).replace('.', ',')}
+                              R$ {((Number(item.unit_price ?? item.price ?? 0)) * (item.qty || 1)).toFixed(2).replace('.', ',')}
                             </span>
                           </div>
                         </div>

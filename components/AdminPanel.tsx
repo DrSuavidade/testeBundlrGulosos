@@ -267,7 +267,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
     const text = encodeURIComponent(
       `Olá ${order.customer_name}! 🧶✨ Seu pedido #${order.id} da Pedra Mania está ${statusText}.${trackingMsg} ` +
-      `\nTotal: R$ ${order.total.toFixed(2).replace('.', ',')}. Qualquer dúvida estamos à disposição!`
+      `\nTotal: R$ ${(Number(order.total) || 0).toFixed(2).replace('.', ',')}. Qualquer dúvida estamos à disposição!`
     );
 
     const cleanPhone = order.phone.replace(/\D/g, '');
@@ -1345,16 +1345,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                                     <span className={`font-bold text-xs sm:text-sm block ${isChecked ? 'line-through text-gray-500' : 'text-[#1E293B]'}`}>
                                       {item.product_name}
                                     </span>
-                                    <span className="text-xs text-gray-400">R$ {item.price.toFixed(2).replace('.', ',')} un</span>
+                                    <span className="text-xs text-gray-400">
+                                      R$ {(Number(item.price ?? (item as any).unit_price ?? 0)).toFixed(2).replace('.', ',')} un
+                                    </span>
                                   </div>
                                 </div>
 
                                 <div className="text-right">
                                   <span className="bg-[#2563EB] text-white text-xs font-black px-3 py-1 rounded-lg">
-                                    {item.qty}x
+                                    {item.qty || 1}x
                                   </span>
                                   <span className="block text-xs font-bold text-[#1E293B] mt-1">
-                                    R$ {(item.price * item.qty).toFixed(2).replace('.', ',')}
+                                    R$ {((Number(item.price ?? (item as any).unit_price ?? 0)) * (item.qty || 1)).toFixed(2).replace('.', ',')}
                                   </span>
                                 </div>
                               </div>
@@ -1376,7 +1378,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                               )}
                             </div>
                             <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-                              <span>Frete: <strong className="text-gray-700">R$ {(order.shipping_cost || 0).toFixed(2).replace('.', ',')}</strong></span>
+                              <span>Frete: <strong className="text-gray-700">R$ {(Number(order.shipping_cost) || 0).toFixed(2).replace('.', ',')}</strong></span>
                               {order.tracking_code && (
                                 <span className="font-mono font-bold text-[#2563EB] bg-white px-2 py-0.5 rounded border border-blue-100">
                                   Rastreio: {order.tracking_code}
@@ -1411,7 +1413,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
                         <div className="flex justify-between items-center mt-4 pt-2">
                           <span className="text-xs text-gray-400 font-bold">Total da Encomenda:</span>
-                          <span className="text-2xl font-black text-[#2563EB]">R$ {order.total.toFixed(2).replace('.', ',')}</span>
+                          <span className="text-2xl font-black text-[#2563EB]">R$ {(Number(order.total) || 0).toFixed(2).replace('.', ',')}</span>
                         </div>
                       </div>
 
