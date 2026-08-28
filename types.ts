@@ -72,7 +72,8 @@ export interface OrderItemDetail {
   product_image: string;
   selected_color?: string;
   qty: number;
-  price: number;
+  price?: number;
+  unit_price?: number;
 }
 
 // 📦 TIPOS DA CALCULADORA DE FRETE (MELHOR ENVIO & PEDRA MANIA)
