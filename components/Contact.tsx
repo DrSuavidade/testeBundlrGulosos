@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/Button';
 import { MapPin, Mail, Phone, Clock, MessageCircle } from 'lucide-react';
 import { WavyDivider } from './ui/WavyDivider';
 
 export const Contact: React.FC = () => {
+  const [openMap, setOpenMap] = useState<'vila-velha' | 'vitoria' | null>('vila-velha');
+
   return (
     <section className="relative bg-[#F0F7FF] pt-6 md:pt-10 pb-12 md:pb-16 overflow-visible" style={{ zIndex: 1000, isolation: 'isolate', transform: 'translateZ(0)' }}>
       <WavyDivider className="absolute bottom-0 left-0 w-full z-0" color="#1E293B" variant="flow" />
@@ -20,58 +22,69 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
 
           {/* Info Card */}
-          <div className="relative z-[9999] h-full bg-white rounded-2xl p-5 sm:p-7 shadow-md border-t-4 border-[#93C5FD]" style={{ position: 'relative', zIndex: 99999 }}>
-            <h3 className="text-lg sm:text-xl font-nunito font-extrabold text-[#1E293B] mb-5">Informações da Loja</h3>
+          <div className="relative z-[9999] h-full bg-white rounded-2xl p-5 sm:p-7 shadow-md border-t-4 border-[#93C5FD] flex flex-col" style={{ position: 'relative', zIndex: 99999 }}>
+            <h3 className="text-lg sm:text-xl font-nunito font-extrabold text-[#1E293B] mb-4 sm:mb-6">Informações da Loja</h3>
 
-            <div className="space-y-4">
+            <div className="flex-1 flex flex-col justify-between space-y-4">
               <div className="flex items-start gap-3 group">
-                <MapPin size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
+                <div className="bg-[#F0F7FF] p-2 rounded-lg shrink-0 group-hover:bg-[#DBEAFE] transition-colors">
+                  <MapPin size={18} className="text-[#2563EB]" />
+                </div>
                 <div>
-                  <h4 className="font-semibold text-[#1E293B] text-sm">Endereço</h4>
-                  <p className="text-[#1E293B]/60 text-xs mt-0.5">Av. Beira Mar, 450 - Centro<br/>Vitória, Espírito Santo - BR</p>
+                  <h4 className="font-bold text-[#1E293B] text-sm">Endereços</h4>
+                  <p className="text-[#1E293B]/70 text-[13px] mt-1 leading-relaxed">
+                    Glória, Vila Velha — ES<br/>
+                    Jardim Camburi, Vitória — ES
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 group">
-                <Phone size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
+                <div className="bg-[#F0F7FF] p-2 rounded-lg shrink-0 group-hover:bg-[#DBEAFE] transition-colors">
+                  <Phone size={18} className="text-[#2563EB]" />
+                </div>
                 <div>
-                  <h4 className="font-semibold text-[#1E293B] text-sm">Telefone / WhatsApp</h4>
+                  <h4 className="font-bold text-[#1E293B] text-sm">WhatsApp</h4>
                   <a
                     href="https://api.whatsapp.com/send?phone=5527996043041"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#1E293B]/60 text-xs mt-0.5 hover:text-[#2563EB] transition-colors inline-flex items-center gap-1 group/wa"
+                    className="text-[#2563EB] font-semibold text-[13px] mt-1 hover:text-[#1D4ED8] transition-colors inline-flex items-center gap-1.5 group/wa"
                   >
                     (27) 99604-3041
-                    <MessageCircle size={11} className="opacity-0 group-hover/wa:opacity-100 transition-opacity" />
+                    <MessageCircle size={14} className="opacity-70 group-hover/wa:opacity-100 transition-opacity" />
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 group">
-                <Mail size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
+                <div className="bg-[#F0F7FF] p-2 rounded-lg shrink-0 group-hover:bg-[#DBEAFE] transition-colors">
+                  <Mail size={18} className="text-[#2563EB]" />
+                </div>
                 <div>
-                  <h4 className="font-semibold text-[#1E293B] text-sm">Email</h4>
-                  <p className="text-[#1E293B]/60 text-xs mt-0.5">contato@pedramania.com.br</p>
+                  <h4 className="font-bold text-[#1E293B] text-sm">Email</h4>
+                  <p className="text-[#1E293B]/70 text-[13px] mt-1">contato@pedramania.com.br</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 group">
-                <Clock size={16} className="text-[#2563EB] mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-[#1E293B] text-sm">Horários de Atendimento</h4>
-                  <div className="mt-1.5 space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-[#1E293B]/60">Seg – Sex</span>
-                      <span className="font-medium text-[#1E293B]">08:30 – 18:30</span>
+                <div className="bg-[#F0F7FF] p-2 rounded-lg shrink-0 group-hover:bg-[#DBEAFE] transition-colors">
+                  <Clock size={18} className="text-[#2563EB]" />
+                </div>
+                <div className="w-full">
+                  <h4 className="font-bold text-[#1E293B] text-sm mb-2">Horários</h4>
+                  <div className="space-y-1.5 bg-gray-50 rounded-lg p-3 border border-gray-100">
+                    <div className="flex justify-between text-[13px]">
+                      <span className="text-[#1E293B]/70 font-medium">Seg – Sex</span>
+                      <span className="font-bold text-[#1E293B]">08:30 – 18:30</span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-[#1E293B]/60">Sábado</span>
-                      <span className="font-medium text-[#1E293B]">09:00 – 14:00</span>
+                    <div className="flex justify-between text-[13px]">
+                      <span className="text-[#1E293B]/70 font-medium">Sábado</span>
+                      <span className="font-bold text-[#1E293B]">09:00 – 14:00</span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-[#1E293B]/60">Domingo</span>
-                      <span className="font-medium text-red-400">Fechado</span>
+                    <div className="flex justify-between text-[13px]">
+                      <span className="text-[#1E293B]/70 font-medium">Domingo</span>
+                      <span className="font-bold text-red-500">Fechado</span>
                     </div>
                   </div>
                 </div>
@@ -79,40 +92,67 @@ export const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Form */}
+          {/* Locations */}
           <div className="relative">
-            <form className="space-y-3.5 h-full bg-white p-5 sm:p-7 rounded-2xl border border-white shadow-md relative z-[9999]" style={{ position: 'relative', zIndex: 99999 }}>
-              <h3 className="text-base sm:text-lg font-bold text-[#1E293B] mb-3">Envie uma mensagem</h3>
+            <div className="space-y-4 h-full bg-white p-5 sm:p-7 rounded-2xl border border-white shadow-md relative z-[9999]" style={{ position: 'relative', zIndex: 99999 }}>
+              <h3 className="text-base sm:text-lg font-bold text-[#1E293B] mb-4">Nossas Lojas</h3>
 
-              <div>
-                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Seu Nome</label>
-                <input
-                  type="text"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all text-sm"
-                  placeholder="Maria Santos"
-                />
+              {/* Vila Velha */}
+              <div className="border border-[#DBEAFE] rounded-xl overflow-hidden transition-all">
+                <button 
+                  onClick={() => setOpenMap(openMap === 'vila-velha' ? null : 'vila-velha')}
+                  className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-[#F0F7FF] transition-colors text-left"
+                >
+                  <div>
+                    <h4 className="text-[11px] sm:text-xs font-bold text-[#2563EB] uppercase tracking-wider">Vila Velha</h4>
+                    <p className="text-xs text-[#1E293B]/80 mt-1">Rua dom Pedro II, 261 - Glória</p>
+                  </div>
+                  <div className={`transform transition-transform text-[#2563EB] ${openMap === 'vila-velha' ? 'rotate-180' : ''}`}>
+                    ▼
+                  </div>
+                </button>
+                {openMap === 'vila-velha' && (
+                  <div className="w-full h-48 sm:h-56 border-t border-[#DBEAFE]">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }} 
+                      loading="lazy" 
+                      allowFullScreen 
+                      src="https://www.google.com/maps?q=Rua+dom+Pedro+2,+261+Gloria+Vila+Velha&output=embed">
+                    </iframe>
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Seu Email</label>
-                <input
-                  type="email"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all text-sm"
-                  placeholder="maria@email.com"
-                />
+              {/* Vitória */}
+              <div className="border border-[#DBEAFE] rounded-xl overflow-hidden transition-all">
+                <button 
+                  onClick={() => setOpenMap(openMap === 'vitoria' ? null : 'vitoria')}
+                  className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-[#F0F7FF] transition-colors text-left"
+                >
+                  <div>
+                    <h4 className="text-[11px] sm:text-xs font-bold text-[#2563EB] uppercase tracking-wider">Vitória</h4>
+                    <p className="text-xs text-[#1E293B]/80 mt-1">Rua Paschoal Delmaestro, 401 - Jardim Camburi</p>
+                  </div>
+                  <div className={`transform transition-transform text-[#2563EB] ${openMap === 'vitoria' ? 'rotate-180' : ''}`}>
+                    ▼
+                  </div>
+                </button>
+                {openMap === 'vitoria' && (
+                  <div className="w-full h-48 sm:h-56 border-t border-[#DBEAFE]">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }} 
+                      loading="lazy" 
+                      allowFullScreen 
+                      src="https://www.google.com/maps?q=Rua+Paschoal+Delmaestro,+401,+Jardim+Camburi,+vitoria&output=embed">
+                    </iframe>
+                  </div>
+                )}
               </div>
-
-              <div>
-                <label className="block text-[10px] sm:text-xs font-bold text-[#1E293B] mb-1 uppercase tracking-wider">Mensagem</label>
-                <textarea
-                  rows={4}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#DBEAFE] bg-white/80 focus:bg-white outline-none focus:border-[#93C5FD] focus:ring-2 focus:ring-[#93C5FD]/20 transition-all resize-none text-sm"
-                  placeholder="Gostaria de saber mais sobre os fios de algodão e o próximo encontro de artesanato..."
-                ></textarea>
-              </div>
-
-              <Button fullWidth className="shadow-md">Enviar Mensagem</Button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

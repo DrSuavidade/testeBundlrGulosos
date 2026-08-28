@@ -52,7 +52,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) =
     categories.find(c => c.id === slug)?.name ?? slug;
 
   return (
-    <div className="min-h-screen bg-[#F0F7FF] pb-20">
+    <div className="min-h-screen bg-[#F0F7FF] pb-32 md:pb-48">
 
       {!compact && <ShopeeMigrationBanner />}
 
@@ -165,7 +165,8 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) =
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className={`group bg-white ${compact ? 'rounded-xl' : 'rounded-[2rem]'} overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 flex flex-col justify-between`}
+                onClick={() => setSelectedProduct(product)}
+                className={`group bg-white ${compact ? 'rounded-xl' : 'rounded-[2rem]'} overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 flex flex-col justify-between cursor-pointer`}
               >
                 {/* Fixed-height image area — object-cover, never distorted */}
                 <div className={`relative ${compact ? 'h-36 sm:h-44' : 'h-52 sm:h-60'} overflow-hidden bg-gray-100 shrink-0`}>
@@ -177,7 +178,6 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) =
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                     <button
-                      onClick={() => setSelectedProduct(product)}
                       className="bg-white p-3 rounded-full text-[#1E293B] hover:bg-[#2563EB] hover:text-white transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl"
                     >
                       <Eye size={20} />
@@ -233,7 +233,10 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({ compact = false }) =
                       className={product.stock <= 0
                         ? "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed font-bold text-xs px-2.5 py-1 opacity-75 shrink-0"
                         : "group-hover:bg-[#2563EB] group-hover:text-white text-xs px-3 sm:px-4 py-1.5 shrink-0"}
-                      onClick={product.stock <= 0 ? undefined : () => addToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (product.stock > 0) addToCart(product);
+                      }}
                     >
                       {product.stock <= 0 ? 'Esgotado' : '+ Add'}
                     </Button>

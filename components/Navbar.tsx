@@ -127,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              className="relative p-1.5 text-[#1E293B] hover:text-white transition-transform hover:scale-110"
+              className="relative p-1.5 text-[#1E293B] hover:text-[#2563EB] transition-transform hover:scale-110"
               onClick={toggleCart}
             >
               <ShoppingBag size={20} />

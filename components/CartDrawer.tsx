@@ -14,12 +14,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
     <>
       {/* Backdrop */}
       <div 
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-[60] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={toggleCart}
       />
       
       {/* Drawer */}
-      <div className={`fixed inset-y-0 right-0 w-full sm:max-w-md bg-[#F0F7FF] shadow-2xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed inset-y-0 right-0 w-full sm:max-w-md bg-[#F0F7FF] shadow-2xl transform transition-transform duration-300 ease-in-out z-[60] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#BFDBFE]">

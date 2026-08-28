@@ -130,9 +130,11 @@ const App: React.FC = () => {
 
               {/* ABOUT VIEW */}
               {view === 'about' && (
-                <div className="animate-fade-in-up">
-                  <MeetTheBaker />
-                  <Press />
+                <div>
+                  <div className="animate-fade-in-up">
+                    <MeetTheBaker />
+                  </div>
+                  <Press dividerColor="#93C5FD" dividerVariant="swoop" showTopDivider={true} />
                 </div>
               )}
 

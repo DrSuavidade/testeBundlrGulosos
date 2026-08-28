@@ -3,7 +3,7 @@ import { Button } from './ui/Button';
 
 export const MeetTheBaker: React.FC = () => {
   return (
-    <section className="relative py-16 md:py-24 bg-[#F0F7FF]">
+    <section className="relative pt-16 md:pt-24 pb-28 md:pb-40 bg-[#F0F7FF]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-30">
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-14">
 

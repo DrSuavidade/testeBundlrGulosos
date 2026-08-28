@@ -4,7 +4,17 @@ import { WavyDivider } from './ui/WavyDivider';
 import { api } from '../services/mockApi';
 import { InstaPost } from '../types';
 
-export const Press: React.FC = () => {
+interface PressProps {
+  dividerColor?: string;
+  dividerVariant?: 'gentle' | 'wave' | 'curve' | 'asymmetric' | 'swoop' | 'flow';
+  showTopDivider?: boolean;
+}
+
+export const Press: React.FC<PressProps> = ({ 
+  dividerColor = "#BFDBFE",
+  dividerVariant = "flow",
+  showTopDivider = false
+}) => {
   const instaUrl = "https://www.instagram.com/pedramaniaoficial/";
   const [instaPosts, setInstaPosts] = useState<InstaPost[]>([]);
 
@@ -13,9 +23,11 @@ export const Press: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative bg-[#93C5FD] py-14 md:py-20 flex flex-col lg:flex-row items-stretch overflow-hidden">
+    <section className="relative bg-[#93C5FD] py-14 md:py-20 flex flex-col lg:flex-row items-stretch">
       {/* Top Divider */}
-      <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-10" color="#BFDBFE" variant="flow" />
+      {showTopDivider && (
+        <WavyDivider className="absolute top-0 left-0 w-full -translate-y-[99%] z-40" color={dividerColor} variant={dividerVariant} />
+      )}
 
       {/* Left: Instagram Feed Content */}
       <div className="w-full lg:w-1/2 px-4 sm:px-8 lg:pl-24 flex flex-col justify-center py-8 md:py-12 relative z-30">
