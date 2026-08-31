@@ -21,6 +21,41 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toggleCart, itemCount } = useCart();
 
+  const DEFAULT_ANNOUNCEMENTS = [
+    "20% de desconto no primeiro produto!",
+    "Frete grátis em compras a partir de R$ 100!",
+    "Entrega e retirada no Espírito Santo"
+  ];
+  const [announcements, setAnnouncements] = useState<string[]>(DEFAULT_ANNOUNCEMENTS);
+  const [announcementIndex, setAnnouncementIndex] = useState(0);
+  const [announcementStyle, setAnnouncementStyle] = useState<'fade' | 'marquee'>('fade');
+
+  useEffect(() => {
+    const stored = localStorage.getItem('pedramania_announcements');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setAnnouncements(parsed);
+        }
+      } catch (e) {
+        console.error('Failed to parse announcements', e);
+      }
+    }
+    const storedStyle = localStorage.getItem('pedramania_announcement_style');
+    if (storedStyle === 'marquee' || storedStyle === 'fade') {
+      setAnnouncementStyle(storedStyle);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (announcements.length === 0 || announcementStyle !== 'fade') return;
+    const timer = setInterval(() => {
+      setAnnouncementIndex((prev) => (prev + 1) % announcements.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [announcements, announcementStyle]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -61,18 +96,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             : 'bg-white'
         }`}
       >
-        <div className="bg-[#1E293B] text-white text-[0.65rem] sm:text-xs font-bold">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-between">
-            <span>Entrega e retirada no Espírito Santo</span>
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={handleAccountClick} 
-                className="hover:text-[#BFDBFE] transition-colors flex items-center gap-1 font-bold text-[11px]"
+        <div className="bg-[#1E293B] text-white text-[0.65rem] sm:text-xs font-bold relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-7 flex items-center justify-center">
+            {announcements.length > 0 && announcementStyle === 'marquee' && (
+              <div className="w-full overflow-hidden whitespace-nowrap flex">
+                <div className="animate-marquee inline-block whitespace-pre">
+                  {[...announcements, ...announcements, ...announcements, ...announcements, ...announcements, ...announcements].join("                                      ") + "                                      "}
+                </div>
+              </div>
+            )}
+            {announcements.length > 0 && announcementStyle === 'fade' && (
+              <div 
+                key={announcementIndex}
+                className="animate-fade-in-up transition-all duration-500 truncate text-center"
               >
-                <User size={13} /> {customer ? `Minha Conta (${customer.name || customer.email.split('@')[0]})` : 'Entrar / Minha Conta'}
-              </button>
-              <button onClick={() => handleLinkClick('contact')} className="hidden sm:block hover:text-[#BFDBFE] transition-colors">Atendimento WhatsApp →</button>
-            </div>
+                {announcements[announcementIndex]}
+              </div>
+            )}
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex justify-between items-center">

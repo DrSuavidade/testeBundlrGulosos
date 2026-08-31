@@ -75,6 +75,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
   const [editingCategory, setEditingCategory] = useState<Partial<StoreCategory> | null>(null);
 
+  // Announcements CRUD states
+  const [announcements, setAnnouncements] = useState<string[]>([]);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
+  const [editingAnnouncementIndex, setEditingAnnouncementIndex] = useState<number | null>(null);
+  const [editingAnnouncementText, setEditingAnnouncementText] = useState('');
+  const [announcementStyle, setAnnouncementStyle] = useState<'fade' | 'marquee'>('fade');
+
   // Picking checklist state (orderId -> set of item product_ids checked)
   const [checkedItems, setCheckedItems] = useState<Record<string, Record<string, boolean>>>({});
 
@@ -118,7 +125,64 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
   useEffect(() => {
     loadData();
+    const DEFAULT_ANNOUNCEMENTS = [
+      "20% de desconto no primeiro produto!",
+      "Frete grátis em compras a partir de R$ 100!",
+      "Entrega e retirada no Espírito Santo"
+    ];
+    const stored = localStorage.getItem('pedramania_announcements');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setAnnouncements(parsed);
+        }
+      } catch (e) {}
+    } else {
+      setAnnouncements(DEFAULT_ANNOUNCEMENTS);
+    }
+    const storedStyle = localStorage.getItem('pedramania_announcement_style');
+    if (storedStyle === 'marquee' || storedStyle === 'fade') {
+      setAnnouncementStyle(storedStyle);
+    }
   }, []);
+
+  const handleSaveAnnouncements = (updatedAnnouncements: string[]) => {
+    setAnnouncements(updatedAnnouncements);
+    localStorage.setItem('pedramania_announcements', JSON.stringify(updatedAnnouncements));
+  };
+
+  const handleSaveAnnouncementStyle = (style: 'fade' | 'marquee') => {
+    setAnnouncementStyle(style);
+    localStorage.setItem('pedramania_announcement_style', style);
+  };
+
+  const handleAddAnnouncement = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAnnouncement.trim()) return;
+    const updated = [...announcements, newAnnouncement.trim()];
+    handleSaveAnnouncements(updated);
+    setNewAnnouncement('');
+  };
+
+  const handleRemoveAnnouncement = (index: number) => {
+    const updated = announcements.filter((_, i) => i !== index);
+    handleSaveAnnouncements(updated);
+  };
+
+  const handleStartEditAnnouncement = (index: number) => {
+    setEditingAnnouncementIndex(index);
+    setEditingAnnouncementText(announcements[index]);
+  };
+
+  const handleSaveEditAnnouncement = (index: number) => {
+    if (!editingAnnouncementText.trim()) return;
+    const updated = [...announcements];
+    updated[index] = editingAnnouncementText.trim();
+    handleSaveAnnouncements(updated);
+    setEditingAnnouncementIndex(null);
+    setEditingAnnouncementText('');
+  };
 
   // Category handlers
   const handleSaveCategory = async (e: React.FormEvent) => {
@@ -455,7 +519,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
       {/* SIDEBAR NAVIGATION */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-56 bg-[#1E293B] text-white flex flex-col justify-between transition-transform duration-300 ease-in-out shrink-0 ${
+        className={`fixed top-0 left-0 z-50 h-screen w-56 bg-[#1E293B] text-white flex flex-col justify-between transition-transform duration-300 ease-in-out shrink-0 ${
           isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -526,16 +590,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
         </div>
       </aside>
 
-      {/* Overlay backdrop for mobile sidebar */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+      {/* Wrapper to offset fixed sidebar on desktop */}
+      <div className="flex-1 flex flex-col md:pl-56 min-w-0">
+        {/* Overlay backdrop for mobile sidebar */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
         {editingProduct ? (
           <AdminProductForm
             initialProduct={editingProduct}
@@ -1565,10 +1631,128 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 </div>
               </div>
             </div>
+
+            {/* CARD 2: CONFIGURAÇÕES DA BARRA DE ANÚNCIOS */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-[#BFDBFE]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-blue-50 text-[#2563EB] rounded-2xl">
+                  <Sparkles size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-[#1E293B] font-nunito">Barra de Anúncios</h3>
+                  <p className="text-xs text-gray-500">Adicione, edite ou remova mensagens rotativas da barra superior</p>
+                </div>
+              </div>
+
+              {/* Announcement Style Toggle */}
+              <div className="mb-6 pb-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h4 className="text-xs font-bold text-gray-700">Modo de Exibição</h4>
+                  <p className="text-[10px] text-gray-400">Escolha como as mensagens serão exibidas na barra superior</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAnnouncementStyle('fade')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      announcementStyle === 'fade'
+                        ? 'bg-[#2563EB] text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    Rotativo (Fade)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAnnouncementStyle('marquee')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      announcementStyle === 'marquee'
+                        ? 'bg-[#2563EB] text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    Letreiro (Marquee)
+                  </button>
+                </div>
+              </div>
+
+              {/* Form to Add New Announcement */}
+              <form onSubmit={handleAddAnnouncement} className="flex gap-2 mb-6">
+                <input 
+                  type="text" 
+                  value={newAnnouncement}
+                  onChange={e => setNewAnnouncement(e.target.value)}
+                  placeholder="Ex: 20% de desconto no primeiro produto!"
+                  className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-sm"
+                />
+                <Button type="submit" size="sm" className="flex items-center gap-1">
+                  <Plus size={16} /> Adicionar
+                </Button>
+              </form>
+
+              {/* Announcement List */}
+              <div className="space-y-3">
+                {announcements.map((ann, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-100 rounded-2xl gap-3">
+                    {editingAnnouncementIndex === idx ? (
+                      <div className="flex-1 flex gap-2">
+                        <input 
+                          type="text"
+                          value={editingAnnouncementText}
+                          onChange={e => setEditingAnnouncementText(e.target.value)}
+                          className="flex-1 px-3 py-1 border border-blue-300 rounded-xl text-sm"
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => handleSaveEditAnnouncement(idx)}
+                          className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold"
+                        >
+                          Salvar
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => setEditingAnnouncementIndex(null)}
+                          className="px-3 py-1 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg text-xs font-bold"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-sm font-semibold text-slate-700 break-words flex-1">{ann}</span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button 
+                            type="button"
+                            onClick={() => handleStartEditAnnouncement(idx)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Edit3 size={15} />
+                          </button>
+                          <button 
+                            type="button"
+                            onClick={() => handleRemoveAnnouncement(idx)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+
+                {announcements.length === 0 && (
+                  <p className="text-center text-xs text-slate-400 py-4">Nenhum anúncio cadastrado. A barra superior ficará vazia.</p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
       </main>
+      </div>
 
       {/* MODAL: CREATE / EDIT INSTAGRAM POST */}
       {editingInstaPost && (
